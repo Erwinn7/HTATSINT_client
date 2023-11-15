@@ -54,9 +54,48 @@ function MyForm() {
     };
   
 
+    const handleInputBlur = (e) => {
+      // Effectuer d'autres traitements avec la valeur saisie lorsque l'utilisateur quitte l'input
+      // Récupérer la valeur saisie
+  const { name, value } = e.target;
+  
+  // Loguer la valeur dans la console
+  console.log(`${name}: ${value}`);
+  
+      // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
+    };
+   
+
+    
+     
+
+
+
+
+
+
+
+
+
 
   return (
     <Form>
+    <FormGroup>
+        <Label for="phone_number">
+         NUMERO DE TELEPHONE
+        </Label>
+        <Input
+        type='numeric'
+         value={FormData.phone_number}
+          name="phone_number"
+          id="phone_number"
+          placeholder=""
+          onChange={handleInputChange} 
+          onBlur={handleInputBlur}
+          required
+        />
+      </FormGroup>
+
       <Row>
         <Col md={6}>
           <FormGroup>
@@ -119,21 +158,7 @@ function MyForm() {
               onChange={handleInputChange} 
             />
           </FormGroup>
-      <FormGroup>
-        <Label for="phone_number">
-          NUMERO DE TELEPHONE
-        </Label>
-        <Input
-        type='numeric'
-         value={FormData.phone_number}
-          name="phone_number"
-          id="phone_number"
-          placeholder=""
-          onChange={handleInputChange} 
-          required
-        />
-      </FormGroup>
-
+      
      
 
      
