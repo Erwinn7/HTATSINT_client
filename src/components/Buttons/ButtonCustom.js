@@ -12,18 +12,21 @@ function ButtonCustom() {
 
   return (
     <div>
-      <Button className='sm' color="primary" onClick={toggleForm}>
+    
+      <Button className='bg-gradient-info' color="primary" onClick={toggleForm}>
         {showForm1 ? 'PERSONNE MORALE' : ' PERSONNE PHYSIQUE'}
       </Button>
 
       {showForm1 ? (
        <div className='container fluid'>
+       <br></br>
        <MyForm></MyForm>
        </div> 
       ) : (
         <Form>
           {/* Formulaire 2 */}
         <div className='container fluid'>
+        <br></br>
         <MyFormEnt></MyFormEnt>
         </div> 
         </Form>
