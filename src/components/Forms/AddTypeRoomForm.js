@@ -6,11 +6,11 @@ import  Axios  from "axios";
 
 
 const  AddTypeRoomForm = ()  => {
-    const urlAddRT = "https://9b80-41-79-219-91.ngrok-free.app/api/v1/room_category";
+    const urlAddRT = "https://b6cc-197-234-221-187.ngrok-free.app/api/v1/room_category";
     const [ctrlSoumission, setCtrlSoumission] = useState("")
     const [save, setSave] = useState(true)
     const initdataRT = {room_category_label:"",place_number:""}
-    const [dataRT, setdataRT] = useState({})
+    const [dataRT, setdataRT] = useState({...initdataRT})
     const config = {
          headers: {
           'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ const  AddTypeRoomForm = ()  => {
 
     const handle = (e) =>  {
         const newdataRT = {...dataRT}
-        newdataRT[e.target.id] = e.target.value.toUpperCase();
+        newdataRT[e.target.id] = e.target.id === "place_number" ? parseInt(e.target.value) : e.target.value.toUpperCase();
         setdataRT(newdataRT)
         //console.log(newdataRT)
 

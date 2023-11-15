@@ -9,8 +9,8 @@ const AddRoomForm = () => {
 
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
-  const urlAddR = "https://9b80-41-79-219-91.ngrok-free.app/api/v1/room_item";
-  const urlGetRT = "https://9b80-41-79-219-91.ngrok-free.app/api/v1/room_categories/?page=1";
+  const urlAddR = "https://b6cc-197-234-221-187.ngrok-free.app/api/v1/room_item";
+  const urlGetRT = "https://b6cc-197-234-221-187.ngrok-free.app/api/v1/room_categories/?page=1";
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -21,8 +21,13 @@ const AddRoomForm = () => {
   const [roomType, setRoomType] = useState([]);
   const [ctrlSoumission, setCtrlSoumission] = useState("")
   const [save, setSave] = useState(true)
-  const initdataR =    { }
-  const [dataR, setdataR] = useState({})
+  const initdataR = {
+                    room_label: "",
+                    room_amount: 0, 
+                    room_category_id: "",
+                    room_item_label: ""
+                    }
+  const [dataR, setdataR] = useState({...initdataR})
 
 
   useEffect ( () => {
@@ -33,11 +38,11 @@ const AddRoomForm = () => {
       }).catch( err => {
           console.log(err)           
     });
-  }, [urlGetRT,roomType]);
+  }, [modal]);
 
   const handle = (e) =>  {
     const newdataR = {...dataR}
-    // newdataR[e.target.id] = e.target.id === "room_amount" ? parseFloat(e.target.value).toFixed(1) : e.target.value;
+    //newdataR[e.target.id] = e.target.id === "room_amount" ? parseFloat(e.target.value) : e.target.value;
     newdataR[e.target.id] = e.target.value;
 
     setdataR(newdataR)
@@ -75,7 +80,7 @@ const AddRoomForm = () => {
 
   const Ctrl_Soumission = () =>  {
 
-    if (!dataR.room_label  ||!dataR.room_amount || !dataR.room_category_id  ||!dataR.room_item_label  ) {
+    if (!dataR.room_label  || !dataR.room_amount || !dataR.room_category_id  ||!dataR.room_item_label  ) {
         setCtrlSoumission("Veuiller remplir le tout les champs");
         return false;
     } else {
@@ -108,7 +113,7 @@ const AddRoomForm = () => {
               <Col md={6}>
               <FormGroup>
                 <Label for="room_amount">
-                  Prix
+                  Prix (FCFA)
                 </Label>
                 <Input
                   id="room_amount"
