@@ -3,10 +3,11 @@ import  {React, useState }  from "react";
 import { Container,Form ,Row,Col,Input,FormGroup,Label,Button,Spinner} from "reactstrap";
 //axios
 import  Axios  from "axios";
+import { prefix_link } from "variables/globalesVar";
 
 
 const  AddTypeRoomForm = ()  => {
-    const urlAddRT = "https://b6cc-197-234-221-187.ngrok-free.app/api/v1/room_category";
+    const urlAddRT = prefix_link+"/api/v1/room_category";
     const [ctrlSoumission, setCtrlSoumission] = useState("")
     const [save, setSave] = useState(true)
     const initdataRT = {room_category_label:"",place_number:""}

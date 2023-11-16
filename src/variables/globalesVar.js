@@ -1,4 +1,4 @@
-
+var prefix_link = "https://b99b-41-79-219-88.ngrok-free.app"
 var lesChambres = [
     {
       nom: "chambre 101",
@@ -29,4 +29,4 @@ var lesChambres = [
     }
   ]
 
-  export default lesChambres;
+  export  { lesChambres, prefix_link} ;

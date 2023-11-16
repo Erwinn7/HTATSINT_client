@@ -19,7 +19,7 @@ import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, Mod
 //  components
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import Header from "components/Headers/Header.js";
-import lesChambres from "variables/roomData.js";
+import {lesChambres} from "variables/globalesVar";
 
 
 

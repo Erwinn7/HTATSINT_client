@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Container, Form, Button, Row, Col, FormGroup,Label,Input,Modal, ModalBody,ModalHeader,Spinner } from "reactstrap";
 import AddTypeRoomForm from "./AddTypeRoomForm";
 import Axios from "axios";
+import { prefix_link } from "variables/globalesVar";
 
 
 
@@ -9,8 +10,8 @@ const AddRoomForm = () => {
 
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
-  const urlAddR = "https://b6cc-197-234-221-187.ngrok-free.app/api/v1/room_item";
-  const urlGetRT = "https://b6cc-197-234-221-187.ngrok-free.app/api/v1/room_categories/?page=1";
+  const urlAddR = prefix_link+"/api/v1/room_item";
+  const urlGetRT = prefix_link+"/api/v1/room_categories/?page=1";
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -33,17 +34,17 @@ const AddRoomForm = () => {
   useEffect ( () => {
     Axios.get(urlGetRT)
       .then( res => {
-        setRoomType(res.data);
+        setRoomType(res.data,res.status);
         //console.log(res.data);
       }).catch( err => {
           console.log(err)           
     });
-  }, [modal]);
+  }, [urlGetRT,modal]);
 
   const handle = (e) =>  {
     const newdataR = {...dataR}
-    //newdataR[e.target.id] = e.target.id === "room_amount" ? parseFloat(e.target.value) : e.target.value;
-    newdataR[e.target.id] = e.target.value;
+
+    newdataR[e.target.id] = e.target.id === "room_item_label" ? e.target.value : e.target.value;
 
     setdataR(newdataR)
     //console.log(newdataR)
@@ -56,8 +57,18 @@ const AddRoomForm = () => {
     e.preventDefault();
 
     if (Ctrl_Soumission()) {
+      
+      // Découpez la chaîne room_item_label en utilisant la virgule comme séparateur
+      const items = dataR.room_item_label.split(',').map((item) => item.trim());
 
-        Axios.post(urlAddR,dataR,config)
+      // Pour chaque élément, créez un nouvel objet avec les propriétés d'origine
+      const dataToSend = items.map((item) => ({...dataR, room_item_label: item.toLowerCase().charAt(0).toUpperCase() + item.slice(1).toLowerCase() }));
+
+      // Pour chaque nouvel objet, envoyez une requête POST avec Axios
+      dataToSend.forEach((itemToSend) => {
+
+        //console.log(itemToSend)
+        Axios.post(urlAddR,itemToSend,config)
         .then( res => {
           console.log(res.data)
           setSave(true)
@@ -67,8 +78,10 @@ const AddRoomForm = () => {
           setSave(true)        
         });
 
-        setCtrlSoumission("");
-        setdataR(initdataR)
+      });
+    
+      setCtrlSoumission("");
+      setdataR({...dataR,room_item_label:"",room_amount:"",  room_label:""})
 
     } else{
         setSave(true)
@@ -78,6 +91,7 @@ const AddRoomForm = () => {
 
   }
 
+  //controler si les champs sont vides ou pas
   const Ctrl_Soumission = () =>  {
 
     if (!dataR.room_label  || !dataR.room_amount || !dataR.room_category_id  ||!dataR.room_item_label  ) {
@@ -95,39 +109,7 @@ const AddRoomForm = () => {
         <Container className="mt-1 " fluid>
           <Form  onSubmit={(e)=> roomSubmit(e)} >
             <Row>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="room_label">
-                    Nom
-                  </Label>
-                  <Input
-                    id="room_label"
-                    name="room_label"
-                    onChange={(e) => handle(e)}
-                    value={dataR?.room_label}
-                    placeholder="Nom de la chambre"
-                    type="text"
-                  />
-                </FormGroup>
-              </Col>
-              <Col md={6}>
-              <FormGroup>
-                <Label for="room_amount">
-                  Prix (FCFA)
-                </Label>
-                <Input
-                  id="room_amount"
-                  name="room_amount"
-                  onChange={(e) => handle(e)}
-                  value={dataR?.room_amount}
-                  placeholder="Prix de la chambre"
-                  type="number"
-                />
-              </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col sm={6}>
+            <Col sm={6}>
                <FormGroup >
                   <Label for="room_category_id">
                     Type
@@ -159,6 +141,38 @@ const AddRoomForm = () => {
                   </Input>
                 </FormGroup> 
               </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="room_label">
+                    Nom
+                  </Label>
+                  <Input
+                    id="room_label"
+                    name="room_label"
+                    onChange={(e) => handle(e)}
+                    value={dataR?.room_label}
+                    placeholder="Nom de la chambre"
+                    type="text"
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="room_amount">
+                    Prix (FCFA)
+                  </Label>
+                  <Input
+                    id="room_amount"
+                    name="room_amount"
+                    onChange={(e) => handle(e)}
+                    value={dataR?.room_amount}
+                    placeholder="Prix de la chambre"
+                    type="number"
+                  />
+                </FormGroup>
+              </Col>
               <Col sm={6}>
                 <FormGroup >
                   <Label
@@ -171,7 +185,7 @@ const AddRoomForm = () => {
                     name="room_item_label"
                     type="textarea"
                     onChange={(e) => handle(e)}
-                    // value={dataR?.room_item_label}
+                    value={dataR?.room_item_label}
                   />
                 </FormGroup>
               </Col>
