@@ -7,7 +7,9 @@ import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Occupation from "views/examples/Occupation";
 
+
 var routes = [
+  
   {
     path: "/index",
     name: "TABLEAU DE BORD",
