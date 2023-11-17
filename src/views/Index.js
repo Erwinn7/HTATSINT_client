@@ -31,7 +31,7 @@ import {
 } from "variables/charts.js";
 
 import Header from "components/Headers/Header.js";
-import  "/home/ahouangbenon/Documents/TATS INT/htats/nouveau/HTATSINT_client/src/assets/css/mycss.css"
+import  "assets/css/mycss.css"
 
 const Index = (props) => {
   //const [activeNav, setActiveNav] = useState(1);
