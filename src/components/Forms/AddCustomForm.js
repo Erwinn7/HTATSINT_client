@@ -1,7 +1,7 @@
 import React from 'react';
 import  { useState } from 'react';
 import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner } from 'reactstrap';
-
+import { prefix_link } from "variables/globalesVar";
 function MyForm() {
   
     const [formData, setFormData] = useState({
@@ -24,7 +24,7 @@ function MyForm() {
   
       try {
         setLoading(true);
-        const response = await fetch('https://ae94-41-79-217-130.ngrok-free.app/api/v1/client', {
+        const response = await fetch( prefix_link+'/api/v1/clients', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -54,28 +54,68 @@ function MyForm() {
     };
   
 
-    const handleInputBlur = (e) => {
+    const handleInputBlur = async (e) => {
       // Effectuer d'autres traitements avec la valeur saisie lorsque l'utilisateur quitte l'input
-      // Récupérer la valeur saisie
-  const { name, value } = e.target;
+
+
+      e.preventDefault();
+      const { name, value } = e.target;
   
-  // Loguer la valeur dans la console
-  console.log(`${name}: ${value}`);
+      try {
+        setLoading(true);
+        const response = await fetch( prefix_link+'/api/v1/client_by_phone/'+value, {
+          method: 'GET'
+         
+        });
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const data = await response.json();
+        console.log('Response from Flask API:', data);
+
+
+//verifier si le numero n'existe pas
+        if (data== null) {
+// ne rien faire , laisser le user remplir et soumettre le formulaire normalement
+console.log(`${name}: ${value}`);
+        }
+
+//VERIFIER LE TYPE DU CLIENT
+if (data.customer_type === "physique") {
+// PRE-REMPLIRE LE FORMULAIRE SI LE CLIENT EST PHYSIQUE
+setFormData((prevData) => ({
+  ...prevData,
+  first_name: data.first_name,
+  last_name: data.last_name,
+  gender: data.gender,
+  ifu_number: data.ifu_number,
+  date_of_birth: data.date_of_birth,
+  adress: data.adress
+  
+}));
+}
+
+if (data.customer_type_id === "morale") { 
+  //RENVOYER UN MESSAGE SI LE CLIENT EST MORAL 
+  console.log('Le client est moral');
+
+ }
+
+      } catch (error) {
+        console.error('Error sending data to Flask API:', error.message);
+      }finally {
+        setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
+      }
+
+  
   
       // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
     };
    
 
     
-     
-
-
-
-
-
-
-
-
 
 
   return (

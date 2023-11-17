@@ -27,6 +27,48 @@ var lesChambres = [
       statut: "DISPONIBLE"
 
     }
+  ];
+  var client = [
+    {     
+    address: "null",
+date_of_birth : "Wed, 08 Nov 2023 00:00:00 GMT",
+email: "rodolphe@gmail.com",
+first_name: "un nom",
+gender: "M",
+ifu: null,
+institute_name: "okay",
+
+customer_type: "physique",
+last_name: "mon nom",
+phone_number: "96363651"
+    },
+
+
+    {     
+      address: "null",
+  date_of_birth : "Wed, 08 Nov 2023 00:00:00 GMT",
+  email: "rodolphe@gmail.com",
+  first_name: "un nom",
+  gender: "M",
+  ifu: null,
+  institute_name: "okay",
+  
+  customer_type: "physique",
+  last_name: "mon nom",
+  phone_number: "96363651"},
+
+  {     
+    address: "null",
+date_of_birth : "Wed, 08 Nov 2023 00:00:00 GMT",
+email: "rodolphe@gmail.com",
+first_name: "un nom",
+gender: "M",
+ifu: null,
+institute_name: "okay",
+
+customer_type: "moral",
+last_name: "mon nom",
+phone_number: "96363651"}
   ]
 
-  export  { lesChambres, prefix_link} ;
+  export  { lesChambres, prefix_link, client} ;

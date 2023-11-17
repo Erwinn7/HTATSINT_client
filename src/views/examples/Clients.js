@@ -27,14 +27,31 @@ import {
 // core components
 import Header from "components/Headers/Header.js";
 import AjoutClient from "components/Buttons/Button";
-
+import GetClient from "components/Funtions/GetCustomer";
+import { client } from "variables/globalesVar";
 const Tables = () => {
+
+  
+GetClient()
+
+const clientsPhysique = client.filter(client => client.customer_type === 'physique');
+const clientsMoral = client.filter(client => client.customer_type === 'moral');
+
+   
+
+    // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
+  
+ 
+
+
+
+
   return (
     <>
       <Header menuTitle= 'CLIENTS'/> 
          {/* Page content */}
 
-
+        
 
     
        
@@ -53,6 +70,7 @@ const Tables = () => {
 </br>
 
         {/* Table */}
+
         <Row>
           <div className="col">
             <Card className="shadow">
@@ -72,14 +90,16 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td >   AHOLOU </td>
-                    <td>BRICE</td>
-                    <td> PARAKOU</td>
-                    <td> 97009328 </td>
-                    <td>jeru@gmail.com</td>
-
-
+                {clientsPhysique.map((client, index) => (
+            <tr key={index}>
+              <td>{client.first_name}</td>
+              <td>{client.last_name}</td>
+              <td>{client.adress}</td>
+              <td>{client.phone_number}</td>
+              <td>{client.email}</td>
+              
+                     
+          
                     <td className="text-right">
                       <UncontrolledDropdown>
                         <DropdownToggle
@@ -109,10 +129,10 @@ const Tables = () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </td>
+
+
                   </tr>
- 
-                 
-                 
+                  ))}
                 </tbody>
               </Table>
               <CardFooter className="py-4">
@@ -206,14 +226,17 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td >   AHOLOU </td>
-                    <td>BRICE</td>
-                    <td> PARAKOU</td>
-                    <td> 97009328 </td>
-                    <td>jeru@gmail.com</td>
-                 
-                 <td className="text-right">
+                {clientsMoral.map((client, index) => (
+            <tr key={index}>
+              <td>{client.first_name}</td>
+              <td>{client.last_name}</td>
+              <td>{client.adress}</td>
+              <td>{client.phone_number}</td>
+              <td>{client.email}</td>
+              
+                     
+          
+                    <td className="text-right">
                       <UncontrolledDropdown>
                         <DropdownToggle
                           className="btn-icon-only text-light"
@@ -242,7 +265,10 @@ const Tables = () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </td>
-                    </tr>
+
+
+                  </tr>
+                  ))}
 
                 </tbody>
               </Table>
@@ -304,6 +330,6 @@ const Tables = () => {
       </Container>
     </>
   );
-};
+  };
 
 export default Tables;

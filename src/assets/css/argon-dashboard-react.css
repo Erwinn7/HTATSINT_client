@@ -21530,4 +21530,13 @@ button:focus,
   margin-right: 10px;
 }
 
+
+/*# sourceMappingURL=argon-dashboard-react.css.map */
+.bg-default {
+  background-image: url('../img/theme/img2.jpg') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
 /*# sourceMappingURL=argon-dashboard-react.css.map */
