@@ -34,7 +34,7 @@ const AddRoomForm = () => {
   useEffect ( () => {
     Axios.get(urlGetRT)
       .then( res => {
-        setRoomType(res.data,res.status);
+        setRoomType(res.data);
         //console.log(res.data);
       }).catch( err => {
           console.log(err)           

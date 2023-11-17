@@ -5,6 +5,7 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
+import Occupation from "views/examples/Occupation";
 
 var routes = [
   {
@@ -50,11 +51,11 @@ var routes = [
     layout: "/auth",
   },
   {
-    path: "/register",
+    path: "/occupation",
     name: "OCCUPATION",
     icon: "fa fa-bed  text-pink",
-    component: <Register />,
-    layout: "/auth",
+    component: <Occupation />,
+    layout: "/admin",
   },
 ];
 export default routes;

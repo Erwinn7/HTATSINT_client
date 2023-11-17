@@ -12,7 +12,8 @@ import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, Mod
   Pagination,
   PaginationItem,
   PaginationLink,
-  Row
+  Row,
+  Spinner
 } from "reactstrap";
 // import Axios from "axios";
 
@@ -20,6 +21,7 @@ import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, Mod
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import Header from "components/Headers/Header.js";
 import {lesChambres} from "variables/globalesVar";
+import "assets/css/roomDesign.css"
 
 
 
@@ -50,16 +52,14 @@ const Room = () => {
 
 
 
-
-
   return (
-    <>
+    <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
+      
       {/* Page content */}
       <Container fluid className="pt-4">
 
-      {/* <React.StrictMode> */}
-        <Button color="primary" onClick={toggle} >
+        <Button className="bg-gradient-info" style={{color:"white"}}  onClick={toggle} >
           {!isOpen ? "Ajouter une chambre" : "Fermer" }
         </Button>
         <Collapse isOpen={isOpen} className="pt-3" >
@@ -70,13 +70,12 @@ const Room = () => {
             </CardBody>
           </Card>
         </Collapse>
-      {/* </React.StrictMode> */}
         <p className="pt-4"></p>
         
         {/* liste des chambres  */}
 
           {/* Table */}
-          <Row>
+        <Row className="pb-5">
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
@@ -120,16 +119,22 @@ const Room = () => {
                     </th>
                     <th>
                       <Badge color="" className="badge-dot mr-4">
-                        <i className={laChambre.statut === "DISPONIBLE" ? "bg-primary":"bg-danger" } />
+                        <i className={laChambre.statut === "DISPONIBLE" ? "bg-success":"bg-danger" } />
                         {laChambre.statut}
                       </Badge>
                       <Button color="primary" onClick={toggleModal} size="sm">
-                        DESCRIPTION
+                        INFO
                       </Button>
                       <Modal isOpen={modal} toggle={toggleModal}>
                         <ModalHeader toggle={toggleModal}>{laChambre.nom}</ModalHeader>
                         <ModalBody>
-                          Description de la chambre bientôt disponible...
+                        <Spinner size="sm">
+                            Loading...
+                        </Spinner>
+                        <span>
+                            {' '} Description de la chambre bientôt disponible...
+                        </span>
+                          
                         </ModalBody>
                         <ModalFooter>
                           <Button color="danger" onClick={toggleModal}>
@@ -154,9 +159,21 @@ const Room = () => {
                         <DropdownMenu className="dropdown-menu-arrow" right>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"blue"}} 
+                            style ={{color:"green"}} 
                           >
                             DISPONIBLE
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={(e) => e.preventDefault()}
+                            style ={{color:"blue"}} 
+                          >
+                            RESERVEE
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={(e) => e.preventDefault()}
+                            style ={{color:"orange"}} 
+                          >
+                            OCCUPEE
                           </DropdownItem>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
@@ -232,7 +249,7 @@ const Room = () => {
           </div>
         </Row>
       </Container>
-    </>
+    </div>
   );
 };
 

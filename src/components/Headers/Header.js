@@ -3,7 +3,7 @@ import {  Container, Row,Col} from "reactstrap";
 const Header = ({menuTitle}) => {
 
   const titreStyle = {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     color: 'black',
     textAlign: 'center',
     padding: '10px',
@@ -15,9 +15,10 @@ const Header = ({menuTitle}) => {
     marginRight: '30px',
   };
 
+
   return (
     <>
-      <div className="header bg-gradient-primary pb-2 pt-2 pt-md-7"  > 
+      <div className="header  pb-2 pt-2"  > 
       <Container fluid>
         <Row>
           <Col className="d-flex justify-content-center">
