@@ -2,7 +2,7 @@ import Index from "views/Index.js";
 import Client from "views/examples/Clients.js";
 import Room from "views/examples/Room.js";
 import Register from "views/examples/Register.js";
-import Login from "views/examples/Login.js";
+import Reglement from "views/examples/Reglement.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Occupation from "views/examples/Occupation";
@@ -46,11 +46,11 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/login",
+    path: "/Reglement",
     name: "REGLEMENT",
     icon: "fa fa-credit-card text-info",
-    component: <Login />,
-    layout: "/auth",
+    component: <Reglement />,
+    layout: "/admin"
   },
   {
     path: "/occupation",
@@ -59,5 +59,13 @@ var routes = [
     component: <Occupation />,
     layout: "/admin",
   },
+
+  {
+    path: "/register",
+    name: "UTILISATEURS",
+    icon: "fa fa-credit-card text-info",
+    component: <Register />,
+    layout: "/admin",
+  }
 ];
 export default routes;

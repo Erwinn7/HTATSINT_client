@@ -1,153 +1,89 @@
-/*!
+import React, { useState } from 'react';
+import { Container, Input } from 'reactstrap';
+import DataTable from "react-data-table-component";
+import Header from 'components/Headers/Header';
+import AjoutUser from 'components/Buttons/ButtonAddUser';
+import GetClient from 'components/Funtions/GetCustomer';
+import { client } from 'variables/globalesVar';
+import 'assets/css/customerDesign.css';
 
-=========================================================
+const Users = () => {
+  const [user, setUser] = useState(client); 
+  const [filterUser, setfilterUser] = useState(client);
 
-*/
+  const cols = [
+    
+    {
+      name: 'NOM',
+      selector: (row) => row.first_name,
+      sortable: true,
+    },
+    {
+      name: 'PRENOM',
+      selector: (row) => row.last_name,
+      sortable: true,
+    },
+    {
+      name: 'TYPE',
+      selector: (row) => row.type,
+      sortable: true,
+    },
+    {
+      name: 'EMAIL ',
+      selector: (row) => row.email,
+      sortable: true,
+    },
+    {
+      name: 'DERNIERE CONNEXION',
+      selector: (row) => row.last_connexion,
+      sortable: true,
+    },
+  ];
+  
 
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Row,
-  Col,
-} from "reactstrap";
+  
+ 
+  const handleFilter = (e) => {
+    // Ajoutez le code nécessaire pour gérer la recherche
+    const newUser = filterUser.filter(row => row.first_name.toLowerCase().includes(e.target.value.toLowerCase()));
+  setUser(newUser);
+  };
 
-const Register = () => {
   return (
-    <>
-      <Col lg="6" md="8">
-        <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-4">
-              <small>Sign up with</small>
-            </div>
-            <div className="text-center">
-              <Button
-                className="btn-neutral btn-icon mr-4"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/github.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Github</span>
-              </Button>
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/google.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Google</span>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
-              <small>Or sign up with credentials</small>
-            </div>
-            <Form role="form">
-              <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-hat-3" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Name" type="text" />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-email-83" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="new-email"
-                  />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Password"
-                    type="password"
-                    autoComplete="new-password"
-                  />
-                </InputGroup>
-              </FormGroup>
-              <div className="text-muted font-italic">
-                <small>
-                  password strength:{" "}
-                  <span className="text-success font-weight-700">strong</span>
-                </small>
-              </div>
-              <Row className="my-4">
-                <Col xs="12">
-                  <div className="custom-control custom-control-alternative custom-checkbox">
-                    <input
-                      className="custom-control-input"
-                      id="customCheckRegister"
-                      type="checkbox"
-                    />
-                    <label
-                      className="custom-control-label"
-                      htmlFor="customCheckRegister"
-                    >
-                      <span className="text-muted">
-                        I agree with the{" "}
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Privacy Policy
-                        </a>
-                      </span>
-                    </label>
-                  </div>
-                </Col>
-              </Row>
-              <div className="text-center">
-                <Button className="mt-4" color="primary" type="button">
-                  Create account
-                </Button>
-              </div>
-            </Form>
-          </CardBody>
-        </Card>
-      </Col>
-    </>
+    <div className="backgroundImgClient">
+      <Header menuTitle="UTILISATEURS" />
+
+      <Container className="my-5" fluid>
+        <div className="row">
+          <div className="float-left col-md-3 col-12">
+            <AjoutUser butonTitle="Ajouter un utilisateur" />
+          </div>
+          <div className="float-right offset-md-5 col-md-4 col-12" style={{ width: '20%', display: 'flex', justifyContent: 'right' }}>
+            <Input type="text" placeholder="Recherche..." onChange={(e) => handleFilter(e)} />
+          </div>
+        </div>
+        <br />
+
+        {/* Table */}
+        <div>
+          
+          <div>
+            <DataTable 
+            className="" 
+            title="Liste des utilisateurs" 
+            columns={cols}
+             data={client} 
+             keyField="id" 
+             pagination
+             >
+              
+
+            </DataTable>
+          </div>
+        </div>
+      </Container>
+    </div>
   );
 };
 
-export default Register;
+export default Users;
