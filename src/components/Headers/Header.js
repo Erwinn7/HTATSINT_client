@@ -18,7 +18,7 @@ const Header = ({menuTitle}) => {
 
   return (
     <>
-      <div className="header  pb-2 pt-2"  > 
+      <div className="pb-2 pt-2"  > 
       <Container fluid>
         <Row>
           <Col className="d-flex justify-content-center">
