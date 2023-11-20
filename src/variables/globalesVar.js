@@ -1,4 +1,5 @@
-var prefix_link = "https://b99b-41-79-219-88.ngrok-free.app"
+var prefix_link = "https://b99b-41-79-219-88.ngrok-free.app";
+
 var lesChambres = [
     {
       nom: "chambre 101",
@@ -26,8 +27,100 @@ var lesChambres = [
       item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise ",
       statut: "DISPONIBLE"
 
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
+    },
+    {
+      nom: "chambre 206",
+      nbPlace: 2,
+      type: "Suite",
+      price: 30000,
+      item: "02 lits, climatiseur, fleur, frigo, télé, table bureau, chaise, table à manger ",
+      statut: "INDISPONIBLE"
+
     }
   ];
+
+
   var client = [
     {     
     address: "null",
@@ -69,6 +162,6 @@ institute_name: "okay",
 customer_type: "moral",
 last_name: "mon nom",
 phone_number: "96363651"}
-  ]
+  ];
 
   export  { lesChambres, prefix_link, client} ;

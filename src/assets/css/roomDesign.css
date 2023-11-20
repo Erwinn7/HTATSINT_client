@@ -1,5 +1,5 @@
 .backgroundImgChambre {
-    background-image: url('assets/img/background/bgRoom.jpg'); 
+    background-image: url('assets/img/background/room.jpg') !important; 
     background-size: cover; 
     background-position: center;
     background-repeat: no-repeat;

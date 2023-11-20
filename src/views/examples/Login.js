@@ -23,7 +23,7 @@ const Login = () => {
           <div className="m-1">
            
             <img src={
-                      require("../../assets/img/theme/img3.jpg")
+                      require("assets/img/background/room.jpg")
                        
                     }
        className="img-fluid" alt=""/>

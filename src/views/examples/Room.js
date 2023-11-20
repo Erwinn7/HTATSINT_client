@@ -1,6 +1,4 @@
 import  {React,useState} from "react";
-
-// reactstrap components
 import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, ModalFooter, ModalHeader,
   Badge,
   CardHeader,
@@ -13,7 +11,9 @@ import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, Mod
   PaginationItem,
   PaginationLink,
   Row,
-  Spinner
+  Col,
+  Spinner,
+  Input
 } from "reactstrap";
 // import Axios from "axios";
 
@@ -21,7 +21,8 @@ import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, Mod
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import Header from "components/Headers/Header.js";
 import {lesChambres} from "variables/globalesVar";
-import "assets/css/roomDesign.css"
+import "assets/css/roomDesign.css";
+import DataTable from "react-data-table-component";
 
 
 
@@ -30,11 +31,50 @@ const Room = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  // const [room, setRoom] = useState([]);
+  const [room, setRoom] = useState(lesChambres);
+  const [filterRoom, setfilterRoom] = useState(lesChambres);
+
 
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
+
+  const cols = [
+    {
+      name : "N°",
+      selector : row  => row.id,
+      sortable : true
+
+    },                                                        
+    {
+      name : "CHAMBRE",
+      selector : row  => row.nom,
+      sortable : true
+    },
+    {
+      name : "PLACE",
+      selector : row  => row.nbPlace,
+      sortable : true
+    },
+    {
+      name : "TYPE",
+      selector : row  => row.type,     
+      sortable : true
+    },
+    {
+      name : "PRIX (FCFA)",
+      selector : row  => row.price,
+      sortable : true
+    },
+    {
+      name : "STATUT",
+      selector : row  => row.statut,
+      sortable : true
+    }
+  ]
+
+
+
 
 
   // useEffect ( () => {
@@ -49,7 +89,11 @@ const Room = () => {
 
   // }, [urlGetR]);
 
-
+const handleFilter = (e) => {
+  const newRoom = filterRoom.filter(row => row.nom.toLowerCase().includes(e.target.value.toLowerCase()));
+  setRoom(newRoom);
+  
+}
 
 
   return (
@@ -59,10 +103,10 @@ const Room = () => {
       {/* Page content */}
       <Container fluid className="pt-4">
 
-        <Button className="bg-gradient-info" style={{color:"white"}}  onClick={toggle} >
+        <Button className="bg-gradient-info mb-5" style={{color:"white"}}  onClick={toggle} >
           {!isOpen ? "Ajouter une chambre" : "Fermer" }
         </Button>
-        <Collapse isOpen={isOpen} className="pt-3" >
+        <Collapse isOpen={isOpen} className="pt-3 pb-5" >
           <Card>
             <CardBody>
               {/* formulaire d'ajout de chambre */}
@@ -70,12 +114,28 @@ const Room = () => {
             </CardBody>
           </Card>
         </Collapse>
-        <p className="pt-4"></p>
         
         {/* liste des chambres  */}
+        {/* table dynamique  */}
+
+        <div>
+          <div style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
+              <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} /> 
+          </div>
+          <div>
+          <DataTable 
+            title="Liste des Chambres"
+            columns={cols}
+            data={room}
+            keyField="id"
+            pagination > 
+          </DataTable>
+          </div>
+        </div>
+       
 
           {/* Table */}
-        <Row className="pb-5">
+        {/* <Row className="pb-5">
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
@@ -247,7 +307,8 @@ const Room = () => {
               </CardFooter>
             </Card>
           </div>
-        </Row>
+        </Row> */}
+        <p className="pb-5" > </p>
       </Container>
     </div>
   );
