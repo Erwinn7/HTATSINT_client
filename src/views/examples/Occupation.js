@@ -94,7 +94,7 @@ import {lesChambres} from "variables/globalesVar";
     const closeModal = () => {
       setModalOpen(false);
     };
-
+    
 
     return (
       <div  className="backgroundImgChambre">
@@ -163,10 +163,10 @@ import {lesChambres} from "variables/globalesVar";
           }
 
           <Modal isOpen={modalOpen} toggle={closeModal}>
-            <ModalHeader toggle={closeModal}>{selectedRow?.nom.toUpperCase()}</ModalHeader>
+            <ModalHeader toggle={closeModal}  >{selectedRow?.nom.toUpperCase()}</ModalHeader>
             <ModalBody>
               {selectedRow && (
-                <AddOccupForm/>
+                <AddOccupForm roomSelected = {selectedRow?.nom.toUpperCase()} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
               )}
 
             </ModalBody>
