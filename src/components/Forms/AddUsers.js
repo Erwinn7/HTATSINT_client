@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Form, FormGroup, Label, Input, Col, Alert } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Col, Alert , Spinner} from 'reactstrap';
+import { prefix_link } from "variables/globalesVar";
 
 const CreateUserForm = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    confirmPassword: '',
+    first_name: '',
+    last_name: '',
+    name:'',
+    hashed_password: '',
+    email: '',
   });
 
   const [alert, setAlert] = useState({ message: '', color: '' });
@@ -14,39 +17,84 @@ const CreateUserForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Vérification si les mots de passe correspondent
-    if (formData.password !== formData.confirmPassword) {
-      setAlert({ message: 'Les mots de passe ne correspondent pas.', color: 'danger' });
-      return;
-    }
+ 
+    
+  
 
     // Appel à votre API pour enregistrer l'utilisateur (remplacez cela par votre propre logique)
-    // Exemple : api.createUser(formData)
-    // .then(response => {
-    //   setAlert({ message: 'Utilisateur créé avec succès.', color: 'success' });
-    // })
-    // .catch(error => {
-    //   setAlert({ message: 'Erreur lors de la création de l\'utilisateur.', color: 'danger' });
-    // });
-
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (formData.hashed_password !== formData.confirmPassword) {
+        setAlert({ message: 'Les mots de passe ne correspondent pas.', color: 'danger' });
+        return;
+      };
+  
+      try {
+        setLoading(true);
+        const response = await fetch( prefix_link+'/api/v1/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+  
+        if (response.status === 201) {
+          const users_data = await response.json();
+          setAlert({ message: 'Utilisateur créé avec succès.', color: 'success' });
+          setFormData({
+            first_name: '',
+    last_name: '',
+    name:'',
+    hashed_password: '',
+    email: '',
+          });
+          console.log('Response from Flask API:', users_data);
+         //throw new Error('Network response was not ok');
+        } else{
+          setFormData({
+            first_name: '',
+    last_name: '',
+    name:'',
+    hashed_password: '',
+    email: '',
+          });
+        }
+        setAlert({ message: 'Cet utilisateur existe deja . ', color: 'danger' });
+        //setTimeout(() => {
+         // window.location.reload();
+      //  }, 10000);
+        const status = response.status;
+        console.error('La requête a échoué avec le statut:', response);
+       // console.error('Error sending data to Flask API:', response.message);
+       
+      }catch (error) {
+        setFormData({
+          first_name: '',
+  last_name: '',
+  name:'',
+  hashed_password: '',
+  email: '',
+        });
+        setAlert({ message: 'Defaut de connexion au serveur.Contacter service technique ', color: 'danger' });
+       // setTimeout(() => {
+        //  window.location.reload();
+       // }, 10000);
+     //  const status = response.status;
+       //console.error('La requête a échoué avec le statut:', status);
+        console.error('Error sending data to Flask API:', error.message);
+      }finally {
+        setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
+      }
+    };
     // Réinitialisation du formulaire et de l'alerte après l'enregistrement réussi
-    setFormData({
-        first_name: '',
-        last_name: '',
-        email:'',
-        password:'',
-      confirmPassword: '',
-    });
+  
 
-    setAlert({ message: 'Utilisateur créé avec succès.', color: 'success' });
-  };
 
-  return (
-    <div>
+return (
+      <div>
       
       <Form onSubmit={handleSubmit}>
         <FormGroup >
@@ -104,10 +152,10 @@ const CreateUserForm = () => {
           <>
             <Input
               type="password"
-              name="password"
+              name="hashed_password"
               id="password"
               placeholder="Entrez le mot de passe"
-              value={formData.password}
+              value={formData.hashed_password}
               onChange={handleChange}
               required
             />
@@ -131,26 +179,27 @@ const CreateUserForm = () => {
         </FormGroup>
         <FormGroup >
           <Label for="username" >
-            PROFIL
+            Profil
           </Label> <br></br>
           <>
           <Input
-    value={FormData.type}
+    value={FormData.name}
       id="type"
       name="type"
       type="select"
       onChange={handleChange} 
     >
-     <option value={'homme'}>ADMIN</option>
-      <option value={'femme'}>RECEPTIONNISTE</option>
+     <option value={'admin'}>ADMIN</option>
+      <option value={'admin'}>RECEPTIONNISTE</option>
      
     </Input>
           </>
         </FormGroup>
         <FormGroup check row>
           <Col sm={{ size: 10, offset: 2 }}>
-            <Button color="primary" type="submit">
-              Créer l'utilisateur
+            <Button color="primary" type="submit"  onClick={handleSubmit} disabled={loading}>
+            {loading ? <Spinner size="sm" color="light" /> : 'CREER UN UTILISATEUR'}
+
             </Button>
           </Col>
         </FormGroup>

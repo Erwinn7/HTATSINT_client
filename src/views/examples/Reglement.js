@@ -1,23 +1,15 @@
-//import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Input } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
-import AjoutUser from 'components/Buttons/ButtonAddUser';
-import GetClient from 'components/Funtions/GetCustomer';
 import { client } from 'variables/globalesVar';
 import 'assets/css/customerDesign.css';
+import PaymentModal from "components/Forms/AddReglementForm"
 
-const Users = () => {
+const Paiement = () => {
  // const [room, setRoom] = useState([]); // Assurez-vous de déclarer l'état pour la variable room
-
- const customTheme = {
-  text: {
-    primary: 'red',
-  },
-  background: {
-    default: 'lightblue',
-  },
-};
+ const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
+ 
   const cols = [
    
     {
@@ -51,7 +43,7 @@ const Users = () => {
     {
         name: 'PAYER',
         cell: (row) => (
-          <button onClick={() => handleFilter(row)}>PAYER</button>
+          <button onClick={() => handleButtonClick(row)}>PAYER</button>
         ),
         allowOverflow: true,
         button: true,
@@ -61,8 +53,17 @@ const Users = () => {
   ];
   
 
-  GetClient(); // Assurez-vous que GetClient() a un comportement approprié
+  const handleButtonClick = (rowData) => {
+    // Logique à exécuter lorsque le bouton est cliqué
+    setPaymentModalOpen(true);
+    console.log('Bouton cliqué pour la ligne:', rowData);
 
+  };
+  
+  const togglePaymentModal = () => {
+    // Fermer le modal
+    setPaymentModalOpen(!isPaymentModalOpen);
+  };
   // Fonction handleFilter non définie, assurez-vous de la définir correctement
   const handleFilter = (e) => {
     // Ajoutez le code nécessaire pour gérer la recherche
@@ -87,12 +88,13 @@ const Users = () => {
         <div>
           
           <div>
-            <DataTable className="" title="Liste des reglements" columns={cols} data={client} keyField="id" pagination               theme={customTheme}
+            <DataTable className="" title="Liste des reglements" columns={cols} data={client} keyField="id" pagination   
 >
               {/* Ajoutez ici des composants DataTable si nécessaire */}
             
 
             </DataTable>
+            <PaymentModal isOpen={isPaymentModalOpen} toggle={togglePaymentModal} />
           </div>
         </div>
       </Container>
@@ -100,4 +102,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Paiement;

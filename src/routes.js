@@ -6,7 +6,7 @@ import Reglement from "views/examples/Reglement.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Occupation from "views/examples/Occupation";
-
+import Login from "views/examples/Login";
 
 var routes = [
   
@@ -66,6 +66,13 @@ var routes = [
     icon: "fa fa-credit-card text-info",
     component: <Register />,
     layout: "/admin",
-  }
+  },
+  {
+    path: "/login",
+   // name: "CONNEXION",
+   // icon: "fa fa-credit-card text-info",
+    component: <Login />,
+    layout: "/auth",
+  },
 ];
 export default routes;

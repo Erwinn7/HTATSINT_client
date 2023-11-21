@@ -3,7 +3,7 @@ import { Container, Input } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
 import AjoutUser from 'components/Buttons/ButtonAddUser';
-import GetClient from 'components/Funtions/GetCustomer';
+//import GetClient from 'components/Funtions/GetCustomer';
 import { client } from 'variables/globalesVar';
 import 'assets/css/customerDesign.css';
 
@@ -53,7 +53,7 @@ const Users = () => {
     <div className="backgroundImgClient">
       <Header menuTitle="UTILISATEURS" />
 
-      <Container className="my-5" fluid>
+      <Container className="pb-5 my-5" fluid>
         <div className="row">
           <div className="float-left col-md-3 col-12">
             <AjoutUser butonTitle="Ajouter un utilisateur" />

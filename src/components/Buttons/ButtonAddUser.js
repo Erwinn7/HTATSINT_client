@@ -24,7 +24,7 @@ const MonComposant = () => {
         <ModalBody>
           {/* Contenu du modal */}
           <Container>
- <CreateUserForm/>
+      <CreateUserForm/>
           </Container>
           
         </ModalBody>

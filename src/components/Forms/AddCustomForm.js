@@ -1,6 +1,6 @@
 import React from 'react';
 import  { useState } from 'react';
-import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner } from 'reactstrap';
+import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from 'reactstrap';
 import { prefix_link } from "variables/globalesVar";
 function MyForm() {
   
@@ -8,8 +8,9 @@ function MyForm() {
       // Initial state of your form data
       first_name: '',
       last_name: '',
+      date_of_birth:'',
       gender: '',
-      ifu: '',
+      ifu_number: '',
       phone_number: '',
       
       address: '',
@@ -19,6 +20,8 @@ function MyForm() {
       // ...
     });
     const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({ message: '', color: '' });
+
     const handleSubmit = async (e) => {
       e.preventDefault();
   
@@ -62,14 +65,14 @@ function MyForm() {
       const { name, value } = e.target;
   
       try {
-        setLoading(true);
+       
         const response = await fetch( prefix_link+'/api/v1/client_by_phone/'+value, {
           method: 'GET'
          
         });
   
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          //throw new Error('Network response was not ok');
         }
   
         const data = await response.json();
@@ -79,12 +82,15 @@ function MyForm() {
 //verifier si le numero n'existe pas
         if (data== null) {
 // ne rien faire , laisser le user remplir et soumettre le formulaire normalement
+
 console.log(`${name}: ${value}`);
         }
 
 //VERIFIER LE TYPE DU CLIENT
 if (data.customer_type === "physique") {
 // PRE-REMPLIRE LE FORMULAIRE SI LE CLIENT EST PHYSIQUE
+setAlert({ message: 'Ce client existe deja.', color: 'danger' });
+
 setFormData((prevData) => ({
   ...prevData,
   first_name: data.first_name,
@@ -92,7 +98,7 @@ setFormData((prevData) => ({
   gender: data.gender,
   ifu_number: data.ifu_number,
   date_of_birth: data.date_of_birth,
-  adress: data.adress
+  address: data.address
   
 }));
 }
@@ -100,11 +106,13 @@ setFormData((prevData) => ({
 if (data.customer_type_id === "morale") { 
   //RENVOYER UN MESSAGE SI LE CLIENT EST MORAL 
   console.log('Le client est moral');
+  setAlert({ message: 'Le numero de telephone existe deja pour un client moral.Veuilez changer le numero.', color: 'danger' });
 
  }
 
       } catch (error) {
-        console.error('Error sending data to Flask API:', error.message);
+        console.error('Error sending dataaaa to Flask API:', error.message);
+        console.log(`${name}: ${value}`);
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
       }
@@ -191,8 +199,8 @@ if (data.customer_type_id === "morale") {
               NUMERO IFU
             </Label>
             <Input
-              value={FormData.ifu}
-              name="ifu"
+              value={FormData.ifu_number}
+              name="ifu_number"
               id="ifu"
               placeholder=""
               onChange={handleInputChange} 
@@ -262,8 +270,10 @@ if (data.customer_type_id === "morale") {
       </Button>
       </FormGroup>
       </Row>
-      
+      {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
+
     </Form>
+
   );
 }
 
