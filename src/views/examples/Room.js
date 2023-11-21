@@ -1,18 +1,20 @@
 import  {React,useState} from "react";
-import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, ModalFooter, ModalHeader,
-  Badge,
-  CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Row,
-  Col,
-  Spinner,
+import {Container, Collapse, Button, Card, CardBody ,
+  // Table,
+  Modal, ModalBody, ModalFooter, ModalHeader,
+  // Badge,
+  // CardHeader,
+  // CardFooter,
+  // DropdownMenu,
+  // DropdownItem,
+  // UncontrolledDropdown,
+  // DropdownToggle,
+  // Pagination,
+  // PaginationItem,
+  // PaginationLink,
+  // Row,
+  // Col,
+  // Spinner,
   Input
 } from "reactstrap";
 // import Axios from "axios";
@@ -33,11 +35,14 @@ const Room = () => {
   const [modal, setModal] = useState(false);
   const [room, setRoom] = useState(lesChambres);
   const [filterRoom, setfilterRoom] = useState(lesChambres);
-
-
+  const roomWithNum = room.map((item, index) => {
+    return { ...item, Num: index + 1 };
+  });
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const cols = [
     {
@@ -98,6 +103,17 @@ const handleFilter = (e) => {
 }
 
 
+const handleRowClick = (row) => {
+  setSelectedRow(row);
+  setModalOpen(true);
+};
+
+const closeModal = () => {
+  setModalOpen(false);
+};
+
+
+
   return (
     <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
@@ -119,21 +135,47 @@ const handleFilter = (e) => {
         
         {/* liste des chambres  */}
         {/* table dynamique  */}
-
-        <div>
-          <div style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
+          <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
               <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} /> 
           </div>
           <div>
-          <DataTable 
-            title="Liste des Chambres"
-            columns={cols}
-            data={room}
-            keyField="id"
-            pagination > 
-          </DataTable>
+          {
+            room && (
+              <DataTable 
+              title="Liste des Chambres"
+              columns={cols}
+              data={roomWithNum}
+              keyField="Num"
+              onRowClicked={handleRowClick}
+              pagination > 
+            </DataTable>  )
+          }
+
+         
           </div>
-        </div>
+        
+        <Modal isOpen={modalOpen} toggle={closeModal}>
+          <ModalHeader toggle={closeModal}>{selectedRow?.nom.toUpperCase() }</ModalHeader>
+          <ModalBody>
+            {selectedRow && (
+              <div>
+                <p>Type: {selectedRow.type}</p>
+                <p>Nombre de place: {selectedRow.nbPlace} personnes</p>
+                <p>Accessoires: {selectedRow.item}</p>
+                <p>Statut: {selectedRow.statut}</p>
+                <p>Réservé par: client</p>
+                <p>Occupée par: occupant(s)</p>
+                <p>Date entréé: jj/mm/aaaa</p>
+                <p>Date Sortie: jj/mm/aaaa</p>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onClick={closeModal}>
+              Fermer
+            </Button>
+          </ModalFooter>
+        </Modal>
        
 
           {/* Table */}

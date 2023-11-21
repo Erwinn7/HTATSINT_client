@@ -5,3 +5,18 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+
+.centered-container-occup {
+    margin-left: 30px;
+    margin-right: 30px;
+    background-color: rgba(255, 255, 255, 0.9); /* Blanc légèrement transparent */
+    padding: 30px; /* Ajoutez un espace intérieur au besoin */
+    border-radius: 10px; /* Ajoutez une bordure arrondie au besoin */
+    /* Ajoutez d'autres styles au besoin */
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  

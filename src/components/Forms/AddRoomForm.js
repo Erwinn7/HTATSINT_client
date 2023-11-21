@@ -43,12 +43,9 @@ const AddRoomForm = () => {
 
   const handle = (e) =>  {
     const newdataR = {...dataR}
-
     newdataR[e.target.id] = e.target.id === "room_item_label" ? e.target.value : e.target.value;
-
     setdataR(newdataR)
     //console.log(newdataR)
-
   }
 
   const roomSubmit = (e) => {
