@@ -65,6 +65,7 @@ const Admin = (props) => {
         </Routes>
         <Container fluid>
           <AdminFooter />
+          
         </Container>
       </div>
     </>

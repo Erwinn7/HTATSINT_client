@@ -97,7 +97,6 @@ const Room = () => {
 const handleFilter = (e) => {
   const newRoom = filterRoom.filter(row => row.nom.toLowerCase().includes(e.target.value.toLowerCase()));
   setRoom(newRoom);
-
 }
 
 
