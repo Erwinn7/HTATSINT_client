@@ -25,7 +25,7 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/addroom",
+    path: "/room",
     name: "CHAMBRE",
     icon: " fa fa-home text-orange",
     component: <Room />,
