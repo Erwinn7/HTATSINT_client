@@ -5,7 +5,6 @@ import Axios from "axios";
 import { prefix_link } from "variables/globalesVar";
 
 
-
 const AddRoomForm = () => {
 
   const [modal, setModal] = useState(false);
@@ -35,7 +34,7 @@ const AddRoomForm = () => {
     Axios.get(urlGetRT)
       .then( res => {
         setRoomType(res.data);
-        //console.log(res.data);
+        console.log(res.data);
       }).catch( err => {
           console.log(err)           
     });
@@ -43,7 +42,7 @@ const AddRoomForm = () => {
 
   const handle = (e) =>  {
     const newdataR = {...dataR}
-    newdataR[e.target.id] = e.target.id === "room_item_label" ? e.target.value : e.target.value;
+    newdataR[e.target.id] =  e.target.value;
     setdataR(newdataR)
     //console.log(newdataR)
   }
@@ -124,7 +123,7 @@ const AddRoomForm = () => {
                     id="room_category_id"
                     name="room_category_id"
                     onChange={(e) => handle(e)}
-                    // value={dataR?.room_category_id}
+                    value={dataR?.room_category_id}
                     type="select"
                   >
                     <option value="" >Sélectionnez un type</option>
