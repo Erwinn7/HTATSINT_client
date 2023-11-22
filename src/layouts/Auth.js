@@ -1,28 +1,11 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.3
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
 // core components
-import AuthNavbar from "components/Navbars/AuthNavbar.js";
-import AuthFooter from "components/Footers/AuthFooter.js";
+/*import AuthNavbar from "components/Navbars/AuthNavbar.js";
+import AuthFooter from "components/Footers/AuthFooter.js";*/
 
 import routes from "routes.js";
 
@@ -57,17 +40,14 @@ const Auth = (props) => {
   return (
     <>
       <div className="main-content" ref={mainContent}>
-        <AuthNavbar />
-        <div className="header bg-gradient-info py-7 py-lg-8">
+        
+        <div className="header">
           <Container>
-            <div className="header-body text-center mb-7">
+            <div className="header-body text-center mb-7 pb-4 mt-5">
               <Row className="justify-content-center">
-                <Col lg="5" md="6">
-                  <h1 className="text-white">Welcome!</h1>
-                  <p className="text-lead text-light">
-                    Use these awesome forms to login or create new account in
-                    your project for free.
-                  </p>
+                <Col lg="7" md="7">
+                <marquee><h1 className="text-white text-uppercase">Bienvenu au centre d'hébergement "Le Pèlerin"</h1 ></marquee> 
+                 
                 </Col>
               </Row>
             </div>
@@ -90,15 +70,15 @@ const Auth = (props) => {
         </div>
         {/* Page content */}
         <Container className="mt--8 pb-5">
-          <Row className="justify-content-center">
+         
             <Routes>
               {getRoutes(routes)}
               <Route path="*" element={<Navigate to="/auth/login" replace />} />
             </Routes>
-          </Row>
+         
         </Container>
       </div>
-      <AuthFooter />
+     
     </>
   );
 };

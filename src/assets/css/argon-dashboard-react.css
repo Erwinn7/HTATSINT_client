@@ -3979,7 +3979,7 @@ input[type="button"].btn-block {
   display: block;
   min-height: 1.5rem;
   padding-left: 3rem;
-  color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .custom-control-inline {
@@ -21530,4 +21530,13 @@ button:focus,
   margin-right: 10px;
 }
 
+
+/*# sourceMappingURL=argon-dashboard-react.css.map */
+.bg-default {
+  background-image: url('assets/img/background/home.jpg') !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
 /*# sourceMappingURL=argon-dashboard-react.css.map */

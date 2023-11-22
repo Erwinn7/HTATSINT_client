@@ -27,22 +27,42 @@ import {
 // core components
 import Header from "components/Headers/Header.js";
 import AjoutClient from "components/Buttons/Button";
+import GetClient from "components/Funtions/GetCustomer";
+import { client } from "variables/globalesVar";
+import "assets/css/customerDesign.css";
 
 const Tables = () => {
+
+  
+GetClient()
+
+const clientsPhysique = client.filter(client => client.customer_type === 'physique');
+const clientsMoral = client.filter(client => client.customer_type === 'moral');
+
+   
+
+    // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
+  
+ 
+
+
+
+
   return (
+    <div className="backgroundImgClient"> 
     <>
       <Header menuTitle= 'CLIENTS'/> 
          {/* Page content */}
 
-
+        
 
     
        
          
       <Container className="my-5" fluid>
       <div className="row">
-      <div className="col"><AjoutClient>
-        Ajouter nouveau client
+      <div className="col"><AjoutClient butonTitle= "Ajouter nouveau client">
+        
       </AjoutClient>
       </div>
      
@@ -53,13 +73,14 @@ const Tables = () => {
 </br>
 
         {/* Table */}
+
         <Row>
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <h3 className="mb-0">PERSONNE PHYSIQUE</h3>
               </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
+              <Table  className="align-items-center table-dark table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">NOM</th>
@@ -72,14 +93,16 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td >   AHOLOU </td>
-                    <td>BRICE</td>
-                    <td> PARAKOU</td>
-                    <td> 97009328 </td>
-                    <td>jeru@gmail.com</td>
-
-
+                {clientsPhysique.map((client, index) => (
+            <tr key={index}>
+              <td>{client.first_name}</td>
+              <td>{client.last_name}</td>
+              <td>{client.adress}</td>
+              <td>{client.phone_number}</td>
+              <td>{client.email}</td>
+              
+                     
+          
                     <td className="text-right">
                       <UncontrolledDropdown>
                         <DropdownToggle
@@ -109,10 +132,10 @@ const Tables = () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </td>
+
+
                   </tr>
- 
-                 
-                 
+                  ))}
                 </tbody>
               </Table>
               <CardFooter className="py-4">
@@ -186,13 +209,13 @@ const Tables = () => {
         {/* Dark table */}
         <Row className="mt-5">
           <div className="col">
-            <Card className="bg-default shadow">
+            <Card className=" shadow">
               <CardHeader className="bg-transparent border-0">
-                <h3 className="text-white mb-0">PERSONNE MORALE</h3>
+                <h3 className="text-dark mb-0">PERSONNE MORALE</h3>
               </CardHeader>
               <Table
                 className="align-items-center table-dark table-flush"
-                responsive
+                responsive 
               >
                 <thead className="thead-dark">
                   <tr>
@@ -206,14 +229,17 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td >   AHOLOU </td>
-                    <td>BRICE</td>
-                    <td> PARAKOU</td>
-                    <td> 97009328 </td>
-                    <td>jeru@gmail.com</td>
-                 
-                 <td className="text-right">
+                {clientsMoral.map((client, index) => (
+            <tr key={index}>
+              <td>{client.first_name}</td>
+              <td>{client.last_name}</td>
+              <td>{client.adress}</td>
+              <td>{client.phone_number}</td>
+              <td>{client.email}</td>
+              
+                     
+          
+                    <td className="text-right">
                       <UncontrolledDropdown>
                         <DropdownToggle
                           className="btn-icon-only text-light"
@@ -242,7 +268,10 @@ const Tables = () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                     </td>
-                    </tr>
+
+
+                  </tr>
+                  ))}
 
                 </tbody>
               </Table>
@@ -303,7 +332,7 @@ const Tables = () => {
         </Row>
       </Container>
     </>
-  );
-};
+    </div> );
+  };
 
 export default Tables;

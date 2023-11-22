@@ -1,15 +1,16 @@
 import React from 'react';
 import  { useState } from 'react';
-import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner } from 'reactstrap';
-
+import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from 'reactstrap';
+import { prefix_link } from "variables/globalesVar";
 function MyForm() {
   
     const [formData, setFormData] = useState({
       // Initial state of your form data
       first_name: '',
       last_name: '',
+      date_of_birth:'',
       gender: '',
-      ifu: '',
+      ifu_number: '',
       phone_number: '',
       
       address: '',
@@ -19,12 +20,14 @@ function MyForm() {
       // ...
     });
     const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({ message: '', color: '' });
+
     const handleSubmit = async (e) => {
       e.preventDefault();
   
       try {
         setLoading(true);
-        const response = await fetch('https://ae94-41-79-217-130.ngrok-free.app/api/v1/client', {
+        const response = await fetch( prefix_link+'/api/v1/clients', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -54,28 +57,73 @@ function MyForm() {
     };
   
 
-    const handleInputBlur = (e) => {
+    const handleInputBlur = async (e) => {
       // Effectuer d'autres traitements avec la valeur saisie lorsque l'utilisateur quitte l'input
-      // Récupérer la valeur saisie
-  const { name, value } = e.target;
+
+
+      e.preventDefault();
+      const { name, value } = e.target;
   
-  // Loguer la valeur dans la console
-  console.log(`${name}: ${value}`);
+      try {
+       
+        const response = await fetch( prefix_link+'/api/v1/client_by_phone/'+value, {
+          method: 'GET'
+         
+        });
+  
+        if (!response.ok) {
+          //throw new Error('Network response was not ok');
+        }
+  
+        const data = await response.json();
+        console.log('Response from Flask API:', data);
+
+
+//verifier si le numero n'existe pas
+        if (data== null) {
+// ne rien faire , laisser le user remplir et soumettre le formulaire normalement
+
+console.log(`${name}: ${value}`);
+        }
+
+//VERIFIER LE TYPE DU CLIENT
+if (data.customer_type === "physique") {
+// PRE-REMPLIRE LE FORMULAIRE SI LE CLIENT EST PHYSIQUE
+setAlert({ message: 'Ce client existe deja.', color: 'danger' });
+
+setFormData((prevData) => ({
+  ...prevData,
+  first_name: data.first_name,
+  last_name: data.last_name,
+  gender: data.gender,
+  ifu_number: data.ifu_number,
+  date_of_birth: data.date_of_birth,
+  address: data.address
+  
+}));
+}
+
+if (data.customer_type_id === "morale") { 
+  //RENVOYER UN MESSAGE SI LE CLIENT EST MORAL 
+  console.log('Le client est moral');
+  setAlert({ message: 'Le numero de telephone existe deja pour un client moral.Veuilez changer le numero.', color: 'danger' });
+
+ }
+
+      } catch (error) {
+        console.error('Error sending dataaaa to Flask API:', error.message);
+        console.log(`${name}: ${value}`);
+      }finally {
+        setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
+      }
+
+  
   
       // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
     };
    
 
     
-     
-
-
-
-
-
-
-
-
 
 
   return (
@@ -151,8 +199,8 @@ function MyForm() {
               NUMERO IFU
             </Label>
             <Input
-              value={FormData.ifu}
-              name="ifu"
+              value={FormData.ifu_number}
+              name="ifu_number"
               id="ifu"
               placeholder=""
               onChange={handleInputChange} 
@@ -222,8 +270,10 @@ function MyForm() {
       </Button>
       </FormGroup>
       </Row>
-      
+      {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
+
     </Form>
+
   );
 }
 

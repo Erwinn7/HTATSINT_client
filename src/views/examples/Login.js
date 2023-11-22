@@ -10,59 +10,152 @@ import {
   InputGroupText,
   InputGroup,
   Row,
-  Col,
+  Alert,
+  Spinner
+  
 } from "reactstrap";
+import { useState } from "react";
+import { useNavigate, navigate } from 'react-router-dom';
+import { prefix_link } from "variables/globalesVar";
+import { timers } from "jquery";
+
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const [alert, setAlert] = useState({ message: '', color: '' });
+  const [formData, setFormData] = useState({
+    // Initial state of your form data
+    email: '',
+    hashed_password: ''
+   
+  });
+  
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const [loading, setLoading] = useState(false);
+  
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+
+    try {
+      setLoading(true);
+      const response = await fetch( prefix_link+'/api/v1/connexion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.status===200) {
+        const data_logger = await response.json();
+        console.log('Response from Flask API:', data_logger);
+  
+          navigate('/admin/index');
+        
+
+
+      }else{
+        //throw new Error('Network response was not ooook');
+        const status = response.status;
+        const errorMessage = await response.text();
+
+        console.error('La requête a échoué avec le statut:', status);
+        setAlert({ message: 'La connexion a echouer.Verifier votre email et le mot de passe puis reesayer.', color: 'danger' });
+        setFormData((prevData) => ({
+          email: '',
+    hashed_password: ''
+        }));
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
+       // window.alert(`La connexion a echoue.Verifier votre email et/ou le mot de passe.Merci`);
+  
+      }
+
+  
+
+
+     
+        //setAlert({ message: 'Les mots de passe ne correspondent pas.', color: 'danger' })
+
+      
+    } catch (error) {
+      console.error('Error sending data to Flask API:', error.message);
+      setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
+      setFormData((prevData) => ({
+        email: '',
+  hashed_password: ''
+      }));
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+    }finally {
+      setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
+    }
+  };
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <>
-      <Col lg="5" md="7">
+     <Row className="py-7">
+     <div className="col-md-7 col-lg-6">
+     <Card className="border-1 border-white shadow rounded-6">
+         
+          <div className="m-1">
+           
+            <img src={
+                      require("assets/img/background/room.jpg")
+                       
+                    }
+       className="img-fluid" alt=""/>
+          </div>
+        </Card>
+     
+     </div>
+      <div className="col-md-7 col-lg-5 offset-lg-1">
         <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-3">
-              <small>Sign in with</small>
+          <CardHeader className="bg-transparent mt--1 pb-1">
+          <div className="text-center text-primary text-uppercase">
+            <h1>Connectez-vous</h1>
             </div>
-            <div className="btn-wrapper text-center">
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/github.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Github</span>
-              </Button>
-              <Button
-                className="btn-neutral btn-icon"
-                color="default"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                <span className="btn-inner--icon">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/icons/common/google.svg")
-                        .default
-                    }
-                  />
-                </span>
-                <span className="btn-inner--text">Google</span>
-              </Button>
-            </div>
+            
           </CardHeader>
-          <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
-              <small>Or sign in with credentials</small>
-            </div>
+          <CardBody className="px-lg-2 py-lg-5">
+           
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
@@ -72,9 +165,12 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Email"
+                  name="email"
+                  onChange={handleInputChange} 
+                    placeholder="votre email"
                     type="email"
                     autoComplete="new-email"
+                    value={FormData.email}
                   />
                 </InputGroup>
               </FormGroup>
@@ -86,54 +182,34 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Password"
+                  name="hashed_password"
+                  onChange={handleInputChange} 
+                    placeholder="Mot de passe"
                     type="password"
                     autoComplete="new-password"
+                    value={FormData.hashed_password}
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
-                >
-                  <span className="text-muted">Remember me</span>
-                </label>
-              </div>
+            
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
-                  Sign in
+                <Button className="mt-4" color="primary" type="submit"
+                 onClick={handleSubmit}
+                 disabled={loading}
+
+                >
+                {loading ? <Spinner size="sm" color="light" /> : 'CONNEXION'}
                 </Button>
               </div>
+
             </Form>
+            {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
+
           </CardBody>
         </Card>
-        <Row className="mt-3">
-          <Col xs="6">
-            <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
-            >
-              <small>Forgot password?</small>
-            </a>
-          </Col>
-          <Col className="text-right" xs="6">
-            <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
-            >
-              <small>Create new account</small>
-            </a>
-          </Col>
-        </Row>
-      </Col>
+       
+      </div>
+      </Row>
     </>
   );
 };

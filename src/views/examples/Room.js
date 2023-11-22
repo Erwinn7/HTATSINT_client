@@ -1,68 +1,127 @@
-import  {React,useState} from "react";
-
-// reactstrap components
-import {Container, Collapse, Button, Card, CardBody ,Table,Modal, ModalBody, ModalFooter, ModalHeader,
-  Badge,
-  CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Row
+import  {React,useState,useEffect} from "react";
+import {Container, Collapse, Button, Card, CardBody ,
+  // Table,
+  Modal, ModalBody, ModalFooter, ModalHeader,
+  // Badge,
+  // CardHeader,
+  // CardFooter,
+  // DropdownMenu,
+  // DropdownItem,
+  // UncontrolledDropdown,
+  // DropdownToggle,
+  // Pagination,
+  // PaginationItem,
+  // PaginationLink,
+  // Row,
+  // Col,
+  // Spinner,
+  Input
 } from "reactstrap";
 // import Axios from "axios";
 
 //  components
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import Header from "components/Headers/Header.js";
-import lesChambres from "variables/roomData.js";
+// import {lesChambres} from "variables/globalesVar";
+import "assets/css/roomDesign.css";
+import DataTable from "react-data-table-component";
+import { prefix_link } from "variables/globalesVar";
+import Axios from "axios";
 
 
 
 const Room = () => {
-  // const urlGetR = "https://ae94-41-79-217-130.ngrok-free.app";
+  const urlGetR = prefix_link + "/api/v1/rooms";
 
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  // const [room, setRoom] = useState([]);
-
+  const [room, setRoom] = useState({});
+  const [filterRoom, setfilterRoom] = useState({});
+  
+  const roomWithNum = room.data?.map((item, index) => {
+    return { ...item, Num: index + 1 };
+  });
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const cols = [
+    {
+      name : "N°",
+      selector : row  => row.Num,
+      sortable : true
+
+    },
+    {
+      name : "CHAMBRE",
+      selector : row  => row.room.room_label,
+      sortable : true
+    },
+    {
+      name : "PLACE",
+      selector : row  => row.room_category.place_number,
+      sortable : true
+    },
+    {
+      name : "TYPE",
+      selector : row  => row.room_category.room_category_label,
+      sortable : true
+    },
+    {
+      name : "PRIX (FCFA)",
+      selector : row  => row.room.room_amount,
+      sortable : true
+    },
+    {
+      name : "STATUT",
+      selector : row  => row.room.room_status,
+      sortable : true
+    }
+  ]
 
 
-  // useEffect ( () => {
-    
-  //   Axios.get(urlGetR)
-  //   .then( res => {
-  //     setRoom(res.data);
-  //     // console.log(res.data);
-  //   }).catch( err => {
-  //       console.log(err)           
-  //   });
+  useEffect ( () => {
 
-  // }, [urlGetR]);
+    Axios.get(urlGetR)
+    .then( res => {
+      setRoom(res.data);
+      console.log(res.data);
+    }).catch( err => {
+        console.log(err)
+    });
+
+  }, [urlGetR,modal]);
+
+const handleFilter = (e) => {
+  const newRoom = filterRoom.filter(row => row.nom.toLowerCase().includes(e.target.value.toLowerCase()));
+  setRoom(newRoom);
+}
 
 
+const handleRowClick = (row) => {
+  setSelectedRow(row);
+  setModalOpen(true);
+};
 
+const closeModal = () => {
+  setModalOpen(false);
+};
 
 
 
   return (
-    <>
+    <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
+
       {/* Page content */}
       <Container fluid className="pt-4">
 
-      {/* <React.StrictMode> */}
-        <Button color="primary" onClick={toggle} >
+        <Button className="bg-gradient-info mb-5" style={{color:"white"}}  onClick={toggle} >
           {!isOpen ? "Ajouter une chambre" : "Fermer" }
         </Button>
-        <Collapse isOpen={isOpen} className="pt-3" >
+        <Collapse isOpen={isOpen} className="pt-3 pb-5" >
           <Card>
             <CardBody>
               {/* formulaire d'ajout de chambre */}
@@ -70,13 +129,54 @@ const Room = () => {
             </CardBody>
           </Card>
         </Collapse>
-      {/* </React.StrictMode> */}
-        <p className="pt-4"></p>
-        
+
         {/* liste des chambres  */}
+        {/* table dynamique  */}
+          <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
+              <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} />
+          </div>
+          <div>
+          {
+            room && (
+              <DataTable
+              title="Liste des Chambres"
+              columns={cols}
+              data={roomWithNum}
+              keyField="Num"
+              onRowClicked={handleRowClick}
+              pagination >
+            </DataTable>  )
+          }
+
+
+          </div>
+
+        <Modal isOpen={modalOpen} toggle={closeModal}>
+          <ModalHeader toggle={closeModal}>{selectedRow?.room.room_label.toUpperCase() }</ModalHeader>
+          <ModalBody>
+            {selectedRow && (
+              <div>
+                <p>Type: {selectedRow.room_category.room_category_label}</p>
+                <p>Nombre de place: {selectedRow.room_category.place_number} personnes</p>
+                <p>Statut: {selectedRow.room.room_status}</p>
+                <p>Accessoires: {selectedRow.room_item.map((item) => <span>{item.room_item_label}({item.item_status}), </span> )}</p>
+                <p>Réservé par: client</p>
+                <p>Occupée par: occupant(s)</p>
+                <p>Date entréé: jj/mm/aaaa</p>
+                <p>Date Sortie: jj/mm/aaaa</p>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onClick={closeModal}>
+              Fermer
+            </Button>
+          </ModalFooter>
+        </Modal>
+
 
           {/* Table */}
-          <Row>
+        {/* <Row className="pb-5">
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
@@ -96,7 +196,7 @@ const Room = () => {
                 <tbody>
                 {
                   lesChambres.map( (laChambre, index) => (
-                    
+
                     <tr key={index}>
                     <th scope="row">
                       <span className="mb-0 text-sm">
@@ -120,16 +220,22 @@ const Room = () => {
                     </th>
                     <th>
                       <Badge color="" className="badge-dot mr-4">
-                        <i className={laChambre.statut === "DISPONIBLE" ? "bg-primary":"bg-danger" } />
+                        <i className={laChambre.statut === "DISPONIBLE" ? "bg-success":"bg-danger" } />
                         {laChambre.statut}
                       </Badge>
                       <Button color="primary" onClick={toggleModal} size="sm">
-                        DESCRIPTION
+                        INFO
                       </Button>
                       <Modal isOpen={modal} toggle={toggleModal}>
                         <ModalHeader toggle={toggleModal}>{laChambre.nom}</ModalHeader>
                         <ModalBody>
-                          Description de la chambre bientôt disponible...
+                        <Spinner size="sm">
+                            Loading...
+                        </Spinner>
+                        <span>
+                            {' '} Description de la chambre bientôt disponible...
+                        </span>
+
                         </ModalBody>
                         <ModalFooter>
                           <Button color="danger" onClick={toggleModal}>
@@ -139,7 +245,7 @@ const Room = () => {
                       </Modal>
 
                     </th>
-                    
+
                     <th className="text-right">
                       <UncontrolledDropdown>
                         <DropdownToggle
@@ -154,13 +260,25 @@ const Room = () => {
                         <DropdownMenu className="dropdown-menu-arrow" right>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"blue"}} 
+                            style ={{color:"green"}}
                           >
                             DISPONIBLE
                           </DropdownItem>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"red"}} 
+                            style ={{color:"blue"}}
+                          >
+                            RESERVEE
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={(e) => e.preventDefault()}
+                            style ={{color:"orange"}}
+                          >
+                            OCCUPEE
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={(e) => e.preventDefault()}
+                            style ={{color:"red"}}
                           >
                             INDISPONIBLE
                           </DropdownItem>
@@ -168,12 +286,12 @@ const Room = () => {
                       </UncontrolledDropdown>
                     </th>
                   </tr>
-                      
+
 
                     )
                   )
 
-                }             
+                }
                 </tbody>
               </Table>
               <CardFooter className="py-4">
@@ -230,9 +348,10 @@ const Room = () => {
               </CardFooter>
             </Card>
           </div>
-        </Row>
+        </Row> */}
+        <p className="pb-5" > </p>
       </Container>
-    </>
+    </div>
   );
 };
 
