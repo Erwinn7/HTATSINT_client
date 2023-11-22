@@ -1,4 +1,6 @@
+
 import  {React,useState,useEffect} from "react";
+
 import {Container, Collapse, Button, Card, CardBody ,
   // Table,
   Modal, ModalBody, ModalFooter, ModalHeader,
@@ -14,7 +16,6 @@ import {Container, Collapse, Button, Card, CardBody ,
   // PaginationLink,
   // Row,
   // Col,
-  // Spinner,
   Input
 } from "reactstrap";
 // import Axios from "axios";
@@ -37,6 +38,7 @@ const Room = () => {
   const [modal, setModal] = useState(false);
   const [room, setRoom] = useState({});
   const [filterRoom, setfilterRoom] = useState({});
+
   
   const roomWithNum = room.data?.map((item, index) => {
     return { ...item, Num: index + 1 };
@@ -81,16 +83,41 @@ const Room = () => {
     }
   ]
 
+  const customStyles = {
+    rows: {
+        style: {
+
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+
+        },
+    },
+};
+
 
   useEffect ( () => {
 
-    Axios.get(urlGetR)
-    .then( res => {
-      setRoom(res.data);
-      console.log(res.data);
-    }).catch( err => {
-        console.log(err)
-    });
+    const fetchData = async () => {
+      try {
+        const res = await Axios.get(urlGetR);
+        setRoom(res.data);
+        console.log(res.data);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+      }
+    };
+    
+    fetchData();
 
   }, [urlGetR,modal]);
 
@@ -144,6 +171,7 @@ const closeModal = () => {
               data={roomWithNum}
               keyField="Num"
               onRowClicked={handleRowClick}
+              customStyles={customStyles}
               pagination >
             </DataTable>  )
           }

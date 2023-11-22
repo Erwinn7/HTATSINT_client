@@ -69,24 +69,50 @@ import { prefix_link } from "variables/globalesVar";
       dateDepart: '',
     });
 
+    const customStyles = {
+      rows: {
+          style: {
+
+          },
+      },
+      headCells: {
+          style: {
+            color: "#8898aa",
+            backgroundColor: "#f6f9fc",
+            borderColor: "#e9ecef",
+            fontWeight: "bold",
+          },
+      },
+      cells: {
+          style: {
+
+          },
+      },
+  };
 
   
     useEffect(() => {
   
-      // Obtenir la date de demain au format 'YYYY-MM-DD'
+      // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
+      const today = new Date();
+      const todayFormatted = `${today.getFullYear()}-${formatNumber(today.getMonth() + 1)}-${formatNumber(today.getDate())}T${formatNumber(today.getHours())}:${formatNumber(today.getMinutes())}:${formatNumber(today.getSeconds())}`;
+
+      // Obtenir la date de demain au format 'YYYY-MM-DDTHH:mm:ss'
       const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowFormatted = tomorrow.toISOString().split('T')[0];
-  
+      tomorrow.setDate(today.getDate() + 1);
+      const tomorrowFormatted = `${tomorrow.getFullYear()}-${formatNumber(tomorrow.getMonth() + 1)}-${formatNumber(tomorrow.getDate())}T${formatNumber(tomorrow.getHours())}:${formatNumber(tomorrow.getMinutes())}:${formatNumber(tomorrow.getSeconds())}`;
+
       // Mettre à jour les dates dans l'état local
       setDatesRoom({
-        dateArrivee: today,
+        dateArrivee: todayFormatted,
         dateDepart: tomorrowFormatted,
       });
 
 
     }, [today]); 
   
+    const formatNumber = (number) => (number < 10 ? `0${number}` : number);
+
     const handleDateChange = (e) => {
       const { name, value } = e.target;
       setDatesRoom((prevDates) => ({
@@ -116,8 +142,8 @@ import { prefix_link } from "variables/globalesVar";
       console.log(datesRoom)
       try {
         const response = await axios.post(urlGetRoombyDate, {
-            startdate: datesRoom.dateArrivee,
-            enddate: datesRoom.dateDepart,
+            start_date: datesRoom.dateArrivee,
+            end_date: datesRoom.dateDepart,
         },config);
   
         setRoom(response.data);
@@ -149,7 +175,7 @@ import { prefix_link } from "variables/globalesVar";
                     id="dateArrivee"
                     name="dateArrivee"
                     placeholder="Arrivée"
-                    type="date"
+                    type="datetime-local"
                     value={datesRoom.dateArrivee}
                     onChange={handleDateChange}
                     min={today}
@@ -164,7 +190,7 @@ import { prefix_link } from "variables/globalesVar";
                     id="dateDepart"
                     name="dateDepart"
                     placeholder="Départ"
-                    type="date"
+                    type="datetime-local"
                     value={datesRoom.dateDepart}
                     onChange={handleDateChange}
                     min={today}
@@ -198,6 +224,7 @@ import { prefix_link } from "variables/globalesVar";
               data={roomWithNum}
               keyField="Num"
               onRowClicked={handleRowClick}
+              customStyles={customStyles}
               pagination > 
            </DataTable>)
           }

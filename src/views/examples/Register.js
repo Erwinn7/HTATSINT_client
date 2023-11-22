@@ -40,6 +40,27 @@ const Users = () => {
     },
   ];
   
+  const customStyles = {
+    rows: {
+        style: {
+
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+
+        },
+    },
+};
+
 
   
  
@@ -74,6 +95,7 @@ const Users = () => {
             columns={cols}
              data={client} 
              keyField="id" 
+             customStyles={customStyles}
              pagination
              >
               
