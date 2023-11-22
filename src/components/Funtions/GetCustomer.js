@@ -12,7 +12,8 @@ async function GetClient() {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        //throw new Error('Network response was not ok');
+        console.log('Response from Flask API:', /*data[0].customer*/);
       }
 
       const data = await response.json();
