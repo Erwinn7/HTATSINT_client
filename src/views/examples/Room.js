@@ -1,8 +1,10 @@
-import  {React,useState} from "react";
+
+import  {React,useState,useEffect} from "react";
+
 import {Container, Collapse, Button, Card, CardBody ,
   // Table,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  // Badge,
+  Badge,
   // CardHeader,
   // CardFooter,
   // DropdownMenu,
@@ -14,7 +16,6 @@ import {Container, Collapse, Button, Card, CardBody ,
   // PaginationLink,
   // Row,
   // Col,
-  // Spinner,
   Input
 } from "reactstrap";
 // import Axios from "axios";
@@ -22,22 +23,26 @@ import {Container, Collapse, Button, Card, CardBody ,
 //  components
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import Header from "components/Headers/Header.js";
-import {lesChambres} from "variables/globalesVar";
+// import {lesChambres} from "variables/globalesVar";
 import "assets/css/roomDesign.css";
 import DataTable from "react-data-table-component";
+import { prefix_link } from "variables/globalesVar";
+import Axios from "axios";
 
 
 
 const Room = () => {
-  // const urlGetR = "https://ae94-41-79-217-130.ngrok-free.app";
+  const urlGetR = prefix_link + "/api/v1/rooms";
 
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  const [room, setRoom] = useState(lesChambres);
-  const [filterRoom, setfilterRoom] = useState(lesChambres);
-  const roomWithNum = room.map((item, index) => {
+  const [room, setRoom] = useState([]);
+ 
+  const roomWithNum = room.data?.map((item, index) => {
     return { ...item, Num: index + 1 };
   });
+  const [filterRoom, setfilterRoom] = useState(roomWithNum);
+
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
@@ -47,59 +52,84 @@ const Room = () => {
   const cols = [
     {
       name : "N°",
-      selector : row  => row.id,
+      selector : row  => row.Num,
       sortable : true
 
-    },                                                        
+    },
     {
       name : "CHAMBRE",
-      selector : row  => row.nom,
+      selector : row  => row.room.room_label,
       sortable : true
     },
     {
       name : "PLACE",
-      selector : row  => row.nbPlace,
+      selector : row  => row.room_category.place_number,
       sortable : true
     },
     {
       name : "TYPE",
-      selector : row  => row.type,     
+      selector : row  => row.room_category.room_category_label,
       sortable : true
     },
     {
       name : "PRIX (FCFA)",
-      selector : row  => row.price,
+      selector : row  => row.room.room_amount,
       sortable : true
     },
     {
       name : "STATUT",
-      selector : row  => row.statut,
+      selector : row  => (
+        <Badge color="" className="badge-dot mr-4">
+          <i className="bg-success" />
+          {row.room.room_status}
+        </Badge>) ,
       sortable : true
     }
   ]
 
+  const customStyles = {
+    rows: {
+        style: {
+
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+
+        },
+    },
+};
 
 
+  useEffect ( () => {
 
-
-  // useEffect ( () => {
+    const fetchData = async () => {
+      try {
+        const res = await Axios.get(urlGetR);
+        setRoom(res.data);
+        console.log(res.data);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+      }
+    };
     
-  //   Axios.get(urlGetR)
-  //   .then( res => {
-  //     setRoom(res.data);
-  //     // console.log(res.data);
-  //   }).catch( err => {
-  //       console.log(err)           
-  //   });
+    fetchData();
 
-  // }, [urlGetR]);
+  }, [urlGetR,modal]);
 
 const handleFilter = (e) => {
-  const newRoom = filterRoom.filter(row => row.nom.toLowerCase().includes(e.target.value.toLowerCase()));
+  console.log("ce qui est tapé",e.target.value);
+  const newRoom = filterRoom.filter(row => row.room.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
+  console.log(newRoom);
   setRoom(newRoom);
-
-  
-  
 }
 
 
@@ -115,9 +145,9 @@ const closeModal = () => {
 
 
   return (
-    <div  className="backgroundImgChambre">
+      <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
-      
+
       {/* Page content */}
       <Container fluid className="pt-4">
 
@@ -132,37 +162,38 @@ const closeModal = () => {
             </CardBody>
           </Card>
         </Collapse>
-        
+
         {/* liste des chambres  */}
         {/* table dynamique  */}
           <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
-              <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} /> 
+              <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} />
           </div>
           <div>
           {
             room && (
-              <DataTable 
+              <DataTable
               title="Liste des Chambres"
               columns={cols}
               data={roomWithNum}
               keyField="Num"
               onRowClicked={handleRowClick}
-              pagination > 
+              customStyles={customStyles}
+              pagination >
             </DataTable>  )
           }
 
-         
+
           </div>
-        
+
         <Modal isOpen={modalOpen} toggle={closeModal}>
-          <ModalHeader toggle={closeModal}>{selectedRow?.nom.toUpperCase() }</ModalHeader>
+          <ModalHeader toggle={closeModal}>{selectedRow?.room.room_label.toUpperCase() }</ModalHeader>
           <ModalBody>
             {selectedRow && (
               <div>
-                <p>Type: {selectedRow.type}</p>
-                <p>Nombre de place: {selectedRow.nbPlace} personnes</p>
-                <p>Accessoires: {selectedRow.item}</p>
-                <p>Statut: {selectedRow.statut}</p>
+                <p>Type: {selectedRow.room_category.room_category_label}</p>
+                <p>Nombre de place: {selectedRow.room_category.place_number} personnes</p>
+                <p>Statut: {selectedRow.room.room_status}</p>
+                <p>Accessoires: {selectedRow.room_item.map((item) => <span>{item.room_item_label}({item.item_status}), </span> )}</p>
                 <p>Réservé par: client</p>
                 <p>Occupée par: occupant(s)</p>
                 <p>Date entréé: jj/mm/aaaa</p>
@@ -176,7 +207,7 @@ const closeModal = () => {
             </Button>
           </ModalFooter>
         </Modal>
-       
+
 
           {/* Table */}
         {/* <Row className="pb-5">
@@ -199,7 +230,7 @@ const closeModal = () => {
                 <tbody>
                 {
                   lesChambres.map( (laChambre, index) => (
-                    
+
                     <tr key={index}>
                     <th scope="row">
                       <span className="mb-0 text-sm">
@@ -238,7 +269,7 @@ const closeModal = () => {
                         <span>
                             {' '} Description de la chambre bientôt disponible...
                         </span>
-                          
+
                         </ModalBody>
                         <ModalFooter>
                           <Button color="danger" onClick={toggleModal}>
@@ -248,7 +279,7 @@ const closeModal = () => {
                       </Modal>
 
                     </th>
-                    
+
                     <th className="text-right">
                       <UncontrolledDropdown>
                         <DropdownToggle
@@ -263,25 +294,25 @@ const closeModal = () => {
                         <DropdownMenu className="dropdown-menu-arrow" right>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"green"}} 
+                            style ={{color:"green"}}
                           >
                             DISPONIBLE
                           </DropdownItem>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"blue"}} 
+                            style ={{color:"blue"}}
                           >
                             RESERVEE
                           </DropdownItem>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"orange"}} 
+                            style ={{color:"orange"}}
                           >
                             OCCUPEE
                           </DropdownItem>
                           <DropdownItem
                             onClick={(e) => e.preventDefault()}
-                            style ={{color:"red"}} 
+                            style ={{color:"red"}}
                           >
                             INDISPONIBLE
                           </DropdownItem>
@@ -289,12 +320,12 @@ const closeModal = () => {
                       </UncontrolledDropdown>
                     </th>
                   </tr>
-                      
+
 
                     )
                   )
 
-                }             
+                }
                 </tbody>
               </Table>
               <CardFooter className="py-4">

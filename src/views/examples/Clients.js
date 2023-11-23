@@ -80,7 +80,7 @@ const clientsMoral = client.filter(client => client.customer_type === 'moral');
               <CardHeader className="border-0">
                 <h3 className="mb-0">PERSONNE PHYSIQUE</h3>
               </CardHeader>
-              <Table  className="align-items-center table-dark table-flush" responsive>
+              <Table  className="align-items-center  table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">NOM</th>
@@ -193,18 +193,6 @@ const clientsMoral = client.filter(client => client.customer_type === 'moral');
             </Card>
           </div>
         </Row>
-
-
-
-
-
-
-
-
-
-
-
-
 
         {/* Dark table */}
         <Row className="mt-5">

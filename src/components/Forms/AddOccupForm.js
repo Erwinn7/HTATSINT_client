@@ -6,19 +6,18 @@ import DataTable from "react-data-table-component";
 
 
 
-const AddOccupForm = () => {
+const AddOccupForm = ({roomSelected,dateArrivee, dateDepart}) => {
 
 // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DD'
-const today = new Date().toISOString().split('T')[0];
+const thisDay = new Date().toISOString().split('T')[0];
 
 const [save, setSave] = useState(true)
 const [ctrlSoumission, setCtrlSoumission] = useState("")
-const [initoccupants, setInitOccupants] = useState([
-    {
-        room_id: "",
+const initOccupants = {
+        room_id: roomSelected,
         client_name : "",
-        startDate : "",
-        endDate : "",
+        startDate : dateArrivee,
+        endDate : dateDepart,
         firstname : "",
         lastname : "",
         Telephone : "",
@@ -28,10 +27,10 @@ const [initoccupants, setInitOccupants] = useState([
         pieceType : "",
         pieceNumber : "",
         motif : "",
-    }
-])
-const [unOccupant, setUnOccupant] = useState([...initoccupants])
-const [occupants, setOccupants] = useState([...initoccupants])
+      }
+
+const [unOccupant, setUnOccupant] = useState({...initOccupants})
+const [occupants, setOccupants] = useState([])
 
 
 
@@ -53,37 +52,20 @@ const config = {
 //                     room_item_label: ""
 //                     }
 //   const [dataR, setdataR] = useState({...initdataR})
-const [dates, setDates] = useState({
-    startDate: '',
-    endDate: '',
-  });
+
 
 useEffect(() => {
-
-    // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DD'
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Obtenir la date de demain au format 'YYYY-MM-DD'
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowFormatted = tomorrow.toISOString().split('T')[0];
-
-    // Mettre à jour les dates dans l'état local
-    setDates({
-      startDate: today,
-      endDate: tomorrowFormatted,
-    });
-    
+ console.log("r")
 
   }, []); 
 
+
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setDates((prevDates) => ({
-      ...prevDates,
-      [name]: value,
-    }));
-    //console.log(dates)
+    const newdata = {...unOccupant}
+    newdata[e.target.id] =  e.target.value;
+    setUnOccupant(newdata)
+    console.log(newdata)
   };
 
   const columns = [                                                      
@@ -105,24 +87,45 @@ useEffect(() => {
   ]
 
   const Submit = (e) => {
-    setSave(false)
     e.preventDefault();
 
     if (Ctrl_Soumission()) {
-      setOccupants([...occupants, {
-        unOccupant
-      }])
-        
+      console.log(occupants);
+
+      const newOccupant = [...occupants,unOccupant]
+      setOccupants(newOccupant)
+      console.log(newOccupant);
+      setUnOccupant({...initOccupants})
       setCtrlSoumission("");
     } else{
-        setSave(true)
-        return;
+      return;
     }
     
   }
 
+  const handleAllSubmit = (e) => {
+    setSave(false)
+    e.preventDefault();
+
+    if (occupants.length > 0) {
+      // envoie de l'objet occupants vers la base de donnée
+
+
+     setSave(true)
+    } else {
+      setCtrlSoumission("Veuiller Ajouter au moins un Occupant");
+      setSave(true)
+    }
+
+
+
+
+
+  };
+
+
   const Ctrl_Soumission = () =>  {
-    if ( !unOccupant.client_name || !unOccupant.startDate || !unOccupant.endDate || !unOccupant.firstname || !unOccupant.lastname || !unOccupant.Telephone || !unOccupant.Addresse || !unOccupant.birthday || !unOccupant.profession || !unOccupant.pieceType || !unOccupant.pieceNumber || !unOccupant.motif   ){
+    if ( !unOccupant.room_id || !unOccupant.client_name || !unOccupant.startDate || !unOccupant.endDate || !unOccupant.firstname || !unOccupant.lastname || !unOccupant.Telephone || !unOccupant.Addresse || !unOccupant.birthday || !unOccupant.profession || !unOccupant.pieceType || !unOccupant.pieceNumber || !unOccupant.motif   ){
         setCtrlSoumission("Veuiller remplir le tout les champs");
         return false;
     } else {
@@ -144,13 +147,13 @@ useEffect(() => {
                   <Input
                     id="client_name"
                     name="client_name"
-                    value={dates?.client_name}
-                    onChange={handleChange}
+                    value={unOccupant?.client_name}
+                    onChange={(e) => handleChange(e)} 
                     type="select"
                   >
                     <option value="" >Sélectionnez un Client</option>
-                    <option value="" >Client 1</option>
-                    <option value="" >Client 2</option>
+                    <option value="Client1" >Client 1</option>
+                    <option value="Client2" >Client 2</option>
 
                     {/* {                   
                       roomType.data?.map((room)  => (
@@ -166,34 +169,33 @@ useEffect(() => {
             <Row>
                 <Col sm={6}>
                     <FormGroup >
-                    <Label for="startDate" size="sm" >
+                    <Label for="startDate" bsSize="sm" >
                         Arrivée : 
                     </Label>
-                    <Input size="sm" 
+                    <Input bsSize="sm" 
                         id="startDate"
                         name="startDate"
-                        type="date"
-                        value={dates?.startDate}
-                        onChange={handleChange}
-                        min={today}
-                    />
+                        type="datetime-local"
+                        value={unOccupant?.startDate}
+                        onChange={(e) => handleChange(e)} 
+                        min={thisDay}
+                        disabled/>
                     </FormGroup>
                 </Col>
 
                 <Col sm={6}>
                 <FormGroup >
-                <Label for="endDate" size="sm" >
+                <Label for="endDate" bsSize="sm" >
                      Départ :
                 </Label>
-                <Input size="sm" 
+                <Input bsSize="sm" 
                     id="endDate"
                     name="endDate"
-                    type="date"
-                    value={dates?.endDate}
-                    onChange={handleChange}
-                    min={today}
-
-                />
+                    type="datetime-local"
+                    value={unOccupant?.endDate}
+                    onChange={(e) => handleChange(e)} 
+                    min={thisDay}
+                    disabled/>
                 </FormGroup>
                 </Col>
                 </Row>
@@ -202,113 +204,113 @@ useEffect(() => {
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="firstname" size="sm" >
+                        <Label for="lastname" bsSize="sm" >
                             Nom
                         </Label>
-                        <Input size="sm" 
-                            id="firstname"
-                            name="firstname"
+                        <Input bsSize="sm" 
+                            id="lastname"
+                            name="lastname"
                             placeholder="Nom "
                             type="text"
-                            value={dates?.lastname}
-                            onChange={handleChange}
-                        />
+                            value={unOccupant?.lastname}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="lastname" size="sm" >
+                        <Label for="firstname" bsSize="sm" >
                             Prénom
                         </Label>
-                        <Input size="sm" 
-                            id="lastname"
-                            name="lastname"
+                        <Input bsSize="sm" 
+                            id="firstname"
+                            name="firstname"
                             placeholder="Prénom"
                             type="text"
-                            value={dates?.firstname}
-                            onChange={handleChange}
-                        />
+                            value={unOccupant?.firstname}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                 </Row>  
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="Telephone" size="sm" >
+                        <Label for="Telephone" bsSize="sm" >
                             Tel : 
                         </Label>
-                        <Input size="sm" 
+                        <Input bsSize="sm" 
                             id="Telephone"
                             name="Telephone"
                             placeholder="+229 00 00 00 00"
                             type="text"
-                            value={dates?.Telephone}
-                            onChange={handleChange}
-                        />
+                            value={unOccupant?.Telephone}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="Addresse" size="sm" >
+                        <Label for="Addresse" bsSize="sm" >
                             Addresse
                         </Label>
-                        <Input size="sm" 
+                        <Input bsSize="sm" 
                             id="Addresse"
                             name="Addresse"
                             placeholder="Calavi"
                             type="text"
-                            value={dates?.Addresse}
-                            onChange={handleChange}
-                        />
+                            value={unOccupant?.Addresse}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                 </Row> 
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="birthday" size="sm" >
+                        <Label for="birthday" bsSize="sm" >
                             Date de naissance : 
                         </Label>
-                        <Input size="sm" 
+                        <Input bsSize="sm" 
                             id="birthday"
                             name="birthday"
                             placeholder="birthday"
                             type="date"
-                            value={dates?.birthday}
-                            onChange={handleChange}
-                        />
+                            value={unOccupant?.birthday}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="profession" size="sm" >
+                        <Label for="profession" bsSize="sm" >
                         Profession
                         </Label>
-                        <Input size="sm" 
+                        <Input bsSize="sm" 
                             id="profession"
                             name="profession"
                             placeholder="Banquier"
                             type="text"
-                            value={dates?.profession}
-                            onChange={handleChange}
-                        />
+                            value={unOccupant?.profession}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                 </Row> 
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="pieceType" size="sm" >
+                        <Label for="pieceType" bsSize="sm" >
                             Type de Piece : 
                         </Label>
-                        <Input size="sm" 
+                        <Input bsSize="sm" 
                             id="pieceType"
                             name="pieceType"
                             placeholder="Select un type"
                             type="select"
-                            value={dates?.pieceType}
-                            onChange={handleChange}
-                        >
+                            value={unOccupant?.pieceType}
+                            onChange={(e) => handleChange(e)} 
+                            >
                         <option value="" >Sélectionnez un Type</option>
                         <option value="CIP" >CIP</option>
                         <option value="ID_card" >Carte d'identite</option>
@@ -320,39 +322,39 @@ useEffect(() => {
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="pieceNum" size="sm" >
+                        <Label for="pieceNumber" bsSize="sm" >
                         N° de la piece :
                         </Label>
-                        <Input size="sm" 
-                            id="pieceNum"
-                            name="pieceNum"
+                        <Input bsSize="sm" 
+                            id="pieceNumber"
+                            name="pieceNumber"
                             placeholder="000000000"
-                            type="text"
-                            value={dates?.pieceNumber}
-                            onChange={handleChange}
-                        />
+                            type="number"
+                            value={unOccupant?.pieceNumber}
+                            onChange={(e) => handleChange(e)} 
+                            />
                         </FormGroup>
                     </Col>
                 </Row>
                 <Row>
                     <Col sm={12}>
                         <FormGroup >
-                        <Label for="motif" size="sm" >
+                        <Label for="motif" bsSize="sm" >
                             Motif : 
                         </Label>
-                        <Input size="sm" 
+                        <Input bsSize="sm" 
                             id="motif"
                             name="motif"
                             type="textarea"
-                            value={dates?.motif}
-                            onChange={handleChange}
-                        >
+                            value={unOccupant?.motif}
+                            onChange={(e) => handleChange(e)} 
+                            >
                         </Input>
                         </FormGroup>
                     </Col>
                 </Row>
-                    {/* { ctrlSoumission === "" ? <span></span> : <p  style={{ color: 'red' , fontSize: '12px'}}>{ctrlSoumission}</p> } */}
-                <Button color="success" size="sm">
+                    { (ctrlSoumission === "" && save === true) ? <span></span> : <p  style={{ color: 'red' , fontSize: '12px'}}>{ctrlSoumission}</p> }
+                <Button color="success" bsSize="sm">
                   Ajouter
                 </Button>
             </div>
@@ -371,21 +373,24 @@ useEffect(() => {
             </DataTable>)
 
         }
+        { (ctrlSoumission === "" && save === false) ? <span></span> : <p  style={{ color: 'red' , fontSize: '12px'}}>{ctrlSoumission}</p> }
 
-           { save ? 
-                <Button color="primary" >
-                    Enrégistrer
-                </Button>
-                :
-                <Button color="primary" disabled >
-                    <Spinner size="sm">
-                        Loading...
-                    </Spinner>
-                    <span>
-                        {' '} En cours
-                    </span>
-                </Button>
-            }
+        { 
+                  
+        save ? 
+            <Button color="primary" onClick={(e) => handleAllSubmit(e)} >
+                Enrégistrer
+            </Button>
+            :
+            <Button color="primary" disabled >
+                <Spinner bsSize="sm">
+                    Loading...
+                </Spinner>
+                <span>
+                    {' '} En cours
+                </span>
+            </Button>
+        }
         </Container>
       </>
     );

@@ -7,8 +7,6 @@ async function GetClient() {
       
       const response = await fetch( prefix_link+'/api/v1/clients', {
         method: 'GET'
-       
-        
       });
 
       if (!response.ok) {
