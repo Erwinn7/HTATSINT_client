@@ -148,6 +148,11 @@ setIsExistingPhysiqueClient(true);
 
       } catch (error) {
         console.error('Error sending dataaaa to Flask API:', error.message);
+        setAlert({ message: 'Erreur serveur.Contacter le service technique.', color: 'danger' });
+        document.getElementById('phone_number').value = '';
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 5000);
         console.log(`${name}: ${value}`);
         setFormData ({
     
