@@ -54,10 +54,10 @@ const config = {
 //   const [dataR, setdataR] = useState({...initdataR})
 
 
-// useEffect(() => {
+useEffect(() => {
+ console.log("r")
 
-
-//   }, []); 
+  }, []); 
 
 
 
@@ -175,11 +175,11 @@ const config = {
                     <Input bsSize="sm" 
                         id="startDate"
                         name="startDate"
-                        type="date"
+                        type="datetime-local"
                         value={unOccupant?.startDate}
                         onChange={(e) => handleChange(e)} 
                         min={thisDay}
-                    />
+                        disabled/>
                     </FormGroup>
                 </Col>
 
@@ -191,12 +191,11 @@ const config = {
                 <Input bsSize="sm" 
                     id="endDate"
                     name="endDate"
-                    type="date"
+                    type="datetime-local"
                     value={unOccupant?.endDate}
                     onChange={(e) => handleChange(e)} 
                     min={thisDay}
-
-                />
+                    disabled/>
                 </FormGroup>
                 </Col>
                 </Row>

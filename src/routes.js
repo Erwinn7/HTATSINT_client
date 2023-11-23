@@ -3,7 +3,7 @@ import Client from "views/examples/Clients.js";
 import Room from "views/examples/Room.js";
 import Register from "views/examples/Register.js";
 import Reglement from "views/examples/Reglement.js";
-import Tables from "views/examples/Tables.js";
+import Invoice from "views/examples/Invoice.js";
 import Icons from "views/examples/Icons.js";
 import Occupation from "views/examples/Occupation";
 import Login from "views/examples/Login";
@@ -39,10 +39,10 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/tables",
+    path: "/invoice",
     name: "FACTURE",
     icon: "fa fa-clipboard text-red",
-    component: <Tables />,
+    component: <Invoice />,
     layout: "/admin",
   },
   {

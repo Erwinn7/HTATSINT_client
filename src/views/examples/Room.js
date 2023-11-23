@@ -4,7 +4,7 @@ import  {React,useState,useEffect} from "react";
 import {Container, Collapse, Button, Card, CardBody ,
   // Table,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  // Badge,
+  Badge,
   // CardHeader,
   // CardFooter,
   // DropdownMenu,
@@ -36,13 +36,13 @@ const Room = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  const [room, setRoom] = useState({});
-  const [filterRoom, setfilterRoom] = useState({});
-
-  
+  const [room, setRoom] = useState([]);
+ 
   const roomWithNum = room.data?.map((item, index) => {
     return { ...item, Num: index + 1 };
   });
+  const [filterRoom, setfilterRoom] = useState(roomWithNum);
+
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
@@ -78,7 +78,11 @@ const Room = () => {
     },
     {
       name : "STATUT",
-      selector : row  => row.room.room_status,
+      selector : row  => (
+        <Badge color="" className="badge-dot mr-4">
+          <i className="bg-success" />
+          {row.room.room_status}
+        </Badge>) ,
       sortable : true
     }
   ]
@@ -122,7 +126,9 @@ const Room = () => {
   }, [urlGetR,modal]);
 
 const handleFilter = (e) => {
-  const newRoom = filterRoom.filter(row => row.nom.toLowerCase().includes(e.target.value.toLowerCase()));
+  console.log("ce qui est tapé",e.target.value);
+  const newRoom = filterRoom.filter(row => row.room.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
+  console.log(newRoom);
   setRoom(newRoom);
 }
 
@@ -139,7 +145,7 @@ const closeModal = () => {
 
 
   return (
-    <div  className="backgroundImgChambre">
+      <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
 
       {/* Page content */}

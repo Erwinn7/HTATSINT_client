@@ -4,10 +4,8 @@ import Header from "components/Headers/Header";
 import AddOccupForm from "components/Forms/AddOccupForm";
 import {Form, FormGroup,Label,Input,Col,Row, Container,Button,Spinner,Modal,ModalBody,ModalHeader,ModalFooter} from "reactstrap";
 import DataTable from "react-data-table-component";
-// import {lesChambres} from "variables/globalesVar";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
-
 
   
   const Occupation = () => {
@@ -119,7 +117,6 @@ import { prefix_link } from "variables/globalesVar";
         ...prevDates,
         [name]: value,
       }));
-      //console.log(dates)
     };
   
     const handleRowClick = (row) => {
@@ -193,7 +190,7 @@ import { prefix_link } from "variables/globalesVar";
                     type="datetime-local"
                     value={datesRoom.dateDepart}
                     onChange={handleDateChange}
-                    min={today}
+                    min={datesRoom.dateArrivee}
                   />
                 </Col>
                 <Col sm={2} style={{marginTop:"30px"}}>
@@ -217,7 +214,7 @@ import { prefix_link } from "variables/globalesVar";
         </Form>
           
           {
-            room && (
+            roomWithNum && (
             <DataTable 
               title="Chambres disponibles"
               columns={cols}
@@ -230,10 +227,10 @@ import { prefix_link } from "variables/globalesVar";
           }
 
           <Modal isOpen={modalOpen} toggle={closeModal}>
-            <ModalHeader toggle={closeModal}  >{selectedRow?.nom.toUpperCase()}</ModalHeader>
+            <ModalHeader toggle={closeModal}  >{selectedRow?.room.room_label.toUpperCase()}</ModalHeader>
             <ModalBody>
               {selectedRow && (
-                <AddOccupForm roomSelected = {selectedRow?.nom.toUpperCase()} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
+                <AddOccupForm roomSelected = {selectedRow?.room.room_label.toUpperCase()} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
               )}
 
             </ModalBody>
