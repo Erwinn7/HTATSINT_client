@@ -2,6 +2,7 @@ import React from 'react';
 import  { useState } from 'react';
 import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from 'reactstrap';
 import { prefix_link } from "variables/globalesVar";
+
 function MyForm() {
   const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
 
@@ -15,7 +16,7 @@ function MyForm() {
       phone_number: '',
       email:'',
       address: '',
-      customer_type_id:'c9d306d0-c3a7-4863-a5fe-59f728aa72e3'
+      customer_type_id:'fd26597d-6a0a-4497-81b2-1612e7fa07c4'
      
       // ...
     });
@@ -52,6 +53,8 @@ function MyForm() {
           document.getElementById('email').value = '';
           document.getElementById('date_of_birth').value = '';
           document.getElementById('address').value = '';
+// fermer la modal
+          
 
         }else{
           setAlert({ message:  `Erreur!Contacter le service technique` , color: 'danger' });
@@ -71,6 +74,15 @@ setTimeout(() => {
   setAlert({ message: '', color: '' });
 }, 5000);
         console.error('Error sending data to Flask API:', error.message);
+         // vider les champs du formulaire
+         document.getElementById('phone_number').value = '';
+         document.getElementById('first_name').value = '';
+         document.getElementById('last_name').value = '';
+         document.getElementById('gender').value = '';
+         document.getElementById('ifu').value = '';
+         document.getElementById('email').value = '';
+         document.getElementById('date_of_birth').value = '';
+         document.getElementById('address').value = '';
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
       }
@@ -148,6 +160,11 @@ setIsExistingPhysiqueClient(true);
 
       } catch (error) {
         console.error('Error sending dataaaa to Flask API:', error.message);
+        setAlert({ message: 'Erreur serveur.Contacter le service technique.', color: 'danger' });
+        document.getElementById('phone_number').value = '';
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 5000);
         console.log(`${name}: ${value}`);
         setFormData ({
     

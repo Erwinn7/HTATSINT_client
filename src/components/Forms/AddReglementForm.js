@@ -19,6 +19,12 @@ const PaymentModal = ({ isOpen, toggle }) => {
             <Label for="amount">Montant à payer</Label>
             <Input type="text" name="amount" id="amount" required />
           </FormGroup>
+          <FormGroup>
+            <Label for="amount">
+              Mode de paiement
+            </Label>
+            <Input type="text" name="type" id="type" required />
+          </FormGroup>
           {/* Ajoutez d'autres champs du formulaire selon vos besoins */}
           <Button type="submit" color="primary">Payer</Button>
         </Form>
