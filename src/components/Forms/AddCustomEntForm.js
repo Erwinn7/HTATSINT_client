@@ -5,7 +5,7 @@ import { prefix_link } from 'variables/globalesVar';
 
 function MyFormEnt() {
 
-  const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
+  const [isExistingMoralClient, setIsExistingMoralClient] = useState(false);
   const [alert, setAlert] = useState({ message: '', color: '' });
 
 
@@ -14,10 +14,10 @@ function MyFormEnt() {
     institute_name: '',
     ifu: '',
     email: '',
-    adress: '',
+    address: '',
+    phone_number:'',
     
-    
-    customer_type_id:'45e12cdf-a6ea-4760-8a0a-d7cc37461d7b'
+    customer_type_id:'111f9b06-0037-4147-b820-3f7361e4d111'
    
     // ...
   });
@@ -35,14 +35,42 @@ function MyFormEnt() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      if (response.status===200) {
+        const data = await response.json();
+        console.log('Response from Flask API:', data);
+        setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
+        //
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 5000);
+        // vider les champs du formulaire
+        document.getElementById('phone_number').value = '';
+        document.getElementById('institute_name').value = '';
+        document.getElementById('ifu').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('address').value = '';
+    
+      }else{
+        setAlert({ message:  `Erreur!Contacter le service technique` , color: 'danger' });
+        //
+        setLoading(false);
 
-      const data = await response.json();
-      console.log('Response from Flask API:', data);
+      }
+      
     } catch (error) {
       console.error('Error sending data to Flask API:', error.message);
+      setAlert({ message:  `Erreur Serveur` , color: 'danger' });
+      //
+      setTimeout(() => {
+        setAlert({ message: '', color: '' });
+      }, 5000);
+              console.error('Error sending data to Flask API:', error.message);
+               // vider les champs du formulaire
+               document.getElementById('phone_number').value = '';
+               document.getElementById('institute_name').value = '';
+               document.getElementById('ifu').value = '';
+               document.getElementById('email').value = '';
+               document.getElementById('address').value = '';
     }finally {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
     }
@@ -84,14 +112,11 @@ function MyFormEnt() {
         //Aucun client avec ce numero de telephone
         const data = await response.json();
         console.log(`Response from flask API: `, data);
-        document.getElementById('first_name').value = '';
-document.getElementById('last_name').value = '';
-document.getElementById('gender').value = '';
+        document.getElementById('institute_name').value = '';
 document.getElementById('ifu').value = '';
 document.getElementById('email').value = '';
-document.getElementById('date_of_birth').value = '';
 document.getElementById('address').value = '';
-setIsExistingPhysiqueClient(false);
+setIsExistingMoralClient(false);
       }
 
       if (response.status ===200) {
@@ -99,29 +124,30 @@ setIsExistingPhysiqueClient(false);
         const data = await response.json();
         console.log('Response from Flask API:', data);
         console.log(`${name}: ${value}`);
-if (data.type_customer.type_custormer=== "Physique") {
+if (data.type_customer.type_custormer=== "Morale") {
 // PRE-REMPLIRE LE FORMULAIRE
 
-document.getElementById('first_name').value = data.customer.first_name;
-document.getElementById('last_name').value = data.customer.last_name;
-//document.getElementById('gender').value = data.customer.gender;
+document.getElementById('institute_name').value = data.customer.institute_name;
+//document.getElementById('phone_number').value = data.customer.phone_number;
 document.getElementById('ifu').value = data.customer.ifu;
 document.getElementById('email').value = data.customer.email;
-//document.getElementById('date_of_birth').value = data.customer.date_of_birth;
 document.getElementById('address').value = data.customer.address;
 // ENVOI D'ALERTE
-setAlert({ message:  `le client ${data.customer.last_name} ${data.customer.first_name} existe deja avec ce numero de telephone` , color: 'danger' });
+setAlert({ message:  `le client ${data.customer.institute_name} existe deja avec ce numero de telephone` , color: 'danger' });
 //
 setTimeout(() => {
 setAlert({ message: '', color: '' });
 }, 10000);
 // desactiver le bouton enregistrer
 
-setIsExistingPhysiqueClient(true);
+setIsExistingMoralClient(true);
 
 } else{
-setIsExistingPhysiqueClient(true);
-setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral.', color: 'primary' });
+setIsExistingMoralClient(true);
+setAlert({ message: 'Ce numero est deja enregistrer pour un client de type physique.', color: 'primary' });
+setTimeout(() => {
+  setAlert({ message: '', color: '' });
+  }, 10000);
 
 }
 
@@ -130,22 +156,16 @@ setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral
     } catch (error) {
       console.error('Error sending dataaaa to Flask API:', error.message);
       setAlert({ message: 'Erreur serveur.Contacter le service technique.', color: 'danger' });
-      document.getElementById('phone_number').value = '';
+      document.getElementById('institute_name').value = '';
+document.getElementById('phone_number').value = '';
+document.getElementById('ifu').value = '';
+document.getElementById('email').value = '';
+document.getElementById('address').value = '';
       setTimeout(() => {
         setAlert({ message: '', color: '' });
       }, 5000);
       console.log(`${name}: ${value}`);
-      setFormData ({
-  
-        first_name: '',
-        last_name: '',
-       gender: '',
-        ifu: '',
-        email:'',
-        date_of_birth: '',
-        address: ''
-        
-      })
+     
     }finally {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
     }
@@ -157,6 +177,8 @@ setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral
 
   return (
     <Form>
+          {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
+
     <FormGroup>
         <Label for="phone_number">
           NUMERO DE TELEPHONE
@@ -177,15 +199,15 @@ setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral
       <Row>
         <Col md={6}>
           <FormGroup>
-            <Label for="first_name">
+            <Label for="institute_name">
               NOM DE L'INSTITUT
             </Label>
             <Input
               
               type='text'
-         value={FormData.first_name}
-          name="first_name"
-          id="first_name"
+         value={FormData.institute_name}
+          name="institute_name"
+          id="institute_name"
           placeholder=""
           onChange={handleInputChange} 
           
@@ -195,15 +217,15 @@ setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label for="numeroIfu">
+            <Label for="ifu">
               NUMERO IFU
             </Label>
             <Input
               
               type='numeric'
-         value={FormData.ifu_number}
-          name="ifu_number"
-          id="ifu_number"
+         value={FormData.ifu}
+          name="ifu"
+          id="ifu"
           placeholder=""
           onChange={handleInputChange} 
             />
@@ -229,14 +251,14 @@ setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral
       </FormGroup>
 
       <FormGroup>
-        <Label for="adresse">
+        <Label for="address">
           ADRESSE SIEGE
         </Label>
         <Input
         type='text'
-        value={FormData.adress}
-          name="adress"
-          id="adress"
+        value={FormData.address}
+          name="address"
+          id="address"
           placeholder=""
           onChange={handleInputChange} 
         
@@ -262,7 +284,7 @@ setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral
       <Button
        onClick={handleSubmit}
       type='submit'
-      disabled={loading || (isExistingPhysiqueClient )}>
+      disabled={loading || (isExistingMoralClient )}>
       {loading ? <Spinner size="sm" color="light"/> : 'ENREGISTRER'}
       </Button>
       </FormGroup>

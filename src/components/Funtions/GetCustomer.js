@@ -17,7 +17,7 @@ async function GetClient() {
       const data = await response.json();
 
       console.log('Response from Flask API:', data[0].customer);
-
+return data;
 
 } catch (error) {
   console.error('Une erreur s\'est produite : ', error);
