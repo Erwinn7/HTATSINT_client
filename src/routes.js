@@ -34,7 +34,7 @@ var routes = [
   {
     path: "/client",
     name: "CLIENT",
-    icon: "ni ni-single-02 text-yellow",
+    icon: "ni ni-circle-08 text-yellow",
     component: <Client />,
     layout: "/admin",
   },
@@ -54,7 +54,7 @@ var routes = [
   },
   {
     path: "/occupation",
-    name: "OCCUPATION",
+    name: "ATTRIBUER CHAMBRE",
     icon: "fa fa-bed  text-pink",
     component: <Occupation />,
     layout: "/admin",
@@ -63,7 +63,7 @@ var routes = [
   {
     path: "/register",
     name: "UTILISATEURS",
-    icon: "fa fa-credit-card text-info",
+    icon: "ni ni-single-02 text-success",
     component: <Register />,
     layout: "/admin",
   },

@@ -39,25 +39,14 @@ GetClient()
 const clientsPhysique = client.filter(client => client.customer_type === 'physique');
 const clientsMoral = client.filter(client => client.customer_type === 'moral');
 
-   
-
     // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
   
- 
-
-
-
-
   return (
     <div className="backgroundImgClient"> 
     <>
       <Header menuTitle= 'CLIENTS'/> 
          {/* Page content */}
 
-        
-
-    
-       
          
       <Container className="my-5" fluid>
       <div className="row">
