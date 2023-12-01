@@ -1,5 +1,5 @@
-import React from 'react';
-import  { useState } from 'react';
+
+import  { useState,React  } from 'react';
 import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from 'reactstrap';
 import { prefix_link } from "variables/globalesVar";
 
@@ -40,6 +40,10 @@ function MyForm() {
           const data = await response.json();
           console.log('Response from Flask API:', data);
           setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
+          //mettre une logique pour que la page soit rafraichie avec useEffect
+         
+
+
           //
           setTimeout(() => {
             setAlert({ message: '', color: '' });
@@ -196,7 +200,7 @@ setIsExistingPhysiqueClient(true);
 
     <FormGroup>
         <Label for="phone_number">
-         NUMERO DE TELEPHONE
+         NUMERO DE TELEPHONE**
         </Label>
         <Input
         type='numeric'

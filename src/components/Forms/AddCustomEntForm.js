@@ -35,7 +35,7 @@ function MyFormEnt() {
         body: JSON.stringify(formData),
       });
 
-      if (response.status===200) {
+      if (response.status===201) {
         const data = await response.json();
         console.log('Response from Flask API:', data);
         setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
@@ -53,6 +53,9 @@ function MyFormEnt() {
       }else{
         setAlert({ message:  `Erreur!Contacter le service technique` , color: 'danger' });
         //
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 5000);
         setLoading(false);
 
       }

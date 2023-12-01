@@ -9,6 +9,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 
+
 const Admin = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
@@ -52,7 +53,13 @@ const Admin = (props) => {
           innerLink: "/admin/index",
           imgSrc: require("../assets/img/brand/logo.png"),
           imgAlt: "...",
-        }}
+         
+          }}
+          // Add the following style to make the sidebar transparent
+          className="sidebar-transparent"
+               
+          
+        
       />
       <div className="main-content" ref={mainContent}>
         <AdminNavbar
@@ -63,7 +70,7 @@ const Admin = (props) => {
           {getRoutes(routes)}
           <Route path="*" element={<Navigate to="/admin/index" replace />} />
         </Routes>
-        <Container fluid>
+        <Container fluid> 
           <AdminFooter />
           
         </Container>

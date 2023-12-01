@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Input } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
@@ -6,10 +6,66 @@ import AjoutUser from 'components/Buttons/ButtonAddUser';
 //import GetClient from 'components/Funtions/GetCustomer';
 import { client } from 'variables/globalesVar';
 import 'assets/css/customerDesign.css';
+import { prefix_link } from 'variables/globalesVar';
+
 
 const Users = () => {
   const [user, setUser] = useState(client); 
   const [filterUser, setfilterUser] = useState(client);
+
+async function GetUsers  () {
+
+  try {
+    const response = await fetch(prefix_link + '/api/v1/users', {
+      method: 'GET'
+    });
+
+    if (!response.ok) {
+      console.log('Response from Flask API:', 'merde');
+    }
+
+    const data = await response.json();
+    if (data.data && data.data.length > 0) {
+      const usersData = data.data.map(item => {
+        const user = item;
+        console.log('Response from Flask API:', user);
+        return {
+          ...user
+        };
+      });
+    } else {
+      console.log('Response from Flask API:', 'no data');
+    }
+} catch (error) {
+  // emettre une alerte d'erreur
+  console.error('Une erreurrrrr s\'est produite : ', error);
+};
+};
+async function fecthUsers  () {
+
+  try {
+    const data = await GetUsers();
+    setUser(data);
+
+    
+  }
+
+  catch (error) {
+    // emettre une alerte d'erreur
+    console.error('Une erreurrrrr s\'est produite : ', error);
+  };  
+};
+useEffect(() => {
+  //GetUsers();
+  fecthUsers();
+})
+
+
+
+
+
+
+
 
   const cols = [
     
