@@ -26,8 +26,7 @@ import { prefix_link } from "variables/globalesVar";
       return { ...item, Num: index + 1 };
     });
 
-      // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DD'
-     const today = new Date().toISOString().split('T')[0];
+    const  [thisDay, setThisDay] =  useState(new Date());
 
     const cols = [
       {
@@ -95,7 +94,7 @@ import { prefix_link } from "variables/globalesVar";
       // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
       const today = new Date();
       const todayFormatted = `${today.getFullYear()}-${formatNumber(today.getMonth() + 1)}-${formatNumber(today.getDate())}T${formatNumber(today.getHours())}:${formatNumber(today.getMinutes())}:${formatNumber(today.getSeconds())}`;
-
+      setThisDay(todayFormatted) 
       // Obtenir la date de demain au format 'YYYY-MM-DDTHH:mm:ss'
       const tomorrow = new Date();
       tomorrow.setDate(today.getDate() + 1);
@@ -108,7 +107,7 @@ import { prefix_link } from "variables/globalesVar";
       });
 
 
-    }, [today]); 
+    }, [thisDay]); 
   
     const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -179,7 +178,7 @@ import { prefix_link } from "variables/globalesVar";
                     type="datetime-local"
                     value={datesRoom.dateArrivee}
                     onChange={handleDateChange}
-                    min={today}
+                    min={thisDay}
 
                   />
                 </Col>
@@ -230,7 +229,7 @@ import { prefix_link } from "variables/globalesVar";
            </DataTable>)
           }
 
-          <Modal isOpen={modalOpen} toggle={closeModal}>
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg">
             <ModalHeader toggle={closeModal}  >{selectedRow?.room.room_label.toUpperCase()}</ModalHeader>
             <ModalBody>
               {selectedRow && (
@@ -239,7 +238,7 @@ import { prefix_link } from "variables/globalesVar";
 
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" onClick={closeModal}>
+              <Button color="danger" onClick={ (e)  => {closeModal();Submit(e); }}> 
                 Fermer
               </Button>
             </ModalFooter>

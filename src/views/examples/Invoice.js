@@ -7,6 +7,9 @@ import Header from "components/Headers/Header.js";
 import DataTable from "react-data-table-component";
 import Axios from "axios";
 import { prefix_link } from "variables/globalesVar";
+import PrintInvoice from "components/Printer/PrintInvoice";
+import { PDFViewer } from '@react-pdf/renderer';
+
 
 const Invoice = () => {
 
@@ -75,21 +78,21 @@ const Invoice = () => {
 };
 
 
-useEffect ( () => {
+// useEffect ( () => {
 
-  const fetchData = async () => {
-    try {
-      const res = await Axios.get(urlGetInvoice);
-      setInvoice(res.data);
-      console.log(res.data);
-    } catch (error) {
-      console.error('Erreur lors de la requête GET', error);
-    }
-  };
+//   const fetchData = async () => {
+//     try {
+//       const res = await Axios.get(urlGetInvoice);
+//       setInvoice(res.data);
+//       console.log(res.data);
+//     } catch (error) {
+//       console.error('Erreur lors de la requête GET', error);
+//     }
+//   };
   
-  fetchData();
+//   fetchData();
 
-}, [urlGetInvoice]);
+// }, [urlGetInvoice]);
 
 const handleFilter = (e) => {
   const newInvoice = filterInvoice.filter(row => row.room.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
@@ -101,6 +104,15 @@ const handleFilter = (e) => {
 //   setSelectedRow(row);
 // };
 
+const sampleInvoice = {
+  date_facture: '2023-12-01',
+  numero_facture: 'INV12345',
+  client: 'Nom du client\nAdresse du client',
+  designation: 'Chambre',
+  nombre_de_jour: 5,
+  prix_journalier: 25000,
+  prix_total: 5 * 25000,
+};
 
 
 
@@ -110,7 +122,16 @@ const handleFilter = (e) => {
       < Header menuTitle= 'FACTURE' />
       {/* Page content */}
       <Container fluid className="pt-4 pb-5">
-        <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
+
+        
+      <PDFViewer width="100%" height="800px">
+      <Invoice myInvoice={sampleInvoice} />
+    </PDFViewer>
+
+
+
+
+        {/* <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
             <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} />
         </div>
         <div>
@@ -126,7 +147,7 @@ const handleFilter = (e) => {
               pagination >
             </DataTable>  )
           }
-        </div>
+        </div> */}
 
       </Container>
     </div>

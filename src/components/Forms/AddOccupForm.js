@@ -18,6 +18,7 @@ const [customers, setCustomers] = useState([])
 const [ctrlSoumission, setCtrlSoumission] = useState("")
 const initOccupants = {
         room_id: room_id_occupation,
+        current_invoice_id: "",
         customer_id : "",
         start_date : dateArrivee,
         end_date : dateDepart,
@@ -107,17 +108,27 @@ useEffect(() => {
     setSave(false)
     e.preventDefault();
 
+    var invoice_id_from_DTB= ""
+
     if (occupants.length > 0) {
       // envoie de l'objet occupants vers la base de donnée
       occupants.forEach((itemToSend) => {
 
-        console.log(itemToSend)
 
         const sendOccupant = async () => {
           try {
+
+            if (invoice_id_from_DTB !== "") {
+              itemToSend.current_invoice_id = invoice_id_from_DTB
+            }
+
+            console.log(itemToSend)
+            
             const response = await  axios.post(urlPostOccupant,itemToSend,config);
-            console.log(response.data) ;
-            setSave(true);        
+            console.log(response.data);
+            
+            setSave(true); 
+
           } catch (error) {
             console.error('Erreur lors de la requête POST', error);
             setSave(true);
@@ -134,7 +145,7 @@ useEffect(() => {
       setCtrlSoumission("Veuiller ajouter au moins un Occupant");
       setSave(true)
     }
-
+    invoice_id_from_DTB= ""
 
 
 
