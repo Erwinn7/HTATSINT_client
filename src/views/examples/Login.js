@@ -75,7 +75,7 @@ const Login = () => {
         setAlert({ message: 'La connexion a echouer.Verifier votre email et le mot de passe puis reesayer.', color: 'danger' });
         setFormData((prevData) => ({
           email: '',
-    hashed_password: ''
+          hashed_password: ''
         }));
         setTimeout(() => {
           window.location.reload();

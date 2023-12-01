@@ -138,6 +138,7 @@ const cols = [
       padding: '10px',
       borderRadius: '5px',
 
+
     },
   },
   {
@@ -343,10 +344,6 @@ const cols2 = [
       <Header menuTitle= 'CLIENTS'/> 
          {/* Page content */}
 
-        
-
-    
-       
          
       <Container className="my-5" fluid>
       <div className="row">

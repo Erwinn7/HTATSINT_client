@@ -2,20 +2,9 @@
 import  {React,useState,useEffect} from "react";
 
 import {Container, Collapse, Button, Card, CardBody ,
-  // Table,
   Modal, ModalBody, ModalFooter, ModalHeader,
   Badge,
-  // CardHeader,
-  // CardFooter,
-  // DropdownMenu,
-  // DropdownItem,
-  // UncontrolledDropdown,
-  // DropdownToggle,
-  // Pagination,
-  // PaginationItem,
-  // PaginationLink,
-  // Row,
-  // Col,
+  Alert,
   Input
 } from "reactstrap";
 // import Axios from "axios";
@@ -41,7 +30,10 @@ const Room = () => {
   const roomWithNum = room.data?.map((item, index) => {
     return { ...item, Num: index + 1 };
   });
-  const [filterRoom, setfilterRoom] = useState(roomWithNum);
+  const [filterRoom, setfilterRoom] = useState({});
+  const [hoveredRow, setHoveredRow] = useState(null);
+  const [alert, setAlert] = useState({ message: '', color: '' });
+
 
 
   const toggle = () => setIsOpen(!isOpen);
@@ -115,9 +107,11 @@ const Room = () => {
       try {
         const res = await Axios.get(urlGetR);
         setRoom(res.data);
+        setAlert({ message: "", color: '' });
         console.log(res.data);
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
       }
     };
     
@@ -126,9 +120,11 @@ const Room = () => {
   }, [urlGetR,modal]);
 
 const handleFilter = (e) => {
+  setfilterRoom(roomWithNum)
   console.log("ce qui est tapé",e.target.value);
-  const newRoom = filterRoom.filter(row => row.room.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
-  console.log(newRoom);
+  console.log("filterRoom",filterRoom);
+  const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
+  console.log("newRoom",newRoom);
   setRoom(newRoom);
 }
 
@@ -142,11 +138,29 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
+// gestion de coloration au passage de la souris sur la ligne
+  const handleMouseEnter = (row) => {
+    setHoveredRow(row);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredRow(null);
+  };
+  // Fonction pour appliquer le style différent à la ligne lorsque la souris passe dessus
+  const conditionalRowStyles = [
+    {
+      when: (row) => row === hoveredRow, // Appliquer le style lorsque la ligne est égale à la ligne survolée
+      style: {
+        backgroundColor: "#f2f2f2", // Changer la couleur de fond de la ligne
+      },
+    },
+  ];
 
 
   return (
       <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
+      {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
 
       {/* Page content */}
       <Container fluid className="pt-4">
@@ -178,6 +192,10 @@ const closeModal = () => {
               keyField="Num"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
+              onRowMouseEnter={handleMouseEnter}
+              onRowMouseLeave={handleMouseLeave}
+              conditionalRowStyles={conditionalRowStyles}
+              highlightOnHover
               pagination >
             </DataTable>  )
           }

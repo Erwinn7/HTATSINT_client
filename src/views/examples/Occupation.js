@@ -2,7 +2,7 @@ import {React, useState, useEffect} from "react";
 import "assets/css/roomDesign.css";
 import Header from "components/Headers/Header";
 import AddOccupForm from "components/Forms/AddOccupForm";
-import {Form, FormGroup,Label,Input,Col,Row, Container,Button,Spinner,Modal,ModalBody,ModalHeader,ModalFooter} from "reactstrap";
+import {Form,Alert, FormGroup,Label,Input,Col,Row, Container,Button,Spinner,Modal,ModalBody,ModalHeader,ModalFooter} from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
@@ -14,6 +14,7 @@ import { prefix_link } from "variables/globalesVar";
     const [save, setSave] = useState(true)
     const [selectedRow, setSelectedRow] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [alert, setAlert] = useState({ message: '', color: '' });
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -25,8 +26,7 @@ import { prefix_link } from "variables/globalesVar";
       return { ...item, Num: index + 1 };
     });
 
-      // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DD'
-     const today = new Date().toISOString().split('T')[0];
+    const  [thisDay, setThisDay] =  useState(new Date());
 
     const cols = [
       {
@@ -94,7 +94,7 @@ import { prefix_link } from "variables/globalesVar";
       // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
       const today = new Date();
       const todayFormatted = `${today.getFullYear()}-${formatNumber(today.getMonth() + 1)}-${formatNumber(today.getDate())}T${formatNumber(today.getHours())}:${formatNumber(today.getMinutes())}:${formatNumber(today.getSeconds())}`;
-
+      setThisDay(todayFormatted) 
       // Obtenir la date de demain au format 'YYYY-MM-DDTHH:mm:ss'
       const tomorrow = new Date();
       tomorrow.setDate(today.getDate() + 1);
@@ -107,7 +107,7 @@ import { prefix_link } from "variables/globalesVar";
       });
 
 
-    }, [today]); 
+    }, [thisDay]); 
   
     const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -145,9 +145,11 @@ import { prefix_link } from "variables/globalesVar";
   
         setRoom(response.data);
         console.log(response.data) ;
+        setAlert({ message: "", color: '' });
         setSave(true);        
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
         setSave(true);
       }
     };
@@ -160,6 +162,7 @@ import { prefix_link } from "variables/globalesVar";
     return (
       <div  className="backgroundImgChambre">
         <Header menuTitle = "OCCUPATIONS" />
+        {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
         <Container className="pb-5" fluid>
         <Form  onSubmit={(e)=> Submit(e)} > 
         <FormGroup className="p-3 centered-container-occup">
@@ -175,7 +178,7 @@ import { prefix_link } from "variables/globalesVar";
                     type="datetime-local"
                     value={datesRoom.dateArrivee}
                     onChange={handleDateChange}
-                    min={today}
+                    min={thisDay}
 
                   />
                 </Col>
@@ -226,16 +229,16 @@ import { prefix_link } from "variables/globalesVar";
            </DataTable>)
           }
 
-          <Modal isOpen={modalOpen} toggle={closeModal}>
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg">
             <ModalHeader toggle={closeModal}  >{selectedRow?.room.room_label.toUpperCase()}</ModalHeader>
             <ModalBody>
               {selectedRow && (
-                <AddOccupForm roomSelected = {selectedRow?.room.room_label.toUpperCase()} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
+                <AddOccupForm room_id_occupation = {selectedRow?.room.id} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
               )}
 
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" onClick={closeModal}>
+              <Button color="danger" onClick={ (e)  => {closeModal();Submit(e); }}> 
                 Fermer
               </Button>
             </ModalFooter>
