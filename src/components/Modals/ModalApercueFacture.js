@@ -7,6 +7,7 @@ const ModalApercueFacture = ({ ouvert, toggle }) => {
       <ModalHeader toggle={toggle}>Aperçu de la facture</ModalHeader>
       <ModalBody>
         {/* Contenu de l'aperçu de la facture */}
+        <p>Facture payer avec succes</p>
       </ModalBody>
     </Modal>
   );

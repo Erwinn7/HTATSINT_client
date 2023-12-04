@@ -30,7 +30,8 @@ const Tables = () => {
   const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
   const [clientsMoral, setClientsMoral] = useState([]);
-  
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
 //const client = GetClient();
 const handleButtonDelete = (id) => {
   

@@ -5,6 +5,7 @@ import { prefix_link } from "variables/globalesVar";
 
 function MyForm() {
   const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
     const [formData, setFormData] = useState({
       // Initial state of your form data
@@ -41,7 +42,7 @@ function MyForm() {
           console.log('Response from Flask API:', data);
           setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
           //mettre une logique pour que la page soit rafraichie avec useEffect
-         
+         setPaymentSuccess(true);
 
 
           //

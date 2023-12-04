@@ -1,4 +1,4 @@
-import  { React, useState, useEffect } from 'react';
+import  { React, useState, useEffect, useCallback } from 'react';
 import { Container, Input, Button } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
@@ -17,8 +17,14 @@ const Apayer =  () => {
  const [modalPhysiqueOuvert, setModalPhysiqueOuvert] = useState(false);
  // client selectionne
  const [clientSelectionne, setClientSelectionne] = useState(null);
-
+const [paymentSuccess, setPaymentSuccess] = useState(false);
  const [clients, setClients] = useState([]); // Ajoutez l'état pour stocker la liste des clients
+
+ const handlePaymentSuccess = () => {
+  // Cette fonction sera appelée lorsque le paiement est réussi
+  // Elle mettra à jour l'état pour déclencher l'effet useEffect
+  setPaymentSuccess(true);
+};
 
   async function GetClientsInvoice  ()  {
     try {
@@ -60,7 +66,7 @@ const Apayer =  () => {
   };
   
 
-  const fetchData = async () => {
+  const fetchData =  async () => {
     try {
       const res = await GetClientsInvoice();
       setClients(res);
@@ -68,10 +74,14 @@ const Apayer =  () => {
     } catch (error) {
       console.error('Erreur lors de la requête GET', error);
     }
-  }
+  };
   useEffect(() => {
-    fetchData();
-  }, []);
+   fetchData();
+    if (paymentSuccess) {
+      
+      setPaymentSuccess(false);
+    }
+  }, [] ); 
 
 
 // recuperer la listes des client depuis la reponse de l'api
@@ -193,7 +203,7 @@ const Apayer =  () => {
   ];
   const handleButtonClick = async (row) => {
    
-    console.log('Données de la ligne cliqué :', row);
+   // console.log('Données de la ligne cliqué :', row);
 
    
     if (row.institute_name !== null) {
@@ -208,7 +218,7 @@ const Apayer =  () => {
       setClientSelectionne(row);
     }
    
-    console.log('Données de la ligne cliqué :', row);
+    //console.log('Données de la ligne cliqué :', row);
 
     // Ouvrez le modal
     
@@ -267,12 +277,14 @@ const Apayer =  () => {
         toggle={() => setModalMoralOuvert(!modalMoralOuvert)}
         factures={facturesClientSelectionne}
         client={clientSelectionne}
+        onPaymentSuccess={handlePaymentSuccess}
       />
             <ModalPhysiqueFactures
         ouvert={modalPhysiqueOuvert}
         toggle={() => setModalPhysiqueOuvert(!modalPhysiqueOuvert)}
         factures={facturesClientSelectionne}
         client={clientSelectionne}
+        onPaymentSuccess={handlePaymentSuccess}
       />
           </div>
         </div>
