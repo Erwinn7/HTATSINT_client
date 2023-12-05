@@ -12,6 +12,7 @@ import { prefix_link } from 'variables/globalesVar';
 const Users = () => {
   const [user, setUser] = useState(client); 
   const [filterUser, setfilterUser] = useState(client);
+  const [users, setUsers] = useState([]);
 
 async function GetUsers  () {
 
@@ -25,27 +26,35 @@ async function GetUsers  () {
     }
 
     const data = await response.json();
-    if (data.data && data.data.length > 0) {
-      const usersData = data.data.map(item => {
-        const user = item;
-        console.log('Response from Flask API:', user);
-        return {
-          ...user
-        };
-      });
+    console.log('Response from Flask API:', data);
+    if (data && data.data.length > 0) {
+      const usersData = data.data.map(item => ({
+        id: item.employee.id,
+        first_name: item.employee.first_name,
+        last_name: item.employee.last_name,
+        role: item.role[0].role_name, // 
+        email: item.user.email,
+        last_connexion: item.employee.updated_at, // Adjust this based on your data structure
+      }));
+      
+      
+      console.log('Response from Flask API:', usersData);
+      //setUsers(usersData);
+     return usersData;
     } else {
-      console.log('Response from Flask API:', 'no data');
+      console.log('Response from Flask API:', 'no dataaaa');
     }
 } catch (error) {
   // emettre une alerte d'erreur
-  console.error('Une erreurrrrr s\'est produite : ', error);
+  console.error('Une erreurrrrraaa s\'est produite : ', error);
 };
 };
+
 async function fecthUsers  () {
 
   try {
     const data = await GetUsers();
-    setUser(data);
+    setUsers(data);
 
     
   }
@@ -55,10 +64,11 @@ async function fecthUsers  () {
     console.error('Une erreurrrrr s\'est produite : ', error);
   };  
 };
+
 useEffect(() => {
-  //GetUsers();
+ 
   fecthUsers();
-})
+}, [])
 
 
 
@@ -71,27 +81,27 @@ useEffect(() => {
     
     {
       name: 'NOM',
-      selector: (row) => row.first_name,
+      selector: (users) => users.first_name,
       sortable: true,
     },
     {
       name: 'PRENOM',
-      selector: (row) => row.last_name,
+      selector: (users) => users.last_name,
       sortable: true,
     },
     {
       name: 'TYPE',
-      selector: (row) => row.type,
+      selector: (users) => users.role,
       sortable: true,
     },
     {
       name: 'EMAIL ',
-      selector: (row) => row.email,
+      selector: (users) => users.email,
       sortable: true,
     },
     {
       name: 'DERNIERE CONNEXION',
-      selector: (row) => row.last_connexion,
+      selector: (users) => users.last_connexion,
       sortable: true,
     },
   ];
@@ -149,7 +159,7 @@ useEffect(() => {
             className="" 
             title="Liste des utilisateurs" 
             columns={cols}
-             data={client} 
+             data={users} 
              keyField="id" 
              customStyles={customStyles}
              pagination
