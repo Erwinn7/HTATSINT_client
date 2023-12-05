@@ -6,7 +6,7 @@ const CreateUserForm = () => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    name:'',
+    role_name:'',
     hashed_password: '',
     email: '',
   });
@@ -15,12 +15,28 @@ const CreateUserForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const selectedValue = e.target.type === 'select-multiple'? Array.from(e.target.selectedOptions).map(option => option.value)
+    : value;
+    setFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [name]: selectedValue };
+      console.log(updatedFormData);
+      return updatedFormData;
+    });
+    console.log('hand',formData);
   };
   const [loading, setLoading] = useState(false);
 
- 
-    
+ /* const handleChangeS = (e) => {
+    const { name, value } = e.target;
+  
+    // Si c'est un champ de sélection, utilisez la propriété "selectedOptions" pour obtenir la valeur sélectionnée
+    const selectedValue = e.target.type === 'select-multiple'
+      ? Array.from(e.target.selectedOptions).map(option => option.value)
+      : value;
+  
+    setFormData({ ...formData, [name]: selectedValue });
+  };
+    */
   
 
     // Appel à votre API pour enregistrer l'utilisateur (remplacez cela par votre propre logique)
@@ -33,6 +49,13 @@ const CreateUserForm = () => {
   
       try {
         setLoading(true);
+        console.log('iytkyyhnjnk:',formData);
+        // modifier le formData pour enlever le mot de passe confirme
+setFormData({
+  ...formData,
+  confirmPassword: '',
+})
+console.log('modifi:',formData);
         const response = await fetch( prefix_link+'/api/v1/user', {
           method: 'POST',
           headers: {
@@ -44,46 +67,30 @@ const CreateUserForm = () => {
         if (response.status === 201) {
           const users_data = await response.json();
           setAlert({ message: 'Utilisateur créé avec succès.', color: 'success' });
-          setFormData({
-            first_name: '',
-    last_name: '',
-    name:'',
-    hashed_password: '',
-    email: '',
-          });
+          setTimeout(() => {
+            setAlert({ message: '', color: '' });
+          }, 10000);
+         
           console.log('Response from Flask API:', users_data);
          //throw new Error('Network response was not ok');
         } else{
-          setFormData({
-            first_name: '',
-    last_name: '',
-    name:'',
-    hashed_password: '',
-    email: '',
-          });
+          setAlert({ message: 'Cet utilisateur existe deja . ', color: 'danger' });
+          setTimeout(() => {
+            setAlert({ message: '', color: '' });
+          }, 10000);
+          const status = response.status;
+          console.error('La requête a échoué avec le statut:', response,status);
+         // console.error('Error sending data to Flask API:', response.message);
         }
-        setAlert({ message: 'Cet utilisateur existe deja . ', color: 'danger' });
-        //setTimeout(() => {
-         // window.location.reload();
-      //  }, 10000);
-        const status = response.status;
-        console.error('La requête a échoué avec le statut:', response);
-       // console.error('Error sending data to Flask API:', response.message);
+       
        
       }catch (error) {
-        setFormData({
-          first_name: '',
-  last_name: '',
-  name:'',
-  hashed_password: '',
-  email: '',
-        });
+        
         setAlert({ message: 'Defaut de connexion au serveur.Contacter service technique ', color: 'danger' });
-       // setTimeout(() => {
-        //  window.location.reload();
-       // }, 10000);
-     //  const status = response.status;
-       //console.error('La requête a échoué avec le statut:', status);
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 10000);
+      
         console.error('Error sending data to Flask API:', error.message);
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
@@ -158,6 +165,7 @@ return (
               value={formData.hashed_password}
               onChange={handleChange}
               required
+              autoComplete="new-password"
             />
           </>
         </FormGroup>
@@ -178,19 +186,20 @@ return (
           </>
         </FormGroup>
         <FormGroup >
-          <Label for="username" >
-            Profil
+          <Label for="namee" >
+            PROFIL
           </Label> <br></br>
           <>
           <Input
-    value={FormData.name}
-      id="type"
-      name="type"
+    value={formData.role_name}
+      id="role_name"
+      name="role_name"
       type="select"
       onChange={handleChange} 
     >
+    <option value={''}>CHOISIR UN PROFIL...</option>
      <option value={'admin'}>ADMIN</option>
-      <option value={'admin'}>RECEPTIONNISTE</option>
+      <option value={'receptionniste'}>RECEPTIONNISTE</option>
      
     </Input>
           </>

@@ -30,7 +30,8 @@ const Tables = () => {
   const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
   const [clientsMoral, setClientsMoral] = useState([]);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+ // definir un etat pour savoir si lelement ajoutClient est monter ou pas
+ const [isAjoutClientMounted, setIsAjoutClientMounted] = useState(false);
 
 //const client = GetClient();
 const handleButtonDelete = (id) => {
@@ -348,8 +349,17 @@ const cols2 = [
          
       <Container className="my-5" fluid>
       <div className="row">
-      <div className="col"><AjoutClient butonTitle= "Ajouter nouveau client">
-        
+      <div className="col">
+      <AjoutClient 
+      id = "ajout"
+      butonTitle= "Ajouter nouveau client"
+      
+      
+
+     
+     
+          >
+
       </AjoutClient>
       </div>
       <div className="float-right offset-md-5 col-md-3 col-12" style={{ width: '50%', display: 'flex', justifyContent: 'right' }}>
@@ -390,8 +400,6 @@ const cols2 = [
 
         {/* Dark table */}
 
-
-
         <Row>
           <div className="col">
             <Card className="shadow">
@@ -402,12 +410,7 @@ const cols2 = [
               columns={cols2}
               data={clientsMoral}
               pagination
-              
               responsive>
-               
-              
-
-
               </DataTable>
              
             </Card>
@@ -415,17 +418,6 @@ const cols2 = [
         </Row>
 
 
-
-
-
-
-
-
-
-
-
-
-       
       </Container>
     </>
     </div> );

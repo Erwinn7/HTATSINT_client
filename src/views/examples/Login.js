@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import { useNavigate, navigate } from 'react-router-dom';
 import { prefix_link } from "variables/globalesVar";
-import { timers } from "jquery";
+
 
 
 const Login = () => {
@@ -61,8 +61,15 @@ const Login = () => {
       if (response.status===200) {
         const data_logger = await response.json();
         console.log('Response from Flask API:', data_logger);
-  
-          navigate('/admin/index');
+  //voir le role de l'utilisateur
+
+  //si le role est admin
+  navigate('/admin/index');
+
+  //si le role est receptionniste
+navigate('/reception/index');
+
+         
         
 
 

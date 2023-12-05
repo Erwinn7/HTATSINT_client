@@ -66,22 +66,20 @@ const [paymentSuccess, setPaymentSuccess] = useState(false);
   };
   
 
-  const fetchData =  async () => {
-    try {
-      const res = await GetClientsInvoice();
-      setClients(res);
-     // console.log(res.data);
-    } catch (error) {
-      console.error('Erreur lors de la requête GET', error);
-    }
-  };
+  
   useEffect(() => {
+    const fetchData =  async () => {
+      try {
+        const res = await GetClientsInvoice();
+        setClients(res);
+       // console.log(res.data);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+      }
+    };
    fetchData();
-    if (paymentSuccess) {
-      
-      setPaymentSuccess(false);
-    }
-  }, [] ); 
+    
+  }, [   modalMoralOuvert] ); 
 
 
 // recuperer la listes des client depuis la reponse de l'api
