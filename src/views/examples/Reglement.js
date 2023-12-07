@@ -8,9 +8,10 @@ import PaymentModal from "components/Forms/AddReglementForm"
 import ModalMoralFactures from 'components/Modals/ModalMoralFacture';
 import ModalPhysiqueFactures from 'components/Modals/ModalPhysiqueFacture';
 import { prefix_link } from 'variables/globalesVar';
+import { useNavigate, navigate } from 'react-router-dom';
 const Apayer =  () => {
  // const [room, setRoom] = useState([]); // Assurez-vous de déclarer l'état pour la variable 
-
+ const navigate = useNavigate();
  const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
  const [facturesClientSelectionne, setFacturesClientSelectionne] = useState([]);
  const [modalMoralOuvert, setModalMoralOuvert] = useState(false);
@@ -27,14 +28,23 @@ const [paymentSuccess, setPaymentSuccess] = useState(false);
 };
 
   async function GetClientsInvoice  ()  {
+    //const navigate = useNavigate();
     try {
+      const token = localStorage.getItem('accessToken');
       const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
       });
   
       if (!response.ok) {
         console.log('Response from Flask API:', 'merde');
       }
+ 
+
+console.log('Response from Flask API:', 'merde', response);
   
       const data = await response.json();
       if (data.data && data.data.length > 0) {
@@ -61,6 +71,10 @@ const [paymentSuccess, setPaymentSuccess] = useState(false);
       
     } catch (error) {
       // emettre une alerte d'erreur
+      if (error.status===401){
+        // rediriger vers la page de connexion
+       // navigate('/auth/login');
+      }
       console.error('Une erreurrrrr s\'est produite : ', error);
     };
   };
@@ -68,12 +82,14 @@ const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   
   useEffect(() => {
+   
     const fetchData =  async () => {
       try {
         const res = await GetClientsInvoice();
         setClients(res);
        // console.log(res.data);
       } catch (error) {
+       // navigate('/auth/login');
         console.error('Erreur lors de la requête GET', error);
       }
     };
@@ -216,10 +232,6 @@ const [paymentSuccess, setPaymentSuccess] = useState(false);
       setClientSelectionne(row);
     }
    
-    //console.log('Données de la ligne cliqué :', row);
-
-    // Ouvrez le modal
-    
   };
 
   const handleButtonPayer = (rowData) => {
