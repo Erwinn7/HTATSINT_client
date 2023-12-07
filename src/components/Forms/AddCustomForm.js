@@ -1,33 +1,36 @@
-import React from 'react';
-import  { useState } from 'react';
+
+import  { useState,React  } from 'react';
 import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from 'reactstrap';
 import { prefix_link } from "variables/globalesVar";
+//import GetClient from 'components/views/examples/Clients';
 function MyForm() {
-  
+  const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
+  //const [paymentSuccess, setPaymentSuccess] = useState(false);
+  //const [clients, setClients] = useState([]);
+
     const [formData, setFormData] = useState({
       // Initial state of your form data
       first_name: '',
       last_name: '',
       date_of_birth:'',
       gender: '',
-      ifu_number: '',
+      ifu: '',
       phone_number: '',
-      
+      email:'',
       address: '',
-      
-      customer_type_id:'45e12cdf-a6ea-4760-8a0a-d7cc37461d7b'
+      customer_type_id:'fd26597d-6a0a-4497-81b2-1612e7fa07c4'
      
       // ...
     });
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({ message: '', color: '' });
-
+    
     const handleSubmit = async (e) => {
       e.preventDefault();
   
       try {
         setLoading(true);
-        const response = await fetch( prefix_link+'/api/v1/clients', {
+        const response = await fetch( prefix_link+'/api/v1/client', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -35,14 +38,57 @@ function MyForm() {
           body: JSON.stringify(formData),
         });
   
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        if (response.status===201) {
+          const data = await response.json();
+          console.log('Response from Flask API:', data);
+          setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
+          //mettre une logique pour que la page soit rafraichie avec useEffect
+         // Mise à jour de la liste des clients après l'ajout réussi
+        
+
+          //
+          setTimeout(() => {
+            setAlert({ message: '', color: '' });
+          }, 5000);
+          // vider les champs du formulaire
+          document.getElementById('phone_number').value = '';
+          document.getElementById('first_name').value = '';
+          document.getElementById('last_name').value = '';
+          document.getElementById('gender').value = '';
+          document.getElementById('ifu').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('date_of_birth').value = '';
+          document.getElementById('address').value = '';
+// fermer la modal
+          
+
+        }else{
+          setAlert({ message:  `Erreur!Contacter le service technique` , color: 'danger' });
+          //
+          setTimeout(() => {
+            setAlert({ message: '', color: '' });
+          }, 5000);
         }
-  
-        const data = await response.json();
-        console.log('Response from Flask API:', data);
+       // const data = await response.json();
+       // console.log('Response from Flask API:', data);
+
+        
       } catch (error) {
+        setAlert({ message:  `Erreur Serveur` , color: 'danger' });
+//
+setTimeout(() => {
+  setAlert({ message: '', color: '' });
+}, 5000);
         console.error('Error sending data to Flask API:', error.message);
+         // vider les champs du formulaire
+         document.getElementById('phone_number').value = '';
+         document.getElementById('first_name').value = '';
+         document.getElementById('last_name').value = '';
+         document.getElementById('gender').value = '';
+         document.getElementById('ifu').value = '';
+         document.getElementById('email').value = '';
+         document.getElementById('date_of_birth').value = '';
+         document.getElementById('address').value = '';
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
       }
@@ -71,48 +117,72 @@ function MyForm() {
          
         });
   
-        if (!response.ok) {
-          //throw new Error('Network response was not ok');
+        if (response.status ===404) {
+          //Aucun client avec ce numero de telephone
+          const data = await response.json();
+          console.log(`Response from flask API: `, data);
+          document.getElementById('first_name').value = '';
+  document.getElementById('last_name').value = '';
+  document.getElementById('gender').value = '';
+  document.getElementById('ifu').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('date_of_birth').value = '';
+  document.getElementById('address').value = '';
+  setIsExistingPhysiqueClient(false);
         }
-  
-        const data = await response.json();
-        console.log('Response from Flask API:', data);
 
+        if (response.status ===200) {
+          //un client avec ce numero de telephone
+          const data = await response.json();
+          console.log('Response from Flask API:', data);
+          console.log(`${name}: ${value}`);
+if (data.type_customer.type_custormer=== "Physique") {
+// PRE-REMPLIRE LE FORMULAIRE
+ 
+  document.getElementById('first_name').value = data.customer.first_name;
+  document.getElementById('last_name').value = data.customer.last_name;
+  //document.getElementById('gender').value = data.customer.gender;
+  document.getElementById('ifu').value = data.customer.ifu;
+  document.getElementById('email').value = data.customer.email;
+  //document.getElementById('date_of_birth').value = data.customer.date_of_birth;
+  document.getElementById('address').value = data.customer.address;
+  // ENVOI D'ALERTE
+  setAlert({ message:  `le client ${data.customer.last_name} ${data.customer.first_name} existe deja avec ce numero de telephone` , color: 'danger' });
+//
+setTimeout(() => {
+  setAlert({ message: '', color: '' });
+}, 10000);
+// desactiver le bouton enregistrer
 
-//verifier si le numero n'existe pas
-        if (data== null) {
-// ne rien faire , laisser le user remplir et soumettre le formulaire normalement
+setIsExistingPhysiqueClient(true);
 
-console.log(`${name}: ${value}`);
-        }
+} else{
+  setIsExistingPhysiqueClient(true);
+  setAlert({ message: 'Ce numero est deja enregistrer pour un client de type moral.', color: 'primary' });
 
-//VERIFIER LE TYPE DU CLIENT
-if (data.customer_type === "physique") {
-// PRE-REMPLIRE LE FORMULAIRE SI LE CLIENT EST PHYSIQUE
-setAlert({ message: 'Ce client existe deja.', color: 'danger' });
-
-setFormData((prevData) => ({
-  ...prevData,
-  first_name: data.first_name,
-  last_name: data.last_name,
-  gender: data.gender,
-  ifu_number: data.ifu_number,
-  date_of_birth: data.date_of_birth,
-  address: data.address
-  
-}));
 }
 
-if (data.customer_type_id === "morale") { 
-  //RENVOYER UN MESSAGE SI LE CLIENT EST MORAL 
-  console.log('Le client est moral');
-  setAlert({ message: 'Le numero de telephone existe deja pour un client moral.Veuilez changer le numero.', color: 'danger' });
-
- }
+        }
 
       } catch (error) {
         console.error('Error sending dataaaa to Flask API:', error.message);
+        setAlert({ message: 'Erreur serveur.Contacter le service technique.', color: 'danger' });
+        document.getElementById('phone_number').value = '';
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 5000);
         console.log(`${name}: ${value}`);
+        setFormData ({
+    
+          first_name: '',
+          last_name: '',
+         gender: '',
+          ifu: '',
+          email:'',
+          date_of_birth: '',
+          address: ''
+          
+        })
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
       }
@@ -128,9 +198,11 @@ if (data.customer_type_id === "morale") {
 
   return (
     <Form>
+          {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
+
     <FormGroup>
         <Label for="phone_number">
-         NUMERO DE TELEPHONE
+         NUMERO DE TELEPHONE**
         </Label>
         <Input
         type='numeric'
@@ -152,10 +224,10 @@ if (data.customer_type_id === "morale") {
             </Label>
             <Input
             type='text'
-              value={FormData.first_name}
+              value={FormData?.first_name}
               name="first_name"
               id="first_name"
-              placeholder="..."
+              //placeholder="..."
               onChange={handleInputChange} 
               required
             />
@@ -168,10 +240,10 @@ if (data.customer_type_id === "morale") {
             </Label>
             <Input
             type='text'
-               value={FormData.last_name}
+               value={FormData?.last_name}
               name="last_name"
               id="last_name"
-              placeholder="..."
+             // placeholder="..."
               onChange={handleInputChange} 
               required
             />
@@ -199,8 +271,8 @@ if (data.customer_type_id === "morale") {
               NUMERO IFU
             </Label>
             <Input
-              value={FormData.ifu_number}
-              name="ifu_number"
+              value={FormData.ifu}
+              name="ifu"
               id="ifu"
               placeholder=""
               onChange={handleInputChange} 
@@ -208,7 +280,20 @@ if (data.customer_type_id === "morale") {
           </FormGroup>
       
      
-
+          <FormGroup>
+            <Label for="email">
+              EMAIL
+            </Label>
+            <Input
+              value={FormData.email}
+              name="email"
+              id="email"
+              placeholder=""
+              onChange={handleInputChange} 
+            />
+          </FormGroup>
+      
+     
      
 
       <FormGroup>
@@ -265,7 +350,8 @@ if (data.customer_type_id === "morale") {
       <Button
        onClick={handleSubmit}
       type='submit'
-      disabled={loading}>
+      disabled={loading || (isExistingPhysiqueClient )}
+>
          {loading ? <Spinner size="sm" color="light" /> : 'ENREGISTRER'}
       </Button>
       </FormGroup>

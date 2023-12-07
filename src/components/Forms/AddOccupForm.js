@@ -2,39 +2,41 @@ import React, {useEffect, useState} from "react";
 import {Container, Form, Button, Row, Col, FormGroup,Label,Input,Spinner } from "reactstrap";
 import 'assets/css/roomDesign.css'
 import DataTable from "react-data-table-component";
+import axios from "axios";
+import { prefix_link } from "variables/globalesVar";
 
 
 
 
-const AddOccupForm = ({roomSelected,dateArrivee, dateDepart}) => {
+const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart}) => {
 
-// Obtenir la date d'aujourd'hui au format 'YYYY-MM-DD'
-const thisDay = new Date().toISOString().split('T')[0];
+const urlGetCustomer = prefix_link+"/api/v1/clients";
+const urlPostOccupant = prefix_link+"/api/v1/occupant";
+const urlPostInvoice = prefix_link+"/api/v1/invoice";
 
-const [save, setSave] = useState(true)
+const [save, setSave] = useState(null)
+const [customers, setCustomers] = useState([])
 const [ctrlSoumission, setCtrlSoumission] = useState("")
 const initOccupants = {
-        room_id: roomSelected,
-        client_name : "",
-        startDate : dateArrivee,
-        endDate : dateDepart,
-        firstname : "",
-        lastname : "",
-        Telephone : "",
-        Addresse : "",
-        birthday : "",
+        room_id: room_id_occupation,
+        occupation_id: "",
+        customer_id : "",
+        start_date : dateArrivee,
+        end_date : dateDepart,
+        first_name : "",
+        last_name : "",
+        phone_number : "",
+        address : "",
+        date_of_birth : "",
         profession : "",
-        pieceType : "",
-        pieceNumber : "",
+        type_of_document : "",
+        document_number : "",
         motif : "",
       }
 
+
 const [unOccupant, setUnOccupant] = useState({...initOccupants})
 const [occupants, setOccupants] = useState([])
-
-
-
-
 const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -42,22 +44,26 @@ const config = {
     },
   };
 
-//   const [roomType, setRoomType] = useState([]);
-//   const [ctrlSoumission, setCtrlSoumission] = useState("")
-//   const [save, setSave] = useState(true)
-//   const initdataR = {
-//                     room_label: "",
-//                     room_amount: 0, 
-//                     room_category_id: "",
-//                     room_item_label: ""
-//                     }
-//   const [dataR, setdataR] = useState({...initdataR})
+
+useEffect(() => {
+
+    const fetchCustomer = async () => {
+      try {
+        const response = await axios.get(urlGetCustomer);
+
+        setCustomers(response.data);
+        console.log(response.data) ;
+        setSave(true);        
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setSave(true);
+      }
+    };
+
+    fetchCustomer();
 
 
-// useEffect(() => {
-
-
-//   }, []); 
+    }, [urlGetCustomer]); 
 
 
 
@@ -71,64 +77,103 @@ const config = {
   const columns = [                                                      
     {
       name : "Nom",
-      selector : row  => row.lastname,
+      selector : row  => row.last_name,
       sortable : true
     },
     {
       name : "Prénom",
-      selector : row  => row.firstname,
+      selector : row  => row.first_name,
       sortable : true
     },
     {
       name : "Tel",
-      selector : row  => row.Telephone,     
+      selector : row  => row.phone_number,     
       sortable : true
     }
   ]
 
   const Submit = (e) => {
     e.preventDefault();
-
     if (Ctrl_Soumission()) {
-      console.log(occupants);
-
       const newOccupant = [...occupants,unOccupant]
       setOccupants(newOccupant)
       console.log(newOccupant);
       setUnOccupant({...initOccupants})
-      setCtrlSoumission("");
     } else{
       return;
     }
     
   }
 
-  const handleAllSubmit = (e) => {
+  const handleAllSubmit = async (e) => {
     setSave(false)
     e.preventDefault();
+    var occupation_id_from_dtb = "";
 
     if (occupants.length > 0) {
+
+      // envoice d'un occupant vers la base pour creation de facture 
+      const sendUnOccupant = async () => {
+        try {
+
+          const response = await  axios.post(urlPostInvoice,occupants[0],config);
+          console.log('Facture créer',response.data);
+          occupation_id_from_dtb = response.data.room_occupation.id
+          setSave(true);
+          
+        } catch (error) {
+          console.error('Erreur lors de la requête POST', error);
+          setSave(true); 
+        }
+      }
+      sendUnOccupant();
+     
+    setTimeout(() => {
+
       // envoie de l'objet occupants vers la base de donnée
+      occupants.forEach(async (itemToSend) => {
 
+        itemToSend.occupation_id = occupation_id_from_dtb
 
+        const sendOccupant = async () => {
+          try {
+            
+            console.log(itemToSend)
+            const res = await  axios.post(urlPostOccupant,itemToSend,config);
+            console.log("les occupants: ",res.data);
+            setSave(true); 
+
+          } catch (error) {
+            console.error('Erreur lors de la requête POST', error);
+            setSave(true);
+          }
+        };
+    
+        sendOccupant();
+
+      });
+
+    }, 2000); // Attendre 2 secondes
+ 
+
+      
+     setOccupants([])
      setSave(true)
+
     } else {
-      setCtrlSoumission("Veuiller Ajouter au moins un Occupant");
+      setCtrlSoumission("Veuiller ajouter au moins un Occupant");
       setSave(true)
     }
-
-
-
-
 
   };
 
 
   const Ctrl_Soumission = () =>  {
-    if ( !unOccupant.room_id || !unOccupant.client_name || !unOccupant.startDate || !unOccupant.endDate || !unOccupant.firstname || !unOccupant.lastname || !unOccupant.Telephone || !unOccupant.Addresse || !unOccupant.birthday || !unOccupant.profession || !unOccupant.pieceType || !unOccupant.pieceNumber || !unOccupant.motif   ){
+    if ( !unOccupant.room_id || !unOccupant.customer_id || !unOccupant.start_date || !unOccupant.end_date || !unOccupant.first_name || !unOccupant.last_name || !unOccupant.phone_number || !unOccupant.address || !unOccupant.date_of_birth || !unOccupant.profession || !unOccupant.type_of_document || !unOccupant.document_number || !unOccupant.motif   ){
         setCtrlSoumission("Veuiller remplir le tout les champs");
         return false;
     } else {
+        setCtrlSoumission("");
         return true;
     }
   }
@@ -141,27 +186,24 @@ const config = {
             <Row>
             <Col sm={12}>
                 <FormGroup >
-                  <Label for="client_name">
+                  <Label for="customer_id">
                     Client : 
                   </Label>
                   <Input
-                    id="client_name"
-                    name="client_name"
-                    value={unOccupant?.client_name}
+                    id="customer_id"
+                    name="customer_id"
+                    value={unOccupant?.customer_id}
                     onChange={(e) => handleChange(e)} 
                     type="select"
                   >
                     <option value="" >Sélectionnez un Client</option>
-                    <option value="Client1" >Client 1</option>
-                    <option value="Client2" >Client 2</option>
-
-                    {/* {                   
-                      roomType.data?.map((room)  => (
-                        <option key={room.id} value={room?.id}>
-                          {room?.room_category_label}
+                    {                   
+                      customers.data?.map((customer)  => (
+                        <option key={customer.customer.id} value={customer.customer.id}>
+                          {customer.customer.institute_name ? customer.customer.institute_name : customer.customer.last_name + " "+ customer?.customer.first_name }  - {customer.customer.phone_number}
                         </option>
                       ))
-                    }  */}
+                    } 
                   </Input>
                 </FormGroup> 
             </Col>
@@ -169,34 +211,31 @@ const config = {
             <Row>
                 <Col sm={6}>
                     <FormGroup >
-                    <Label for="startDate" bsSize="sm" >
+                    <Label for="start_date" bsSize="sm" >
                         Arrivée : 
                     </Label>
                     <Input bsSize="sm" 
-                        id="startDate"
-                        name="startDate"
-                        type="date"
-                        value={unOccupant?.startDate}
+                        id="start_date"
+                        name="start_date"
+                        type="datetime-local"
+                        value={unOccupant?.start_date}
                         onChange={(e) => handleChange(e)} 
-                        min={thisDay}
-                    />
+                        disabled/>
                     </FormGroup>
                 </Col>
 
                 <Col sm={6}>
                 <FormGroup >
-                <Label for="endDate" bsSize="sm" >
+                <Label for="end_date" bsSize="sm" >
                      Départ :
                 </Label>
                 <Input bsSize="sm" 
-                    id="endDate"
-                    name="endDate"
-                    type="date"
-                    value={unOccupant?.endDate}
+                    id="end_date"
+                    name="end_date"
+                    type="datetime-local"
+                    value={unOccupant?.end_date}
                     onChange={(e) => handleChange(e)} 
-                    min={thisDay}
-
-                />
+                    disabled/>
                 </FormGroup>
                 </Col>
                 </Row>
@@ -205,30 +244,30 @@ const config = {
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="lastname" bsSize="sm" >
+                        <Label for="last_name" bsSize="sm" >
                             Nom
                         </Label>
                         <Input bsSize="sm" 
-                            id="lastname"
-                            name="lastname"
+                            id="last_name"
+                            name="last_name"
                             placeholder="Nom "
                             type="text"
-                            value={unOccupant?.lastname}
+                            value={unOccupant?.last_name}
                             onChange={(e) => handleChange(e)} 
                             />
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="firstname" bsSize="sm" >
+                        <Label for="first_name" bsSize="sm" >
                             Prénom
                         </Label>
                         <Input bsSize="sm" 
-                            id="firstname"
-                            name="firstname"
+                            id="first_name"
+                            name="first_name"
                             placeholder="Prénom"
                             type="text"
-                            value={unOccupant?.firstname}
+                            value={unOccupant?.first_name}
                             onChange={(e) => handleChange(e)} 
                             />
                         </FormGroup>
@@ -237,30 +276,30 @@ const config = {
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="Telephone" bsSize="sm" >
+                        <Label for="phone_number" bsSize="sm" >
                             Tel : 
                         </Label>
                         <Input bsSize="sm" 
-                            id="Telephone"
-                            name="Telephone"
+                            id="phone_number"
+                            name="phone_number"
                             placeholder="+229 00 00 00 00"
                             type="text"
-                            value={unOccupant?.Telephone}
+                            value={unOccupant?.phone_number}
                             onChange={(e) => handleChange(e)} 
                             />
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="Addresse" bsSize="sm" >
+                        <Label for="address" bsSize="sm" >
                             Addresse
                         </Label>
                         <Input bsSize="sm" 
-                            id="Addresse"
-                            name="Addresse"
-                            placeholder="Calavi"
+                            id="address"
+                            name="address"
+                            placeholder="Dassa"
                             type="text"
-                            value={unOccupant?.Addresse}
+                            value={unOccupant?.address}
                             onChange={(e) => handleChange(e)} 
                             />
                         </FormGroup>
@@ -269,15 +308,14 @@ const config = {
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="birthday" bsSize="sm" >
+                        <Label for="date_of_birth" bsSize="sm" >
                             Date de naissance : 
                         </Label>
                         <Input bsSize="sm" 
-                            id="birthday"
-                            name="birthday"
-                            placeholder="birthday"
-                            type="date"
-                            value={unOccupant?.birthday}
+                            id="date_of_birth"
+                            name="date_of_birth"
+                            type="datetime-local"
+                            value={unOccupant?.date_of_birth}
                             onChange={(e) => handleChange(e)} 
                             />
                         </FormGroup>
@@ -290,7 +328,7 @@ const config = {
                         <Input bsSize="sm" 
                             id="profession"
                             name="profession"
-                            placeholder="Banquier"
+                            placeholder="Commerçant"
                             type="text"
                             value={unOccupant?.profession}
                             onChange={(e) => handleChange(e)} 
@@ -301,21 +339,21 @@ const config = {
                 <Row>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="pieceType" bsSize="sm" >
-                            Type de Piece : 
+                        <Label for="type_of_document" bsSize="sm" >
+                            Type de Pièce : 
                         </Label>
                         <Input bsSize="sm" 
-                            id="pieceType"
-                            name="pieceType"
+                            id="type_of_document"
+                            name="type_of_document"
                             placeholder="Select un type"
                             type="select"
-                            value={unOccupant?.pieceType}
+                            value={unOccupant?.type_of_document}
                             onChange={(e) => handleChange(e)} 
                             >
                         <option value="" >Sélectionnez un Type</option>
                         <option value="CIP" >CIP</option>
-                        <option value="ID_card" >Carte d'identite</option>
-                        <option value="ID_card_CEDAO" >Carte d'identite biométrique</option>
+                        <option value="ID_Card" >Carte d'identite</option>
+                        <option value="ID_Card_CEDAO" >Carte d'identite biométrique</option>
                         <option value="PASSPORT" >Passport</option>
 
                         </Input>
@@ -323,15 +361,15 @@ const config = {
                     </Col>
                     <Col sm={6}>
                         <FormGroup >
-                        <Label for="pieceNumber" bsSize="sm" >
+                        <Label for="document_number" bsSize="sm" >
                         N° de la piece :
                         </Label>
                         <Input bsSize="sm" 
-                            id="pieceNumber"
-                            name="pieceNumber"
-                            placeholder="000000000"
+                            id="document_number"
+                            name="document_number"
+                            placeholder="0123456789"
                             type="number"
-                            value={unOccupant?.pieceNumber}
+                            value={unOccupant?.document_number}
                             onChange={(e) => handleChange(e)} 
                             />
                         </FormGroup>
@@ -354,7 +392,8 @@ const config = {
                         </FormGroup>
                     </Col>
                 </Row>
-                    { (ctrlSoumission === "" && save === true) ? <span></span> : <p  style={{ color: 'red' , fontSize: '12px'}}>{ctrlSoumission}</p> }
+                { (ctrlSoumission !== "" && save === true) ? <p style={{ color: 'red', fontSize: '12px' }}>{ctrlSoumission}</p> : null }
+
                 <Button color="success" bsSize="sm">
                   Ajouter
                 </Button>
@@ -372,25 +411,24 @@ const config = {
                 keyField="Tel"
                 pagination > 
             </DataTable>)
-
         }
-        { (ctrlSoumission === "" && save === false) ? <span></span> : <p  style={{ color: 'red' , fontSize: '12px'}}>{ctrlSoumission}</p> }
+         { (ctrlSoumission !== "" && save === false) ? <p style={{ color: 'red', fontSize: '12px' }}>{ctrlSoumission}</p> : null }
 
         { 
                   
-        save ? 
-            <Button color="primary" onClick={(e) => handleAllSubmit(e)} >
-                Enrégistrer
-            </Button>
-            :
-            <Button color="primary" disabled >
-                <Spinner bsSize="sm">
-                    Loading...
-                </Spinner>
-                <span>
-                    {' '} En cours
-                </span>
-            </Button>
+          save ? 
+          <Button color="primary" onClick={(e) => handleAllSubmit(e)} >
+            Enrégistrer
+          </Button>
+          :
+          <Button color="primary" disabled >
+              <Spinner bsSize="sm">
+                  Loading...
+              </Spinner>
+              <span>
+                  {' '} En cours
+              </span>
+          </Button>
         }
         </Container>
       </>

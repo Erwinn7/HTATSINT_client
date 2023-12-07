@@ -7,18 +7,17 @@ async function GetClient() {
       
       const response = await fetch( prefix_link+'/api/v1/clients', {
         method: 'GET'
-       
-        
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        //throw new Error('Network response was not ok');
+        console.log('Response from Flask API:', /*data[0].customer*/);
       }
 
       const data = await response.json();
 
       console.log('Response from Flask API:', data[0].customer);
-
+return data;
 
 } catch (error) {
   console.error('Une erreur s\'est produite : ', error);

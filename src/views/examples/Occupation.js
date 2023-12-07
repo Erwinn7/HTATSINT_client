@@ -2,12 +2,10 @@ import {React, useState, useEffect} from "react";
 import "assets/css/roomDesign.css";
 import Header from "components/Headers/Header";
 import AddOccupForm from "components/Forms/AddOccupForm";
-import {Form, FormGroup,Label,Input,Col,Row, Container,Button,Spinner,Modal,ModalBody,ModalHeader,ModalFooter} from "reactstrap";
+import {Form,Alert, FormGroup,Label,Input,Col,Row, Container,Button,Spinner,Modal,ModalBody,ModalHeader,ModalFooter} from "reactstrap";
 import DataTable from "react-data-table-component";
-// import {lesChambres} from "variables/globalesVar";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
-
 
   
   const Occupation = () => {
@@ -16,6 +14,7 @@ import { prefix_link } from "variables/globalesVar";
     const [save, setSave] = useState(true)
     const [selectedRow, setSelectedRow] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [alert, setAlert] = useState({ message: '', color: '' });
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -27,8 +26,7 @@ import { prefix_link } from "variables/globalesVar";
       return { ...item, Num: index + 1 };
     });
 
-      // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DD'
-     const today = new Date().toISOString().split('T')[0];
+    const  [thisDay, setThisDay] =  useState(new Date());
 
     const cols = [
       {
@@ -69,31 +67,56 @@ import { prefix_link } from "variables/globalesVar";
       dateDepart: '',
     });
 
+    const customStyles = {
+      rows: {
+          style: {
+
+          },
+      },
+      headCells: {
+          style: {
+            color: "#8898aa",
+            backgroundColor: "#f6f9fc",
+            borderColor: "#e9ecef",
+            fontWeight: "bold",
+          },
+      },
+      cells: {
+          style: {
+
+          },
+      },
+  };
 
   
     useEffect(() => {
   
-      // Obtenir la date de demain au format 'YYYY-MM-DD'
+      // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
+      const today = new Date();
+      const todayFormatted = `${today.getFullYear()}-${formatNumber(today.getMonth() + 1)}-${formatNumber(today.getDate())}T${formatNumber(today.getHours())}:${formatNumber(today.getMinutes())}:${formatNumber(today.getSeconds())}`;
+      setThisDay(todayFormatted) 
+      // Obtenir la date de demain au format 'YYYY-MM-DDTHH:mm:ss'
       const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowFormatted = tomorrow.toISOString().split('T')[0];
-  
+      tomorrow.setDate(today.getDate() + 1);
+      const tomorrowFormatted = `${tomorrow.getFullYear()}-${formatNumber(tomorrow.getMonth() + 1)}-${formatNumber(tomorrow.getDate())}T${formatNumber(tomorrow.getHours())}:${formatNumber(tomorrow.getMinutes())}:${formatNumber(tomorrow.getSeconds())}`;
+
       // Mettre à jour les dates dans l'état local
       setDatesRoom({
-        dateArrivee: today,
+        dateArrivee: todayFormatted,
         dateDepart: tomorrowFormatted,
       });
 
 
-    }, [today]); 
+    }, [thisDay]); 
   
+    const formatNumber = (number) => (number < 10 ? `0${number}` : number);
+
     const handleDateChange = (e) => {
       const { name, value } = e.target;
       setDatesRoom((prevDates) => ({
         ...prevDates,
         [name]: value,
       }));
-      //console.log(dates)
     };
   
     const handleRowClick = (row) => {
@@ -116,15 +139,17 @@ import { prefix_link } from "variables/globalesVar";
       console.log(datesRoom)
       try {
         const response = await axios.post(urlGetRoombyDate, {
-            startdate: datesRoom.dateArrivee,
-            enddate: datesRoom.dateDepart,
+            start_date: datesRoom.dateArrivee,
+            end_date: datesRoom.dateDepart,
         },config);
   
         setRoom(response.data);
         console.log(response.data) ;
+        setAlert({ message: "", color: '' });
         setSave(true);        
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
         setSave(true);
       }
     };
@@ -137,6 +162,7 @@ import { prefix_link } from "variables/globalesVar";
     return (
       <div  className="backgroundImgChambre">
         <Header menuTitle = "OCCUPATIONS" />
+        {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
         <Container className="pb-5" fluid>
         <Form  onSubmit={(e)=> Submit(e)} > 
         <FormGroup className="p-3 centered-container-occup">
@@ -149,10 +175,10 @@ import { prefix_link } from "variables/globalesVar";
                     id="dateArrivee"
                     name="dateArrivee"
                     placeholder="Arrivée"
-                    type="date"
+                    type="datetime-local"
                     value={datesRoom.dateArrivee}
                     onChange={handleDateChange}
-                    min={today}
+                    min={thisDay}
 
                   />
                 </Col>
@@ -164,10 +190,10 @@ import { prefix_link } from "variables/globalesVar";
                     id="dateDepart"
                     name="dateDepart"
                     placeholder="Départ"
-                    type="date"
+                    type="datetime-local"
                     value={datesRoom.dateDepart}
                     onChange={handleDateChange}
-                    min={today}
+                    min={datesRoom.dateArrivee}
                   />
                 </Col>
                 <Col sm={2} style={{marginTop:"30px"}}>
@@ -191,27 +217,28 @@ import { prefix_link } from "variables/globalesVar";
         </Form>
           
           {
-            room && (
+            roomWithNum && (
             <DataTable 
               title="Chambres disponibles"
               columns={cols}
               data={roomWithNum}
               keyField="Num"
               onRowClicked={handleRowClick}
+              customStyles={customStyles}
               pagination > 
            </DataTable>)
           }
 
-          <Modal isOpen={modalOpen} toggle={closeModal}>
-            <ModalHeader toggle={closeModal}  >{selectedRow?.nom.toUpperCase()}</ModalHeader>
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg">
+            <ModalHeader toggle={closeModal}  >{selectedRow?.room.room_label.toUpperCase()}</ModalHeader>
             <ModalBody>
               {selectedRow && (
-                <AddOccupForm roomSelected = {selectedRow?.nom.toUpperCase()} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
+                <AddOccupForm room_id_occupation = {selectedRow?.room.id} dateArrivee = {datesRoom.dateArrivee} dateDepart = {datesRoom.dateDepart}/>
               )}
 
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" onClick={closeModal}>
+              <Button color="danger" onClick={ (e)  => {closeModal();Submit(e); }}> 
                 Fermer
               </Button>
             </ModalFooter>

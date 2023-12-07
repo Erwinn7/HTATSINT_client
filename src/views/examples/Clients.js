@@ -6,44 +6,336 @@ jjjjj
 // reactstrap components
 import {
   //Button,
+  //ButtonDropdown,
+  Button,
   //Badge,
   Card,
   CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  //Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  //Progress,
-  Table,
+  
   Container,
   Row,
+  Input,
   //UncontrolledTooltip,
 } from "reactstrap";
-// core components
+import DataTable from "react-data-table-component";
+import { useEffect, useState } from "react";
 import Header from "components/Headers/Header.js";
 import AjoutClient from "components/Buttons/Button";
-import GetClient from "components/Funtions/GetCustomer";
-import { client } from "variables/globalesVar";
+//import GetClient from "components/Funtions/GetCustomer";
+//import { client } from "variables/globalesVar";
 import "assets/css/customerDesign.css";
+import { prefix_link } from "variables/globalesVar";
 
 const Tables = () => {
+  const [clients, setClients] = useState([]);
+  const [clientsPhysique, setClientsPhysique] = useState([]);
+  const [clientsMoral, setClientsMoral] = useState([]);
+ // definir un etat pour savoir si lelement ajoutClient est monter ou pas
+ const [isAjoutClientMounted, setIsAjoutClientMounted] = useState(false);
 
+//const client = GetClient();
+const handleButtonDelete = (id) => {
   
-GetClient()
+};
+const handleButtonUpdate = (id) => {
+  
+};
 
-const clientsPhysique = client.filter(client => client.customer_type === 'physique');
-const clientsMoral = client.filter(client => client.customer_type === 'moral');
+async function GetClient  () {
 
+  try {
+    
+    const response = await fetch( prefix_link+'/api/v1/clients', {
+      method: 'GET'
+    });
+
+    if (!response.ok) {
+      //throw new Error('Network response was not ok');
+      console.log('Response from Flask API:', /*data*/);
+    }
+
+    const data = await response.json();
+console.log('Response from Flask API:', data.data);
+    const clientsData = Object.values(data.data).map(item => {
+      if (item && item.customer) {
+
+        const clientData= [{           
+         customer:{               
+           email: item.customer.email || null,
+          firstName: item.customer.first_name || null,
+          lastName: item.customer.last_name || null,
+          phoneNumber: item.customer.phone_number || null,
+          gender: item.customer.gender || null,
+        ifu: item.customer.ifu || null,
+        instituteName: item.customer.institute_name || null,
+        dateOfBirth: item.customer.date_of_birth || null,
+        address: item.customer.address || null,
+        typeCustomer: item.type_customer ? item.type_customer.type_custormer : null,
+        }, }]
+
+    
+        
+        console.log('Response frommmmmmaa Flask API:', clientData);
+        return clientData;
+        
+      } else {
+        console.log('Response frommmmmm Flask API:', /*data*/);
+        return null; // ou toute autre valeur par défaut que vous préférez
+      }
+    });
+
+
+
+  return clientsData;
+} catch (error) {
+console.error('Une erreur s\'est produite : ', error);
+}
+};
+
+
+
+
+//useEffect(() => {
+  // Utilisation de useEffect pour exécuter GetClient une seule fois au chargement initial
+  async function fetchData() {
+    try {
+      const clientsData = await GetClient();
+      //console.log('uhrtbdrhdytn:', clientsData);
+      const physiques = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Physique");
+      const moraux = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Morale");
+//console.log('uhrtbdrhdytnphyy:', physiques);
+setClientsPhysique(physiques);
+        setClientsMoral(moraux);
+//transformer la liste des clients en tableau
+//const clientsDataArray = Object.value(clientsData)
+     
+    } catch (error) {
+      console.error("Une erreur s'est produite : ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData(); // Exécute GetClient au chargement initial
+  }, []); // Le tableau de dépendances vide [] signifie que cela ne dépend d'aucune variable, donc cela s'exécutera une seule fois
+
+
+
+
+
+
+const cols = [
    
+  {
+    name: 'NOM',
+    
+    selector: (client) => client.customer.firstName,
+    sortable: true,
+    //ajouez du style css
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+
+    },
+  },
+  {
+    name: 'PRENOM',
+    selector: (client) => client.customer.lastName,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+  },
+  {
+    name: 'TELEPHONE',
+    selector: (client) => client.customer.phoneNumber,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+    
+  },
+  {
+    name: 'EMAIL',
+    selector: (client) => client.customer.email,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+  },
+  {
+    name: 'ADRESSE',
+    selector: (client) => client.customer.address,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+  },
+
+    
+    {
+      name: 'MODIFIER',
+      cell: (row) => (
+        <Button color="primary" onClick={() => handleButtonUpdate(row)}>Mod</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+      selector: (row) => row.statut,
+      sortable: true,
+    },
+    {
+      name: 'SUPPRIMER',
+      cell: (row) => (
+        <Button color="primary" onClick={() => handleButtonDelete(row)}>Sup</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+      selector: (row) => row.statut,
+      sortable: true,
+    },
+];
+   
+
+
+const cols2 = [
+   
+  {
+    name: 'NOM DE L\'INSTITUT',
+    
+    selector: (client) => client.customer.instituteName,
+    sortable: true,
+    //ajouez du style css
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+  },
+
+  {
+    name: 'TELEPHONE',
+    selector: (client) => client.customer.phoneNumber,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+    
+  },
+  {
+    name: 'EMAIL',
+    selector: (client) => client.customer.email,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+  },
+  {
+    name: 'ADRESSE',
+    selector: (client) => client.customer.address,
+    sortable: true,
+    style: {
+      // Add your desired CSS styles here
+      backgroundColor: '#white',
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      padding: '10px',
+      borderRadius: '5px',
+
+    },
+  },
+
+    
+    {
+      name: 'MODIFIER',
+      cell: (row) => (
+        <Button color="primary" onClick={() => handleButtonUpdate(row)}>Mod</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+      selector: (row) => row.statut,
+      sortable: true,
+    },
+    {
+      name: 'SUPPRIMER',
+      cell: (row) => (
+        <Button color="primary" onClick={() => handleButtonDelete(row)}>Sup</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+      selector: (row) => row.statut,
+      sortable: true,
+    },
+];
+
+
+
+
+
+
+
+
+
+
 
     // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
   
+ const HandleFilter = (e) => {
  
+  
+ }
 
 
 
@@ -54,18 +346,25 @@ const clientsMoral = client.filter(client => client.customer_type === 'moral');
       <Header menuTitle= 'CLIENTS'/> 
          {/* Page content */}
 
-        
-
-    
-       
          
       <Container className="my-5" fluid>
       <div className="row">
-      <div className="col"><AjoutClient butonTitle= "Ajouter nouveau client">
-        
+      <div className="col">
+      <AjoutClient 
+      id = "ajout"
+      butonTitle= "Ajouter nouveau client"
+      
+      
+
+     
+     
+          >
+
       </AjoutClient>
       </div>
-     
+      <div className="float-right offset-md-5 col-md-3 col-12" style={{ width: '50%', display: 'flex', justifyContent: 'right' }}>
+            <Input type="text" placeholder="Recherche..." onChange={(e) => HandleFilter(e)} />
+          </div>
       
       </div> 
 <br>
@@ -80,256 +379,45 @@ const clientsMoral = client.filter(client => client.customer_type === 'moral');
               <CardHeader className="border-0">
                 <h3 className="mb-0">PERSONNE PHYSIQUE</h3>
               </CardHeader>
-              <Table  className="align-items-center table-dark table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">NOM</th>
-                    <th scope="col">PRENOM</th>
-                    <th scope="col">ADRESSE</th>
-                    <th scope="col">TELEPHONE</th>
-                    <th scope="col">EMAIL</th>
-                    <th scope="col">ACTIONS</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                {clientsPhysique.map((client, index) => (
-            <tr key={index}>
-              <td>{client.first_name}</td>
-              <td>{client.last_name}</td>
-              <td>{client.adress}</td>
-              <td>{client.phone_number}</td>
-              <td>{client.email}</td>
+              <DataTable 
+              columns={cols}
+              data={clientsPhysique}
+              pagination
               
-                     
-          
-                    <td className="text-right">
-                      <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          href="#pablo"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            MODIFIER
-                          </DropdownItem>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            SUPPRIMER
-                          </DropdownItem>
-                         
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                    </td>
+              responsive>
+               
+              
 
 
-                  </tr>
-                  ))}
-                </tbody>
-              </Table>
-              <CardFooter className="py-4">
-                <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
-                </nav>
-              </CardFooter>
+              </DataTable>
+             
             </Card>
           </div>
         </Row>
 
 
-
-
-
-
-
-
-
-
-
-
+<br></br> <br></br> <br></br>
 
         {/* Dark table */}
-        <Row className="mt-5">
+
+        <Row>
           <div className="col">
-            <Card className=" shadow">
-              <CardHeader className="bg-transparent border-0">
-                <h3 className="text-dark mb-0">PERSONNE MORALE</h3>
+            <Card className="shadow">
+              <CardHeader className="border-0">
+                <h3 className="mb-0">PERSONNE MORALE</h3>
               </CardHeader>
-              <Table
-                className="align-items-center table-dark table-flush"
-                responsive 
-              >
-                <thead className="thead-dark">
-                  <tr>
-                    <th scope="col">NOM ENTITE</th>
-                    <th scope="col">NUMERO IFU</th>
-                    <th scope="col">TELEPHONE</th>
-                    <th scope="col">ADRESSE EMAIL</th>
-                    <th scope="col">ADRESSE SIEGE</th>
-                    <th scope="col">ACTIONS</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                {clientsMoral.map((client, index) => (
-            <tr key={index}>
-              <td>{client.first_name}</td>
-              <td>{client.last_name}</td>
-              <td>{client.adress}</td>
-              <td>{client.phone_number}</td>
-              <td>{client.email}</td>
-              
-                     
-          
-                    <td className="text-right">
-                      <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          href="#pablo"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            MODIFIER
-                          </DropdownItem>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            SUPPRIMER
-                          </DropdownItem>
-                         
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                    </td>
-
-
-                  </tr>
-                  ))}
-
-                </tbody>
-              </Table>
-              <CardFooter className="py-4">
-                <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
-                </nav>
-              </CardFooter>
+              <DataTable 
+              columns={cols2}
+              data={clientsMoral}
+              pagination
+              responsive>
+              </DataTable>
+             
             </Card>
           </div>
         </Row>
+
+
       </Container>
     </>
     </div> );

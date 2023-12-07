@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Input } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
@@ -6,40 +6,127 @@ import AjoutUser from 'components/Buttons/ButtonAddUser';
 //import GetClient from 'components/Funtions/GetCustomer';
 import { client } from 'variables/globalesVar';
 import 'assets/css/customerDesign.css';
+import { prefix_link } from 'variables/globalesVar';
+
 
 const Users = () => {
   const [user, setUser] = useState(client); 
   const [filterUser, setfilterUser] = useState(client);
+  const [users, setUsers] = useState([]);
+
+async function GetUsers  () {
+
+  try {
+    const response = await fetch(prefix_link + '/api/v1/users', {
+      method: 'GET'
+    });
+
+    if (!response.ok) {
+      console.log('Response from Flask API:', 'merde');
+    }
+
+    const data = await response.json();
+    console.log('Response from Flask API:', data);
+    if (data && data.data.length > 0) {
+      const usersData = data.data.map(item => ({
+        id: item.employee.id,
+        first_name: item.employee.first_name,
+        last_name: item.employee.last_name,
+        role: item.role[0].role_name, // 
+        email: item.user.email,
+        last_connexion: item.employee.updated_at, // Adjust this based on your data structure
+      }));
+      
+      
+      console.log('Response from Flask API:', usersData);
+      //setUsers(usersData);
+     return usersData;
+    } else {
+      console.log('Response from Flask API:', 'no dataaaa');
+    }
+} catch (error) {
+  // emettre une alerte d'erreur
+  console.error('Une erreurrrrraaa s\'est produite : ', error);
+};
+};
+
+async function fecthUsers  () {
+
+  try {
+    const data = await GetUsers();
+    setUsers(data);
+
+    
+  }
+
+  catch (error) {
+    // emettre une alerte d'erreur
+    console.error('Une erreurrrrr s\'est produite : ', error);
+  };  
+};
+
+useEffect(() => {
+ 
+  fecthUsers();
+}, [])
+
+
+
+
+
+
+
 
   const cols = [
     
     {
       name: 'NOM',
-      selector: (row) => row.first_name,
+      selector: (users) => users.first_name,
       sortable: true,
     },
     {
       name: 'PRENOM',
-      selector: (row) => row.last_name,
+      selector: (users) => users.last_name,
       sortable: true,
     },
     {
       name: 'TYPE',
-      selector: (row) => row.type,
+      selector: (users) => users.role,
       sortable: true,
     },
     {
       name: 'EMAIL ',
-      selector: (row) => row.email,
+      selector: (users) => users.email,
       sortable: true,
     },
     {
       name: 'DERNIERE CONNEXION',
-      selector: (row) => row.last_connexion,
+      selector: (users) => users.last_connexion,
       sortable: true,
     },
   ];
   
+  const customStyles = {
+    rows: {
+        style: {
+
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+
+        },
+    },
+};
+
 
   
  
@@ -72,8 +159,9 @@ const Users = () => {
             className="" 
             title="Liste des utilisateurs" 
             columns={cols}
-             data={client} 
+             data={users} 
              keyField="id" 
+             customStyles={customStyles}
              pagination
              >
               

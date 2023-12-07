@@ -129,8 +129,8 @@ const AddRoomForm = () => {
                     <option value="" >Sélectionnez un type</option>
                     {                   
                       roomType.data?.map((room)  => (
-                        <option key={room.id} value={room?.id}>
-                          {room?.room_category_label}
+                        <option key={room.id} value={room.id}>
+                          {room.room_category_label}
                         </option>
                       ))
                     } 

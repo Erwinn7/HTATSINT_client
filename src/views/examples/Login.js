@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import { useNavigate, navigate } from 'react-router-dom';
 import { prefix_link } from "variables/globalesVar";
-import { timers } from "jquery";
+
 
 
 const Login = () => {
@@ -31,7 +31,6 @@ const Login = () => {
    
   });
   
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -47,11 +46,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    const storeTokenInLocalStorage = (token) => {
+      localStorage.setItem('accessToken', token);
+    };
 
     try {
       setLoading(true);
-      const response = await fetch( prefix_link+'/api/v1/connexion', {
+      const response = await fetch( prefix_link+'/api/v1/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,9 +63,23 @@ const Login = () => {
       if (response.status===200) {
         const data_logger = await response.json();
         console.log('Response from Flask API:', data_logger);
-  
-          navigate('/admin/index');
-        
+  // Récupérer le role de l'utilisateur
+  const role = data_logger.user.role.role_name;
+  console.log('Role:', role);
+
+  // Récupérer l'access token
+  const token = data_logger.access_token;
+  console.log('Token:', token);
+  storeTokenInLocalStorage(token);
+  // Rediriger en fonction du rôle
+  if (role === 'admin') {
+    navigate('/admin/index');
+  } else if (role === 'receptionniste') {
+    navigate('/recep/index');
+  } else {
+    // Gérer les autres rôles ou scénarios
+    console.error('Rôle non géré:', role);
+  }
 
 
       }else{
@@ -76,10 +91,10 @@ const Login = () => {
         setAlert({ message: 'La connexion a echouer.Verifier votre email et le mot de passe puis reesayer.', color: 'danger' });
         setFormData((prevData) => ({
           email: '',
-    hashed_password: ''
+          hashed_password: ''
         }));
         setTimeout(() => {
-          window.location.reload();
+         // window.location.reload();
         }, 5000);
        // window.alert(`La connexion a echoue.Verifier votre email et/ou le mot de passe.Merci`);
   
@@ -100,7 +115,7 @@ const Login = () => {
   hashed_password: ''
       }));
       setTimeout(() => {
-        window.location.reload();
+       // window.location.reload();
       }, 5000);
     }finally {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)

@@ -1,20 +1,10 @@
+
 import  {React,useState,useEffect} from "react";
+
 import {Container, Collapse, Button, Card, CardBody ,
-  // Table,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  // Badge,
-  // CardHeader,
-  // CardFooter,
-  // DropdownMenu,
-  // DropdownItem,
-  // UncontrolledDropdown,
-  // DropdownToggle,
-  // Pagination,
-  // PaginationItem,
-  // PaginationLink,
-  // Row,
-  // Col,
-  // Spinner,
+  Badge,
+  Alert,
   Input
 } from "reactstrap";
 // import Axios from "axios";
@@ -35,12 +25,16 @@ const Room = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [modal, setModal] = useState(false);
-  const [room, setRoom] = useState({});
-  const [filterRoom, setfilterRoom] = useState({});
-  
+  const [room, setRoom] = useState([]);
+ 
   const roomWithNum = room.data?.map((item, index) => {
     return { ...item, Num: index + 1 };
   });
+  const [filterRoom, setfilterRoom] = useState({});
+  const [hoveredRow, setHoveredRow] = useState(null);
+  const [alert, setAlert] = useState({ message: '', color: '' });
+
+
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
@@ -76,26 +70,61 @@ const Room = () => {
     },
     {
       name : "STATUT",
-      selector : row  => row.room.room_status,
+      selector : row  => (
+        <Badge color="" className="badge-dot mr-4">
+          <i className="bg-success" />
+          {row.room.room_status}
+        </Badge>) ,
       sortable : true
     }
   ]
 
+  const customStyles = {
+    rows: {
+        style: {
+
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+
+        },
+    },
+};
+
 
   useEffect ( () => {
 
-    Axios.get(urlGetR)
-    .then( res => {
-      setRoom(res.data);
-      console.log(res.data);
-    }).catch( err => {
-        console.log(err)
-    });
+    const fetchData = async () => {
+      try {
+        const res = await Axios.get(urlGetR);
+        setRoom(res.data);
+        setAlert({ message: "", color: '' });
+        console.log(res.data);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+      }
+    };
+    
+    fetchData();
 
   }, [urlGetR,modal]);
 
 const handleFilter = (e) => {
-  const newRoom = filterRoom.filter(row => row.nom.toLowerCase().includes(e.target.value.toLowerCase()));
+  setfilterRoom(roomWithNum)
+  console.log("ce qui est tapé",e.target.value);
+  console.log("filterRoom",filterRoom);
+  const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
+  console.log("newRoom",newRoom);
   setRoom(newRoom);
 }
 
@@ -109,11 +138,29 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
+// gestion de coloration au passage de la souris sur la ligne
+  const handleMouseEnter = (row) => {
+    setHoveredRow(row);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredRow(null);
+  };
+  // Fonction pour appliquer le style différent à la ligne lorsque la souris passe dessus
+  const conditionalRowStyles = [
+    {
+      when: (row) => row === hoveredRow, // Appliquer le style lorsque la ligne est égale à la ligne survolée
+      style: {
+        backgroundColor: "#f2f2f2", // Changer la couleur de fond de la ligne
+      },
+    },
+  ];
 
 
   return (
-    <div  className="backgroundImgChambre">
+      <div  className="backgroundImgChambre">
       <Header menuTitle = "CHAMBRE" />
+      {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
 
       {/* Page content */}
       <Container fluid className="pt-4">
@@ -144,6 +191,11 @@ const closeModal = () => {
               data={roomWithNum}
               keyField="Num"
               onRowClicked={handleRowClick}
+              customStyles={customStyles}
+              onRowMouseEnter={handleMouseEnter}
+              onRowMouseLeave={handleMouseLeave}
+              conditionalRowStyles={conditionalRowStyles}
+              highlightOnHover
               pagination >
             </DataTable>  )
           }

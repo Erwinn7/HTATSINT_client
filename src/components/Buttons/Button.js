@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ButtonCustom from './ButtonCustom';
-function ModalExample({butonTitle}) {
+function AjoutClient({butonTitle , onClick}) {
   const [modal, setModal] = useState(false);
 
   const toggle = () => setModal(!modal);
@@ -11,7 +11,7 @@ function ModalExample({butonTitle}) {
       <Button color="primary" className='bg-gradient-info' onClick={toggle} >
       Ajouter un nouveau client
       </Button>
-      <Modal isOpen={modal} fade={false} toggle={toggle}>
+      <Modal isOpen={modal} fade={true} toggle={toggle}>
         <ModalHeader toggle={toggle} style={{backgroundColor: 'blue'}} className='bg-gradient-info' color="primary">AJOUT CLIENT</ModalHeader>
         <ModalBody>
          <center><ButtonCustom></ButtonCustom></center> 
@@ -27,4 +27,4 @@ function ModalExample({butonTitle}) {
   );
 }
 
-export default ModalExample;
+export default AjoutClient;
