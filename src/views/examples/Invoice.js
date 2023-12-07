@@ -2,6 +2,8 @@ import  {React,useState,useEffect} from "react";
 import {
   Input,
   Container,
+  Badge,
+  Button,Modal,ModalBody,ModalHeader,ModalFooter
 } from "reactstrap";
 import Header from "components/Headers/Header.js";
 import DataTable from "react-data-table-component";
@@ -13,48 +15,64 @@ import { PDFViewer } from '@react-pdf/renderer';
 
 const Invoice = () => {
 
-  const urlGetInvoice = prefix_link+"/api/v1/clients";
-  const [invoice, setInvoice] = useState({});
+  const urlGetInvoice = prefix_link+"/api/v1/invoices";
+  const [invoice, setInvoice] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [filterInvoice, setfilterInvoice] = useState({});
+  const [selectedRow, setSelectedRow] = useState(null);
 
-  const invoiceWithNum = invoice.data?.map((item, index) => {
-    return { ...item, Num: index + 1 };
-  });
+
 
 
   const cols = [
     {
-      name : "N°",
-      selector : row  => row.Num,
+      name : "DATE D'EMISSION",
+      selector : row  => formatDate(row.invoiceEmitDate), 
       sortable : true
 
     },
     {
-      name : "CHAMBRE",
-      selector : row  => row.room.room_label,
+      name : "CLIENT",
+      selector : row  => row.clientFullname,
       sortable : true
     },
     {
-      name : "PLACE",
-      selector : row  => row.room_category.place_number,
-      sortable : true
-    },
-    {
-      name : "TYPE",
-      selector : row  => row.room_category.room_category_label,
+      name : "N° FACTURE",
+      selector : row  => row.invoiceNumber,
       sortable : true
     },
     {
       name : "PRIX (FCFA)",
-      selector : row  => row.room.room_amount,
+      selector : row  => row.invoiceAmount,
       sortable : true
     },
     {
       name : "STATUT",
-      selector : row  => row.room.room_status,
+      selector : row  => (
+        <Badge color="" className="badge-dot mr-4">
+          <i className={row.invoiceStatus === 'Paid' ? "bg-success" : "bg-danger"} />
+          {row.invoiceStatus}
+        </Badge>),
       sortable : true
-    }
+    },
+    {
+      name: 'APERCU',
+      cell: (row) => (
+        <Button color="success"  onClick={() => handleButtonClick(row)}>Voir</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+    },
   ]
+
+  const handleButtonClick = async (row) => {
+   
+    setSelectedRow(row);
+    setModalOpen(true);
+  
+    
+  };
+
 
   const customStyles = {
     rows: {
@@ -78,37 +96,81 @@ const Invoice = () => {
 };
 
 
-// useEffect ( () => {
 
-//   const fetchData = async () => {
-//     try {
-//       const res = await Axios.get(urlGetInvoice);
-//       setInvoice(res.data);
-//       console.log(res.data);
-//     } catch (error) {
-//       console.error('Erreur lors de la requête GET', error);
-//     }
-//   };
+const formatDate = (inputDate) => {
+  const date = new Date(inputDate);
+
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const year = date.getFullYear();
+
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+  return formattedDate;
+};
+
+
+useEffect ( () => {
+
+  const fetchData = async () => {
+    try {
+      const res = await Axios.get(urlGetInvoice);
+      const myDatas = res.data;
+      var myNewElmts = []
+      myDatas.data?.forEach(element => {
+       
+        element.invoice.forEach(item => {
+          
+          const newInvoice ={
+
+            invoiceId: item.id,
+            invoiceNumber: item.invoice_number,
+            invoiceAmount: item.invoice_amount,
+            invoiceEmitDate: item.created_at,
+            invoicePaymentDate: item.updated_at,
+            invoiceStatus: item.invoice_status,
+            clientFullname: element.customer.institute_name ? element.customer.institute_name : element.customer.last_name+" "+element.customer.first_name,
+              
+          }
+
+         // console.log(newInvoice);
+         myNewElmts = [...myNewElmts, newInvoice];
+        })
+
+      });
+      setInvoice(myNewElmts);
+
+    } catch (error) {
+      console.error('Erreur lors de la requête GET', error);
+    }
+  };
   
-//   fetchData();
+  fetchData();
 
-// }, [urlGetInvoice]);
+}, [urlGetInvoice]);
 
 const handleFilter = (e) => {
-  const newInvoice = filterInvoice.filter(row => row.room.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
+  const newInvoice = filterInvoice.filter(row => row.invoiceNumber.toLowerCase().includes(e.target.value.toLowerCase()));
   setInvoice(newInvoice);
 }
 
+const closeModal = () => {
+  setModalOpen(false);
+};
 
-// const handleRowClick = (row) => {
-//   setSelectedRow(row);
-// };
+
 
 const sampleInvoice = {
   date_facture: '2023-12-01',
-  numero_facture: 'INV12345',
-  client: 'Nom du client\nAdresse du client',
-  designation: 'Chambre',
+  numero_facture: '0021/PERL/23',
+  nClient: 'Hotel le pelerin',
+  aClient: 'DASSA',
+  tClient: '0022961656895',
+  designation: 'Chambre 305',
   nombre_de_jour: 5,
   prix_journalier: 25000,
   prix_total: 5 * 25000,
@@ -124,14 +186,8 @@ const sampleInvoice = {
       <Container fluid className="pt-4 pb-5">
 
         
-      <PDFViewer width="100%" height="800px">
-      <Invoice myInvoice={sampleInvoice} />
-    </PDFViewer>
-
-
-
-
-        {/* <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
+    
+        <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
             <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} />
         </div>
         <div>
@@ -140,14 +196,21 @@ const sampleInvoice = {
               <DataTable
               title="Liste des Factures"
               columns={cols}
-              data={invoiceWithNum}
+              data={invoice}
               keyField="Num"
               // onRowClicked={handleRowClick}
               customStyles={customStyles}
               pagination >
             </DataTable>  )
           }
-        </div> */}
+        </div>
+        <div>
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg"  >
+            <PDFViewer width="100%" height="600px" >
+              <PrintInvoice myInvoice={sampleInvoice} />
+            </PDFViewer>
+          </Modal>
+        </div>
 
       </Container>
     </div>
