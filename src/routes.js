@@ -20,42 +20,42 @@ export const routes = [
   {
     path: "/icons",
     name: "RESERVATION",
-    icon: "fa fa-registered text-blue",
+    icon: "fa fa-registered text-dark",
     component: <Icons />,
     layout: "/admin",
   },
   {
     path: "/room",
     name: "CHAMBRE",
-    icon: " fa fa-home text-orange",
+    icon: " fa fa-home text-dark",
     component: <Room />,
     layout: "/admin",
   },
   {
     path: "/client",
     name: "CLIENT",
-    icon: "ni ni-circle-08 text-yellow",
+    icon: "ni ni-circle-08 text-dark",
     component: <Client />,
     layout: "/admin",
   },
   {
     path: "/invoice",
     name: "FACTURE",
-    icon: "fa fa-clipboard text-red",
+    icon: "fa fa-clipboard text-dark",
     component: <Invoice />,
     layout: "/admin",
   },
   {
     path: "/Reglement",
     name: "REGLEMENT",
-    icon: "fa fa-credit-card text-info",
+    icon: "fa fa-credit-card text-dark",
     component: <Reglement />,
     layout: "/admin"
   },
   {
     path: "/occupation",
     name: "ATTRIBUER CHAMBRE",
-    icon: "fa fa-bed  text-pink",
+    icon: "fa fa-bed  text-dark",
     component: <Occupation />,
     layout: "/admin",
   },
@@ -63,7 +63,7 @@ export const routes = [
   {
     path: "/register",
     name: "UTILISATEURS",
-    icon: "ni ni-single-02 text-success",
+    icon: "ni ni-single-02 text-dark",
     component: <Register />,
     layout: "/admin",
   }
