@@ -69,7 +69,7 @@ const Invoice = () => {
    
     setSelectedRow(row);
     setModalOpen(true);
-  
+    console.log(selectedRow);
     
   };
 
@@ -205,7 +205,7 @@ const sampleInvoice = {
           }
         </div>
         <div>
-          <Modal isOpen={modalOpen} toggle={closeModal} size="lg"  >
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg" >
             <PDFViewer width="100%" height="600px" >
               <PrintInvoice myInvoice={sampleInvoice} />
             </PDFViewer>
