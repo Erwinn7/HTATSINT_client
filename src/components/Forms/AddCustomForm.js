@@ -1,10 +1,12 @@
-import React from 'react';
-import  { useState } from 'react';
+
+import  { useState,React  } from 'react';
 import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from 'reactstrap';
 import { prefix_link } from "variables/globalesVar";
-
+//import GetClient from 'components/views/examples/Clients';
 function MyForm() {
   const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
+  //const [paymentSuccess, setPaymentSuccess] = useState(false);
+  //const [clients, setClients] = useState([]);
 
     const [formData, setFormData] = useState({
       // Initial state of your form data
@@ -40,6 +42,10 @@ function MyForm() {
           const data = await response.json();
           console.log('Response from Flask API:', data);
           setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
+          //mettre une logique pour que la page soit rafraichie avec useEffect
+         // Mise à jour de la liste des clients après l'ajout réussi
+        
+
           //
           setTimeout(() => {
             setAlert({ message: '', color: '' });
@@ -196,7 +202,7 @@ setIsExistingPhysiqueClient(true);
 
     <FormGroup>
         <Label for="phone_number">
-         NUMERO DE TELEPHONE
+         NUMERO DE TELEPHONE**
         </Label>
         <Input
         type='numeric'

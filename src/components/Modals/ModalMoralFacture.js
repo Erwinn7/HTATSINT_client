@@ -1,36 +1,46 @@
-import {Modal, ModalBody, ModalHeader , Button   } from 'reactstrap';
+import {Modal, ModalBody, ModalHeader , Button, Alert   } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { prefix_link } from 'variables/globalesVar';
+import ModalApercueFacture from './ModalApercueFacture';
+import { useState } from 'react';
 //import {lesfactures } from 'variables/globalesVar';
 
 
 const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
+  const [alert, setAlert] = useState({ message: '', color: '' });
+  const [showApercueModal, setShowApercueModal] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+
   const MySwal = withReactContent(Swal);
-  const handleSolder = (facture ) => {
+  const handleSolder =  (facture ) => {
+ 
     // use sweetalert2 to Display confirmation dialog
   MySwal.fire({
-     title: 'Etes-vous sur de vouloir solder la facture?',
-     icon: 'warning',
-     showCancelButton: true,
-     confirmButtonText: 'Oui',
-     cancelButtonText: 'Non',
+    title: 'Confirmez-vous la solderie de cette facture?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Oui',
+    cancelButtonText: 'Annuler',
    })
    // handle confirm button click
-   .then((result) => {
+   .then( async(result) => {
      if (result.isConfirmed) {
       //CREER UN ETAT POUR GARDER TOUTES LES INFORMATIONS DE LA FACTURE ET LE CLIENT
       const formData = {
         'payer_phone': client.phone_number,
         'payer_name': client.institute_name,
-        'customer_id': client.customer_id,
-        'payement_id': '4cbe4bda-84c7-489e-97b0-cd6cdd933c76',
-
-      }
+        'customer_id': client.id,
+        'payment_type_id': '4cbe4bda-84c7-489e-97b0-cd6cdd933c76',
+        'invoice_id': facture.id,
+      };
       // faire une requette pour ajouter le paiement avec fecth
-      const fetchData = async () => {
+      console.log(formData);
         try {
-          const response = await fetch(prefix_link + '/api/v1/make_payment', {
+          const response = await fetch(prefix_link +'/api/v1/make_payment', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -40,32 +50,32 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
           });
       
           if (!response.ok) {
-            console.log('Response from Flask API:', 'merde');
+           // console.log('Response from Flask APIiiiii:', 'merde');
           }
       
           const data = await response.json();
+          console.log('Response frommmmmmmmmm Flask API:', data);
+          setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
+          //
+          setTimeout(() => {
+            setAlert({ message: '', color: '' });
+          }, 5000);
+setPaymentSuccess(true);
+          setShowApercueModal(true);
+
+
+
           
-      console.log('Response from Flask API:', data);
+      console.log('Response frommmmm Flask API:', data);
          // return data;
           
         } catch (error) {
           // emettre une alerte d'erreur
-          console.error('Une erreur s\'est produite : ', error);
+          console.error('Une erreur s\'est produiteeeeeee : ', error);
         }
-      };
+      ;
 
-
-
-
-console.log(facture);
-
-       // use sweetalert2 to Display success dialog
-       MySwal.fire({
-         title: 'La facture N:' + facture.id+ ' de '+ facture.last_name +' a bien ete soldee',
-
-         icon: 'success',
-       });
-       //fermer le modal
+//console.log(facture);
        
      }
    });
@@ -74,9 +84,11 @@ console.log(facture);
         return null; // Ou renvoyer un autre contenu approprié si `factures` est indéfini
       }
     return (
+      
       <Modal isOpen={ouvert} toggle={toggle} >
         <ModalHeader toggle={toggle}>Liste des factures</ModalHeader>
         <ModalBody>
+        {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
           {factures.map((facture) => (
             <div style={{ padding: '10px', borderRadius: '5px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)' }}   key={facture.id}>
               <h5>Facture Numero: <strong>{facture.invoice_number}</strong> </h5>
@@ -88,6 +100,9 @@ console.log(facture);
             </div>
           ))}
         </ModalBody>
+        {showApercueModal && (
+        <ModalApercueFacture ouvert={true} toggle={() => setShowApercueModal(false)} />
+      )}
       </Modal>
     );
   };

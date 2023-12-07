@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { React, useState, useEffect, useCallback } from 'react';
 import { Container, Input, Button } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
@@ -11,59 +11,75 @@ import { prefix_link } from 'variables/globalesVar';
 const Apayer =  () => {
  // const [room, setRoom] = useState([]); // Assurez-vous de déclarer l'état pour la variable 
 
- 
-
-
  const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
  const [facturesClientSelectionne, setFacturesClientSelectionne] = useState([]);
  const [modalMoralOuvert, setModalMoralOuvert] = useState(false);
  const [modalPhysiqueOuvert, setModalPhysiqueOuvert] = useState(false);
  // client selectionne
  const [clientSelectionne, setClientSelectionne] = useState(null);
-
+const [paymentSuccess, setPaymentSuccess] = useState(false);
  const [clients, setClients] = useState([]); // Ajoutez l'état pour stocker la liste des clients
 
- const fetchData = async () => {
-  try {
-    const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
-      method: 'GET'
-    });
-
-    if (!response.ok) {
-      console.log('Response from Flask API:', 'merde');
-    }
-
-    const data = await response.json();
-    if (data.data && data.data.length > 0) {
-      const clientsData = data.data.map(item => {
-        const client = item.customer;
-        const invoices = item.invoice;
-        const totalDue = item.amount;
-        const numberOfInvoices = invoices.length;
-        console.log('Response from Flask API:', client);
-        return {
-          ...client,
-          totalDue,
-          numberOfInvoices,
-          invoices,
-        };
-      });
-
-      setClients(clientsData);
-    }
-   
-
-   // return data;
-    
-  } catch (error) {
-    // emettre une alerte d'erreur
-    console.error('Une erreur s\'est produite : ', error);
-  }
+ const handlePaymentSuccess = () => {
+  // Cette fonction sera appelée lorsque le paiement est réussi
+  // Elle mettra à jour l'état pour déclencher l'effet useEffect
+  setPaymentSuccess(true);
 };
 
-useEffect(() => {
-  fetchData();
-}, []);
+  async function GetClientsInvoice  ()  {
+    try {
+      const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
+        method: 'GET'
+      });
+  
+      if (!response.ok) {
+        console.log('Response from Flask API:', 'merde');
+      }
+  
+      const data = await response.json();
+      if (data.data && data.data.length > 0) {
+        const clientsData = data.data.map(item => {
+          const client = item.customer;
+          const invoices = item.invoice;
+          const totalDue = item.amount;
+          const numberOfInvoices = invoices.length;
+          console.log('Response from Flask API:', client);
+          return {
+            ...client,
+            totalDue,
+            numberOfInvoices,
+            invoices,
+          };
+        });
+  
+        setClients(clientsData);
+        return clientsData;
+      }
+     
+  
+     // return clientsData;
+      
+    } catch (error) {
+      // emettre une alerte d'erreur
+      console.error('Une erreurrrrr s\'est produite : ', error);
+    };
+  };
+  
+
+  
+  useEffect(() => {
+    const fetchData =  async () => {
+      try {
+        const res = await GetClientsInvoice();
+        setClients(res);
+       // console.log(res.data);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+      }
+    };
+   fetchData();
+    
+  }, [   modalMoralOuvert] ); 
 
 
 // recuperer la listes des client depuis la reponse de l'api
@@ -185,7 +201,7 @@ useEffect(() => {
   ];
   const handleButtonClick = async (row) => {
    
-    console.log('Données de la ligne cliqué :', row);
+   // console.log('Données de la ligne cliqué :', row);
 
    
     if (row.institute_name !== null) {
@@ -200,7 +216,7 @@ useEffect(() => {
       setClientSelectionne(row);
     }
    
-    console.log('Données de la ligne cliqué :', row);
+    //console.log('Données de la ligne cliqué :', row);
 
     // Ouvrez le modal
     
@@ -259,12 +275,14 @@ useEffect(() => {
         toggle={() => setModalMoralOuvert(!modalMoralOuvert)}
         factures={facturesClientSelectionne}
         client={clientSelectionne}
+        onPaymentSuccess={handlePaymentSuccess}
       />
             <ModalPhysiqueFactures
         ouvert={modalPhysiqueOuvert}
         toggle={() => setModalPhysiqueOuvert(!modalPhysiqueOuvert)}
         factures={facturesClientSelectionne}
         client={clientSelectionne}
+        onPaymentSuccess={handlePaymentSuccess}
       />
           </div>
         </div>

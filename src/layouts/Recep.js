@@ -7,11 +7,10 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-//import routes from "routes.js";
-import {routes} from "routes.js";
+import { routesRecep} from "routes.js";
 
 
-const Admin = (props) => {
+const Recep = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -21,9 +20,9 @@ const Admin = (props) => {
     mainContent.current.scrollTop = 0;
   }, [location]);
 
-  const getRoutes = (routes) => {
-    return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+  const getRoutes = (routesRecep) => {
+    return routesRecep.map((prop, key) => {
+      if  (prop.layout === "/recep" /*&& prop.path !== "/register"*/) {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -34,12 +33,12 @@ const Admin = (props) => {
   };
 
   const getBrandText = (path) => {
-    for (let i = 0; i < routes.length; i++) {
+    for (let i = 0; i < routesRecep.length; i++) {
       if (
-        props?.location?.pathname.indexOf(routes[i].layout + routes[i].path) !==
+        props?.location?.pathname.indexOf(routesRecep[i].layout + routesRecep[i].path) !==
         -1
       ) {
-        return routes[i].name;
+        return routesRecep[i].name;
       }
     }
     return "Brand";
@@ -49,9 +48,9 @@ const Admin = (props) => {
     <>
       <Sidebar
         {...props}
-        routes={routes}
+        routes={routesRecep}
         logo={{
-          innerLink: "/admin/index",
+          innerLink: "/recep/index",
           imgSrc: require("../assets/img/brand/logo.png"),
           imgAlt: "...",
          
@@ -68,8 +67,8 @@ const Admin = (props) => {
           brandText={getBrandText(props?.location?.pathname)}
         />
         <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/admin/index" replace />} />
+          {getRoutes(routesRecep)}
+          <Route path="*" element={<Navigate to="/recep/index" replace />} />
         </Routes>
         <Container fluid> 
           <AdminFooter />
@@ -80,4 +79,4 @@ const Admin = (props) => {
   );
 };
 
-export default Admin;
+export default Recep;

@@ -1,37 +1,88 @@
-import {Modal, ModalBody, ModalHeader , Button   } from 'reactstrap';
+import {Modal, ModalBody, ModalHeader , Button , Alert  } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { prefix_link } from 'variables/globalesVar';
+import ModalApercueFacture from './ModalApercueFacture';
+import { useState } from 'react';
 //import {lesfactures } from 'variables/globalesVar';
 
 
-const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client}) => {
+const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuccess}) => {
   const MySwal = withReactContent(Swal);
-  const handleSolder = (facture ) => {
+  const [showApercueModal, setShowApercueModal] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+
+  const handleSolder = async (facture ) => {
     // use sweetalert2 to Display confirmation dialog
-  MySwal.fire({
-     title: 'Etes-vous sur de vouloir solder la facture?',
-     icon: 'warning',
-     showCancelButton: true,
-     confirmButtonText: 'Oui',
-     cancelButtonText: 'Non',
-   })
-   // handle confirm button click
-   .then((result) => {
-     if (result.isConfirmed) {
-      // faire une requette pour ajouter le paiement avec fecth
+    MySwal.fire({
+      title: 'Confirmez-vous la solderie de cette facture?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui',
+      cancelButtonText: 'Annuler',
+    })
+  
       
-console.log(facture);
+        
+    .then( async (result) => {
+      if (result.isConfirmed) {
+        const formData = {
+          'payer_phone': client.phone_number,
+          'payer_name': client.first_name,
+          'customer_id': client.id,
+          'payment_type_id': '4cbe4bda-84c7-489e-97b0-cd6cdd933c76',
+  'invoice_id': facture.id,
+        }
+        console.log(formData);
+    // faire une requette pour ajouter le paiement avec fecth
+    
+      try {
+        const response = await fetch(prefix_link +'/api/v1/make_payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
 
-       // use sweetalert2 to Display success dialog
-       MySwal.fire({
-         title: 'La facture N:' + facture.id+ ' de '+ facture.last_name +' a bien ete soldee',
+          },
+          body: JSON.stringify(formData),
+        });
+    
+        if (!response.ok) {
+          console.log('Response from Flask API:', 'merde');
+        }
+        const data = await response.json();
+        console.log(data);
+       /* setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
+        //
+        setTimeout(() => {
+          setAlert({ message: '', color: '' });
+        }, 5000);*/
 
-         icon: 'success',
-       });
-       //fermer le modal
-       toggle();
-     }
-   });
+        // ouvrir le modal pour l'apercu
+        if (onPaymentSuccess) {
+          onPaymentSuccess();
+        }
+       
+
+//console.log('Response frommmmm Flask API:', showApercueModal);
+
+
+       
+
+
+
+      } catch (error) {
+        console.log('Errorrrrrrra:', error);
+      }
+  
+        setShowApercueModal(true);
+      }
+    })
+     
+    
   };
     if (!factures) {
         return null; // Ou renvoyer un autre contenu approprié si `factures` est indéfini
@@ -40,6 +91,7 @@ console.log(facture);
       <Modal isOpen={ouvert} toggle={toggle} >
         <ModalHeader toggle={toggle}>Liste des factures</ModalHeader>
         <ModalBody>
+        
           {factures.map((facture) => (
             <div style={{ padding: '10px', borderRadius: '5px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)' }}   key={facture.id}>
               <h5>Facture Numero: <strong>{facture.invoice_number}</strong> </h5>
@@ -53,7 +105,11 @@ console.log(facture);
             </div>
           ))}
         </ModalBody>
+        {showApercueModal && (
+        <ModalApercueFacture ouvert={true} toggle={() => setShowApercueModal(false)} />
+      )}
       </Modal>
+      
     );
   };
   export default ModalPhysiqueFactures
