@@ -12,13 +12,14 @@ const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart}) => {
 
 const urlGetCustomer = prefix_link+"/api/v1/clients";
 const urlPostOccupant = prefix_link+"/api/v1/occupant";
+const urlPostInvoice = prefix_link+"/api/v1/invoice";
 
 const [save, setSave] = useState(null)
 const [customers, setCustomers] = useState([])
 const [ctrlSoumission, setCtrlSoumission] = useState("")
 const initOccupants = {
         room_id: room_id_occupation,
-        current_invoice_id: "",
+        occupation_id: "",
         customer_id : "",
         start_date : dateArrivee,
         end_date : dateDepart,
@@ -104,29 +105,42 @@ useEffect(() => {
     
   }
 
-  const handleAllSubmit = (e) => {
+  const handleAllSubmit = async (e) => {
     setSave(false)
     e.preventDefault();
-
-    var invoice_id_from_DTB= ""
+    var occupation_id_from_dtb = "";
 
     if (occupants.length > 0) {
-      // envoie de l'objet occupants vers la base de donnée
-      occupants.forEach((itemToSend) => {
 
+      // envoice d'un occupant vers la base pour creation de facture 
+      const sendUnOccupant = async () => {
+        try {
+
+          const response = await  axios.post(urlPostInvoice,occupants[0],config);
+          console.log('Facture créer',response.data);
+          occupation_id_from_dtb = response.data.room_occupation.id
+          setSave(true);
+          
+        } catch (error) {
+          console.error('Erreur lors de la requête POST', error);
+          setSave(true); 
+        }
+      }
+      sendUnOccupant();
+     
+    setTimeout(() => {
+
+      // envoie de l'objet occupants vers la base de donnée
+      occupants.forEach(async (itemToSend) => {
+
+        itemToSend.occupation_id = occupation_id_from_dtb
 
         const sendOccupant = async () => {
           try {
-
-            if (invoice_id_from_DTB !== "") {
-              itemToSend.current_invoice_id = invoice_id_from_DTB
-            }
-
+            
             console.log(itemToSend)
-            
-            const response = await  axios.post(urlPostOccupant,itemToSend,config);
-            console.log(response.data);
-            
+            const res = await  axios.post(urlPostOccupant,itemToSend,config);
+            console.log("les occupants: ",res.data);
             setSave(true); 
 
           } catch (error) {
@@ -139,16 +153,17 @@ useEffect(() => {
 
       });
 
+    }, 2000); // Attendre 2 secondes
+ 
+
+      
      setOccupants([])
      setSave(true)
+
     } else {
       setCtrlSoumission("Veuiller ajouter au moins un Occupant");
       setSave(true)
     }
-    invoice_id_from_DTB= ""
-
-
-
 
   };
 
