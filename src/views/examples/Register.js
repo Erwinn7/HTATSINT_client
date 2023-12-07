@@ -4,14 +4,14 @@ import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
 import AjoutUser from 'components/Buttons/ButtonAddUser';
 //import GetClient from 'components/Funtions/GetCustomer';
-import { client } from 'variables/globalesVar';
+// import { client } from 'variables/globalesVar';
 import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 
 
 const Users = () => {
-  const [user, setUser] = useState(client); 
-  const [filterUser, setfilterUser] = useState(client);
+  const [user, setUser] = useState(); 
+  const [filterUser, setfilterUser] = useState();
   const [users, setUsers] = useState([]);
 
 async function GetUsers  () {
