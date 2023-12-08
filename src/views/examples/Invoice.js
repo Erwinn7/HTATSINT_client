@@ -82,7 +82,7 @@ const Invoice = () => {
         const myDatas = response.data;
 
         const newInvoiceData = {
-          invoiceEmitDate: row.invoiceEmitDate ,
+          invoiceEmitDate: formatDate(row.invoiceEmitDate) ,
           invoiceNumber: row.invoiceNumber,
           invoiceStatus: row.invoiceStatus,
           customerFullname: row.costumerFullname,
