@@ -80,25 +80,25 @@ console.log('Response from Flask API:', 'merde', response);
       console.error('Une erreurrrrr s\'est produite : ', error);
     };
   };
-  
+  const fetchData =  async () => {
+    try {
+      const res = await GetClientsInvoice();
+      setClients(res);
+      setPending(false);
+     // console.log(res.data);
+    } catch (error) {
+     // navigate('/auth/login');
+      console.error('Erreur lors de la requête GET', error);
+    }
+  };
 
   
   useEffect(() => {
    
-    const fetchData =  async () => {
-      try {
-        const res = await GetClientsInvoice();
-        setClients(res);
-        setPending(false);
-       // console.log(res.data);
-      } catch (error) {
-       // navigate('/auth/login');
-        console.error('Erreur lors de la requête GET', error);
-      }
-    };
+  
    fetchData();
     
-  }, [   modalMoralOuvert] ); 
+  }, [  ] ); 
 
 
 // recuperer la listes des client depuis la reponse de l'api
@@ -279,7 +279,7 @@ console.log('Response from Flask API:', 'merde', response);
     <div className="backgroundImgClient">
       <Header menuTitle="REGLEMENTS" />
 
-      <Container className="my-5" fluid>
+      <Container className=" pb-5 my-5" fluid>
         <div className="row">
           <div className="float-left col-md-3 col-12">
 

@@ -4,24 +4,22 @@ import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
 import AjoutUser from 'components/Buttons/ButtonAddUser';
 //import GetClient from 'components/Funtions/GetCustomer';
-<<<<<<< HEAD
+
 // import { client } from 'variables/globalesVar';
-=======
+
 //import { client } from 'variables/globalesVar';
->>>>>>> e401aac120e50b00dbcbd14901a82a4d254a0ccf
+
 import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 //import {Oval} from "react-loader-spinner";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Users = () => {
-<<<<<<< HEAD
   const [user, setUser] = useState(); 
-  const [filterUser, setfilterUser] = useState();
-=======
+  
   //const [user, setUser] = useState(client); 
   //const [filterUser, setfilterUser] = useState(client);
->>>>>>> e401aac120e50b00dbcbd14901a82a4d254a0ccf
+
   const [users, setUsers] = useState([]);
 
 const [pending, setPending] = useState(true);

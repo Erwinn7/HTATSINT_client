@@ -373,7 +373,7 @@ const customStyles = {
          {/* Page content */}
 
          
-      <Container className="my-5" fluid>
+      <Container className="pb-5 my-5" fluid>
       <div className="row">
       <div className="col">
       <AjoutClient 
