@@ -51,11 +51,12 @@ const Admin = (props) => {
         {...props}
         routes={routes}
         logo={{
-          innerLink: "/admin/index",
+          innerLink: "",
           imgSrc: require("../assets/img/brand/logo.png"),
           imgAlt: "...",
          
           }}
+          userRole={"Administrateur"}
           // Add the following style to make the sidebar transparent
           className="sidebar-transparent"
                

@@ -157,7 +157,7 @@ import { prefix_link } from "variables/globalesVar";
     fetchData();
 
   }
-    
+     
 
     return (
       <div  className="backgroundImgChambre">

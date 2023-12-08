@@ -50,11 +50,12 @@ const Recep = (props) => {
         {...props}
         routes={routesRecep}
         logo={{
-          innerLink: "/recep/index",
+          innerLink: "",
           imgSrc: require("../assets/img/brand/logo.png"),
           imgAlt: "...",
          
           }}
+          userRole={"Réceptionniste"}
           // Add the following style to make the sidebar transparent
           className="sidebar-transparent"
                

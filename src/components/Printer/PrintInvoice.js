@@ -51,6 +51,18 @@ const styles = StyleSheet.create({
   slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
 });
 
+// newInvoiceData = {
+//   invoiceEmitDate: row.invoiceEmitDate ,
+//   invoiceNumber: row.invoiceNumber,
+//   invoiceStatus: row.invoiceStatus,
+//   customerFullname: row.costumerFullname,
+//   customerAddress: row.costumerAddress,
+//   costumerEmail: row.costumerEmail,
+//   costumerIfu: row.costumerIfu,  
+//   designation: myDatas.room.room_label,
+//   dayly_price: myDatas.room.room_amount,
+//   number_of_days: myDatas.number_of_day,
+// }
 
 
 const PrintInvoice = ({myInvoice}) => {
@@ -60,19 +72,21 @@ return(
       <View style={styles.header}>
         {/* Logo de l'entreprise */}
         <Image src={logo} style={styles.logo} />
-        <Text fontweight="bold" >Facture N°:</Text><Text>{myInvoice.numero_facture}</Text>
+        <Text fontweight="bold" >Facture N°:</Text><Text>{myInvoice.invoiceNumber}</Text>
       </View>
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
-          <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.date_facture}</Text>
+          <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.invoiceEmitDate}</Text>
         </View>
         <View>
           {/* Numéro de facture et informations client */}
           <Text>DESTINATAIRE</Text>
-          <Text style={{fontSize:10}} >{myInvoice.nClient}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.aClient}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.tClient}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.customerFullname}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.customerAddress}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.costumerEmail}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.costumerIfu}</Text>
+
         </View>
       </View>
       <View style={styles.section}>
@@ -98,22 +112,22 @@ return(
               <Text style={styles.tableCellArticle}>{myInvoice.designation}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCellArticle}>{myInvoice.nombre_de_jour}</Text>
+              <Text style={styles.tableCellArticle}>{myInvoice.number_of_days}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.prix_journalier)}</Text>
+              <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.dayly_price)}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.prix_total)}</Text>
+              <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.dayly_price * myInvoice.number_of_days)}</Text>
             </View>
           </View>
         </View>
       </View>
       {/* Lignes pour le total, la TVA et le total TTC */}
       <View style={styles.totals}>
-        <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.prix_total)} FCFA</Text>
+        <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.dayly_price * myInvoice.number_of_days)} FCFA</Text>
         <Text style={{marginBottom: 5}} >TVA: {formatNumber(0)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >Total TTC: {formatNumber(myInvoice.prix_total)} FCFA</Text>
+        <Text style={{marginBottom: 5}} >Total TTC: {formatNumber(myInvoice.dayly_price * myInvoice.number_of_days)} FCFA</Text>
       </View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>

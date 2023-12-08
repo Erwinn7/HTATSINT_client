@@ -3,11 +3,11 @@ import {
   Input,
   Container,
   Badge,
-  Button,Modal,ModalBody,ModalHeader,ModalFooter
+  Button,Modal,
 } from "reactstrap";
 import Header from "components/Headers/Header.js";
 import DataTable from "react-data-table-component";
-import Axios from "axios";
+import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
 import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
@@ -15,12 +15,20 @@ import { PDFViewer } from '@react-pdf/renderer';
 
 const Invoice = () => {
 
-  const urlGetInvoice = prefix_link+"/api/v1/invoices";
+  const urlGetInvoice = prefix_link+"/api/v1/invoices";  
+  const urlGetRoomAndOccup = prefix_link+"/api/v1/room_and_occupation";    
+  
   const [invoice, setInvoice] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterInvoice, setfilterInvoice] = useState({});
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, setSelectedRow] = useState();
 
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
+    },
+  };
 
 
 
@@ -33,7 +41,7 @@ const Invoice = () => {
     },
     {
       name : "CLIENT",
-      selector : row  => row.clientFullname,
+      selector : row  => row.costumerFullname,
       sortable : true
     },
     {
@@ -51,7 +59,7 @@ const Invoice = () => {
       selector : row  => (
         <Badge color="" className="badge-dot mr-4">
           <i className={row.invoiceStatus === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoiceStatus}
+          {row.invoiceStatus ==="Paid" ? "Payé" : "Non Payé"}
         </Badge>),
       sortable : true
     },
@@ -67,9 +75,36 @@ const Invoice = () => {
 
   const handleButtonClick = async (row) => {
    
-    setSelectedRow(row);
+    const fetchInvoiceData = async () => {
+      try {
+        const response = await axios.post(urlGetRoomAndOccup, {invoice_id: row.invoiceId },config);
+        //console.log("Reponse du serveur: ",response.data) ;
+        const myDatas = response.data;
+
+        const newInvoiceData = {
+          invoiceEmitDate: formatDate(row.invoiceEmitDate) ,
+          invoiceNumber: row.invoiceNumber,
+          invoiceStatus: row.invoiceStatus,
+          customerFullname: row.costumerFullname,
+          customerAddress: row.costumerAddress,
+          costumerEmail: row.costumerEmail,
+          costumerIfu: row.costumerIfu,  
+          designation: myDatas.room.room_label,
+          dayly_price: myDatas.room.room_amount,
+          number_of_days: myDatas.number_of_day,
+        }
+
+        setSelectedRow(newInvoiceData);
+        //console.log(newInvoiceData);
+
+
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+      }
+    };
+
+    fetchInvoiceData();
     setModalOpen(true);
-  
     
   };
 
@@ -118,7 +153,8 @@ useEffect ( () => {
 
   const fetchData = async () => {
     try {
-      const res = await Axios.get(urlGetInvoice);
+      const res = await axios.get(urlGetInvoice);
+      //console.log(res.data)
       const myDatas = res.data;
       var myNewElmts = []
       myDatas.data?.forEach(element => {
@@ -133,11 +169,13 @@ useEffect ( () => {
             invoiceEmitDate: item.created_at,
             invoicePaymentDate: item.updated_at,
             invoiceStatus: item.invoice_status,
-            clientFullname: element.customer.institute_name ? element.customer.institute_name : element.customer.last_name+" "+element.customer.first_name,
-              
+            costumerFullname: element.customer.institute_name ? element.customer.institute_name : element.customer.last_name+" "+element.customer.first_name,
+            costumerAddress: element.customer.address,
+            costumerEmail: element.customer.email,
+            costumerIfu: element.customer.ifu,  
           }
 
-         // console.log(newInvoice);
+         //console.log(newInvoice);
          myNewElmts = [...myNewElmts, newInvoice];
         })
 
@@ -205,10 +243,13 @@ const sampleInvoice = {
           }
         </div>
         <div>
-          <Modal isOpen={modalOpen} toggle={closeModal} size="lg"  >
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg" >
+            {
+            selectedRow &&
             <PDFViewer width="100%" height="600px" >
-              <PrintInvoice myInvoice={sampleInvoice} />
+              <PrintInvoice myInvoice={selectedRow} />
             </PDFViewer>
+            }            
           </Modal>
         </div>
 
