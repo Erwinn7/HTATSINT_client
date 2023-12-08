@@ -120,7 +120,7 @@ const handleLogout = () => {
             </DropdownToggle>
              
               <DropdownMenu right>
-                <DropdownItem onClick={handleLogout}>
+                <DropdownItem className="   " onClick={handleLogout}>
                   Déconnexion
                 </DropdownItem>
               </DropdownMenu>

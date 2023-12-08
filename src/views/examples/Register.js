@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Input } from 'reactstrap';
+import { Container, Input, Spinner } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
 import AjoutUser from 'components/Buttons/ButtonAddUser';
 //import GetClient from 'components/Funtions/GetCustomer';
+<<<<<<< HEAD
 // import { client } from 'variables/globalesVar';
+=======
+//import { client } from 'variables/globalesVar';
+>>>>>>> e401aac120e50b00dbcbd14901a82a4d254a0ccf
 import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
-
+//import {Oval} from "react-loader-spinner";
+import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Users = () => {
+<<<<<<< HEAD
   const [user, setUser] = useState(); 
   const [filterUser, setfilterUser] = useState();
+=======
+  //const [user, setUser] = useState(client); 
+  //const [filterUser, setfilterUser] = useState(client);
+>>>>>>> e401aac120e50b00dbcbd14901a82a4d254a0ccf
   const [users, setUsers] = useState([]);
+
+const [pending, setPending] = useState(true);
+//const [rows, setRows] = React.useState([]);
+
+
 
 async function GetUsers  () {
 
@@ -55,6 +70,7 @@ async function fecthUsers  () {
   try {
     const data = await GetUsers();
     setUsers(data);
+    setPending(false);
 
     
   }
@@ -71,10 +87,16 @@ useEffect(() => {
 }, [])
 
 
+/*React.useEffect(() => {
+  const timeout = setTimeout(() => {
+    setRows(users);
+    setPending(false);
+  }, 5000);
+  return () => clearTimeout(timeout);
+}, []);  
 
 
-
-
+*/
 
 
   const cols = [
@@ -132,8 +154,8 @@ useEffect(() => {
  
   const handleFilter = (e) => {
     // Ajoutez le code nécessaire pour gérer la recherche
-    const newUser = filterUser.filter(row => row.first_name.toLowerCase().includes(e.target.value.toLowerCase()));
-  setUser(newUser);
+    //const newUser = filterUser.filter(row => row.first_name.toLowerCase().includes(e.target.value.toLowerCase()));
+  //setUser(newUser);
   };
 
   return (
@@ -163,6 +185,9 @@ useEffect(() => {
              keyField="id" 
              customStyles={customStyles}
              pagination
+             progressPending={pending}
+             
+             progressComponent={<CustomLoader/>}
              >
               
 

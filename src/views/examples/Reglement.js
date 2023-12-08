@@ -9,6 +9,7 @@ import ModalMoralFactures from 'components/Modals/ModalMoralFacture';
 import ModalPhysiqueFactures from 'components/Modals/ModalPhysiqueFacture';
 import { prefix_link } from 'variables/globalesVar';
 import { useNavigate, navigate } from 'react-router-dom';
+import CustomLoader from 'components/CustomLoader/CustomLoader';
 const Apayer =  () => {
  // const [room, setRoom] = useState([]); // Assurez-vous de déclarer l'état pour la variable 
  const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Apayer =  () => {
  const [facturesClientSelectionne, setFacturesClientSelectionne] = useState([]);
  const [modalMoralOuvert, setModalMoralOuvert] = useState(false);
  const [modalPhysiqueOuvert, setModalPhysiqueOuvert] = useState(false);
+const [pending, setPending] = useState(true);
  // client selectionne
  const [clientSelectionne, setClientSelectionne] = useState(null);
 const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -87,6 +89,7 @@ console.log('Response from Flask API:', 'merde', response);
       try {
         const res = await GetClientsInvoice();
         setClients(res);
+        setPending(false);
        // console.log(res.data);
       } catch (error) {
        // navigate('/auth/login');
@@ -117,7 +120,7 @@ console.log('Response from Flask API:', 'merde', response);
     {
       name: 'NOM',
       
-      selector: (clients) => clients.first_name,
+      selector: (clients) => clients.first_name? clients.first_name : '---',
       sortable: true,
       //ajouez du style css
       style: {
@@ -133,7 +136,7 @@ console.log('Response from Flask API:', 'merde', response);
     },
     {
       name: 'PRENOM',
-      selector: (clients) => clients.last_name,
+      selector: (clients) => clients.last_name? clients.last_name : '---',
       sortable: true,
       style: {
         // Add your desired CSS styles here
@@ -149,7 +152,7 @@ console.log('Response from Flask API:', 'merde', response);
 
     {
       name: 'INSTITUT',
-      selector: (clients) => clients.institute_name,
+      selector: (clients) => clients.institute_name? clients.institute_name : '---',
       sortable: true,
       style: {
         // Add your desired CSS styles here
@@ -207,7 +210,7 @@ console.log('Response from Flask API:', 'merde', response);
     {
         name: 'PAYER',
         cell: (row) => (
-          <Button color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
+          <Button disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
         ),
         allowOverflow: true,
         button: true,
@@ -250,6 +253,27 @@ console.log('Response from Flask API:', 'merde', response);
   const handleFilter = (e) => {
    
   };
+  const customStyles = {
+    rows: {
+        style: {
+  
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+  
+        },
+    },
+  };
+  
 
   return (
     <div className="backgroundImgClient">
@@ -275,7 +299,15 @@ console.log('Response from Flask API:', 'merde', response);
     // Ajoutez d'autres objets de style pour les colonnes
     
     
-     title="Liste des reglements" columns={cols} data={clients} keyField="id" pagination   
+     title="Liste des reglements" 
+     columns={cols} 
+     data={clients} 
+     keyField="id" 
+     pagination  
+     customStyles={customStyles} 
+     progressPending={pending}
+             
+       progressComponent={<CustomLoader/>}
 >
               {/* Ajoutez ici des composants DataTable si nécessaire */}
             

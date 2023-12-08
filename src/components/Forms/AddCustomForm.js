@@ -192,10 +192,6 @@ setIsExistingPhysiqueClient(true);
       // Ajoutez ici le code pour effectuer d'autres traitements avec la valeur saisie
     };
    
-
-    
-
-
   return (
     <Form>
           {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
