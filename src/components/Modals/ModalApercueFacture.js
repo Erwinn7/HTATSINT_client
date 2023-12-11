@@ -11,12 +11,14 @@ console.log('la facture:',client.phone_number);
   const newBillData = {
     'payer_phone': client.phone_number,
     'payer_name': client.institute_name,
+    'payer_nom': client.fisrt_name,
+    'payer_prenom': client.last_name,
     'billNumber': facture.invoice_number,
     'payer_email': client.email,
     'payer_address': client.address,
     'total': facture.invoice_amount,
-     'paiment_day': new Date().toISOString().slice(0, 10),
-     'emit_date_invoice':facture.updated_at,
+     'paiement_day': new Date().toISOString().slice(0, 10),
+     'bill_emit_date':facture.updated_at,
 
   };
 

@@ -439,7 +439,11 @@ const customStyles = {
               data={clientsMoral}
               pagination
               customStyles={customStyles}
-              responsive>
+              responsive
+              progressPending={pending}
+             
+             progressComponent={<CustomLoader/>}>
+               
               </DataTable>
              
             </Card>

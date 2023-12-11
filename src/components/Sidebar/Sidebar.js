@@ -35,6 +35,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import sidebar from "assets/css/sidebar.css";
 
 var ps;
 
@@ -62,7 +63,8 @@ const Sidebar = (props) => {
             to={prop.layout + prop.path}
             tag={NavLinkRRD}
             onClick={closeCollapse}
-          >
+            className="route-name" 
+ >
             <i className={prop.icon} />
             {prop.name}
           </NavLink>
@@ -122,7 +124,7 @@ const handleLogout = async () => {
 
   return (
     <Navbar
-      className="navbar-vertical fixed-left navbar-light bg-gradient-success"
+      className="navbar-vertical fixed-left navbar-light bg-whitesmoke"
       expand="md"
       id="sidenav-main"
     >

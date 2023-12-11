@@ -77,16 +77,18 @@ return(
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
-          <Text style={{marginRight:"40%"}}>Date du paiement: {myInvoice.billEmitDate}</Text>
+          <Text style={{marginRight:"40%"}}>Date d'emission de la facture: {myInvoice.bill_emit_date}</Text>
+          <Text style={{marginRight:"40%"}}>Date du paiement: {myInvoice.paiement_day}</Text>
         </View>
         <View>
           {/* Numéro de facture et informations client */}
           <Text>DESTINATAIRE</Text>
-          <Text style={{fontSize:10}} >{myInvoice.payer_name}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.payer_phone}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.payer_address}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.payer_email}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.payer_ifu}</Text>
+          <Text style={{fontSize:20}} >{myInvoice.payer_name}</Text>
+          <Text style={{fontSize:20}} >{myInvoice.payer_nom} '  '{myInvoice.payer_prenom}</Text>
+          <Text style={{fontSize:20}} >{myInvoice.payer_phone}</Text>
+          <Text style={{fontSize:20}} >{myInvoice.payer_address}</Text>
+          <Text style={{fontSize:20}} >{myInvoice.payer_email}</Text>
+          <Text style={{fontSize:20}} >{myInvoice.payer_ifu}</Text>
 
         </View>
       </View>
