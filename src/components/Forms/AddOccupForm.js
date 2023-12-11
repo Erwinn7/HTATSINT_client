@@ -17,6 +17,7 @@ const urlPostInvoice = prefix_link+"/api/v1/invoice";
 const [save, setSave] = useState(null)
 const [customers, setCustomers] = useState([])
 const [ctrlSoumission, setCtrlSoumission] = useState("")
+const  [thisDay, setThisDay] =  useState(new Date());
 const initOccupants = {
         room_id: room_id_occupation,
         occupation_id: "",
@@ -112,50 +113,7 @@ useEffect(() => {
 
     if (occupants.length > 0) {
 
-    //   // envoice d'un occupant vers la base pour creation de facture 
-    //   const sendUnOccupant = async () => {
-    //     try {
-
-    //       const response = await  axios.post(urlPostInvoice,occupants[0],config);
-    //       console.log('Facture créer',response.data);
-    //       occupation_id_from_dtb = response.data.room_occupation.id
-    //       setSave(true);
-          
-    //     } catch (error) {
-    //       console.error('Erreur lors de la requête POST', error);
-    //       setSave(true); 
-    //     }
-    //   }
-    //   sendUnOccupant();
-     
-    //   setTimeout(() => {
-    //       // envoie de l'objet occupants vers la base de donnée
-    //     occupants.forEach((itemToSend) => {
-
-    //       itemToSend.occupation_id = occupation_id_from_dtb
-
-    //       const sendOccupant = async () => {
-    //         try {
-              
-    //           console.log("itemToSend:",itemToSend)
-    //           const res = await  axios.post(urlPostOccupant,itemToSend,config);
-    //           console.log("les occupants: ",res.data);
-    //           setSave(true); 
-
-    //         } catch (error) {
-    //           console.error('Erreur lors de la requête POST', error);
-    //           setSave(true);
-    //         }
-    //       };
-      
-    //       sendOccupant();
-
-    //     });
-          
-      
-
-    // }, 2000); // Attendre  secondes
- 
+   
 
     var occupation_id_from_dtb = null;
 
@@ -318,7 +276,7 @@ useEffect(() => {
                             id="phone_number"
                             name="phone_number"
                             placeholder="+229 00 00 00 00"
-                            type="text"
+                            type="number"
                             value={unOccupant?.phone_number}
                             onChange={(e) => handleChange(e)} 
                             />
@@ -352,6 +310,7 @@ useEffect(() => {
                             type="datetime-local"
                             value={unOccupant?.date_of_birth}
                             onChange={(e) => handleChange(e)} 
+                            max = {thisDay}
                             />
                         </FormGroup>
                     </Col>
