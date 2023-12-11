@@ -66,6 +66,7 @@ export const routes = [
     icon: "ni ni-single-02 text-dark",
     component: <Register />,
     layout: "/admin",
+    
   }
   
 ];

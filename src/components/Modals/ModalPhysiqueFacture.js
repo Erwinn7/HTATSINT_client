@@ -10,8 +10,9 @@ import { useState } from 'react';
 const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuccess}) => {
   const MySwal = withReactContent(Swal);
   const [showApercueModal, setShowApercueModal] = useState(false);
-  const [confirmation, setConfirmation] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+ 
+  const [selectedFacture, setSelectedFacture] = useState(null);
+
 
 
   const handleSolder = async (facture ) => {
@@ -30,6 +31,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         
     .then( async (result) => {
       if (result.isConfirmed) {
+        setSelectedFacture(facture);
         const formData = {
           'payer_phone': client.phone_number,
           'payer_name': client.first_name,
@@ -55,6 +57,8 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         }
         const data = await response.json();
         console.log(data);
+        setShowApercueModal(true);
+
        /* setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
         //
         setTimeout(() => {
@@ -62,9 +66,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         }, 5000);*/
 
         // ouvrir le modal pour l'apercu
-        if (onPaymentSuccess) {
-          onPaymentSuccess();
-        }
+      
        
 
 //console.log('Response frommmmm Flask API:', showApercueModal);
@@ -78,7 +80,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         console.log('Errorrrrrrra:', error);
       }
   
-        setShowApercueModal(true);
+        //setShowApercueModal(true);
       }
     })
      
@@ -106,7 +108,10 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
           ))}
         </ModalBody>
         {showApercueModal && (
-        <ModalApercueFacture ouvert={true} toggle={() => setShowApercueModal(false)} />
+        <ModalApercueFacture 
+        facture={selectedFacture}
+        client={client}
+        ouvert={true} toggle={() => setShowApercueModal(false)} />
       )}
       </Modal>
       

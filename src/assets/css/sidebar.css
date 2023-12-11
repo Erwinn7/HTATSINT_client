@@ -16,3 +16,8 @@
     overflow: hidden !important;
     pointer-events: none !important;
 }
+
+.route-name {
+    font-size: 20px; /* ajustez la taille de la police selon vos besoins */
+  }
+  
