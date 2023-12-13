@@ -8,13 +8,14 @@ function CustomLoader  (){
  return (
     <ThreeDots 
     height="80" 
-    width="80" 
+    width="100" 
     radius="9"
-    color="#4fa94d" 
+    color="black" 
     ariaLabel="three-dots-loading"
     wrapperStyle={{}}
-    wrapperClassName=""
+    wrapperClassName="  "
     visible={true}
+    //#4fa94d
      />
  )
 }

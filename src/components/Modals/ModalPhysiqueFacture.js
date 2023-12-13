@@ -18,7 +18,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
   const handleSolder = async (facture ) => {
     // use sweetalert2 to Display confirmation dialog
     MySwal.fire({
-      title: 'Confirmez-vous la solderie de cette facture?',
+      title: ' Etes vous sur de vouloir solder cette facture?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

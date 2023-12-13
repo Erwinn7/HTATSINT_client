@@ -79,13 +79,16 @@ const Login = () => {
   } else {
     // Gérer les autres rôles ou scénarios
     console.error('Rôle non géré:', role);
+    document.getElementById('email').value = '';
+    document.getElementById('hashed_password').value = '';
   }
 
 
       }else{
         //throw new Error('Network response was not ooook');
         const status = response.status;
-        const errorMessage = await response.text();
+        document.getElementById('email').value = '';
+        document.getElementById('hashed_password').value = '';
 
         console.error('La requête a échoué avec le statut:', status);
         setAlert({ message: 'La connexion a echouer.Verifier votre email et le mot de passe puis reesayer.', color: 'danger' });
@@ -108,6 +111,8 @@ const Login = () => {
 
       
     } catch (error) {
+      document.getElementById('email').value = '';
+      document.getElementById('hashed_password').value = '';
       console.error('Error sending data to Flask API:', error.message);
       setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
       setFormData((prevData) => ({
@@ -180,6 +185,7 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                  id="email"
                   name="email"
                   onChange={handleInputChange} 
                     placeholder="votre email"
@@ -197,6 +203,7 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                  id="hashed_password"
                   name="hashed_password"
                   onChange={handleInputChange} 
                     placeholder="Mot de passe"

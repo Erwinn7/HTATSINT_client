@@ -28,12 +28,12 @@ const [pending, setPending] = useState(true);
   
 };
 
-  async function GetClientsInvoice  ()  {
+   const GetClientsInvoice = async () => {
     //const navigate = useNavigate();
 
     try {
       const token = localStorage.getItem('accessToken');
-      console.log=('Response from Flask API:', token);
+      //console.log('Response from Flask API:', token);
       const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
         method: 'GET',
         headers: {
@@ -42,11 +42,11 @@ const [pending, setPending] = useState(true);
         },
       });
   
-console.log('la reponse from Flask API:',  response);
-  if (response.status=== 401){
-    // rediriger vers la page de connexion
-    navigate('/auth/login');
-  }else{
+      if (!response.ok) {
+        //throw new Error('Network response was not ok');
+        console.log('Response from Flask API:', /*data*/);
+      }
+ 
     console.log('Response from Flask API:', response);
     const data = await response.json();
     if (data.data && data.data.length > 0) {
@@ -69,19 +69,15 @@ console.log('la reponse from Flask API:',  response);
 
   }
     
-      }
-     
-  
-     // return clientsData;
-      
     } catch (error) {
     console.log('tfkyuh',error);
       console.error('Une erreurrrrr s\'est produite : ', error);
-      navigate('/auth/login');
-    };
+     navigate('/auth/login');
+    }
   };
   const fetchData =  async () => {
     try {
+     // console.log('Response from Flask APIdddddd:', clients);
       const res = await GetClientsInvoice();
       setClients(res);
       setPending(false);
@@ -300,7 +296,7 @@ console.log('la reponse from Flask API:',  response);
     // Ajoutez d'autres objets de style pour les colonnes
     
     
-     title="Liste des reglements" 
+     title="Liste des factures impayées" 
      columns={cols} 
      data={clients} 
      keyField="id" 
