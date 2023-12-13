@@ -78,7 +78,7 @@ const Room = () => {
       sortable : true
     }
   ]
-
+ 
   const customStyles = {
     rows: {
         style: {
@@ -138,7 +138,7 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
-// gestion de coloration au passage de la souris sur la ligne
+  // gestion de coloration au passage de la souris sur la ligne
   const handleMouseEnter = (row) => {
     setHoveredRow(row);
   };
