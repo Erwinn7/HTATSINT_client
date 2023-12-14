@@ -6,9 +6,12 @@
 // react plugin used to create charts
 //import { Line, Bar } from "react-chartjs-2";
 // reactstrap components
+import React from 'react';
+import { Card, CardBody, CardTitle, CardText, Row, Col } from 'reactstrap';
+
 import {
   //Button,
-  Card,
+ // Card,
   //CardHeader,
  // CardBody,
   //NavItem,
@@ -17,8 +20,8 @@ import {
  // Progress,
   //Table,
   Container,
-  Row,
-  Col,
+ // Row,
+//  Col,
   //CardTitle,
 } from "reactstrap";
 
@@ -32,41 +35,30 @@ import {
 
 import Header from "components/Headers/Header.js";
 import  "assets/css/mycss.css";
+import Cardss from '../components/Dashboard/Cards';
 
-const Index = (props) => {
-  //const [activeNav, setActiveNav] = useState(1);
-  //const [chartExample1Data, setChartExample1Data] = useState("data1");
-
- // if (window.Chart) {
-   // parseOptions(Chart, chartOptions());
-  //}
-
-  //const toggleNavs = (e, index) => {
-    //e.preventDefault();
-    //setActiveNav(index);
-    //setChartExample1Data("data" + index);
-  //};
+const Index = () => {
+ 
+  
   return (
-    <>
-      <Header  /> <br></br>  <br></br> 
-     
-      {/* Page content */}
-      <Container className="mt--7 container-background" fluid >
-        
 
-       
-        <Row className="mt-5">
-         
-          <Col xl="4">
-            <Card className="shadow">
-              
-              
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </>
+    <div className="backgroundImgClient">
+    <Header menuTitle= "TABLEAU DE BORD" />
+
+    <Container className=" pb-5 my-5" fluid>
+     
+
+       <Cardss />
+    </Container>
+  </div>
+
+
+
+
+
   );
 };
-
+     
+     
+    
 export default Index;

@@ -363,9 +363,6 @@ const customStyles = {
   
  }
 
-
-
-
   return (
     <div className="backgroundImgClient"> 
     <>
