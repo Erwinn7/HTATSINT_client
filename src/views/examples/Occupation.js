@@ -5,7 +5,7 @@ import AddOccupForm from "components/Forms/AddOccupForm";
 import { Form, Alert, FormGroup, Label, Input, Col, Row, Container, Button, Spinner, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
-import { prefix_link } from "variables/globalesVar";
+import { prefix_link,status } from "variables/globalesVar";
 
 
 const Occupation = () => {
@@ -23,36 +23,36 @@ const Occupation = () => {
     },
   };
 
-  const roomWithNum = room.data?.map((item, index) => {
-    return { ...item, Num: index + 1 };
-  });
+  // const roomWithNum = room.data?.map((item, index) => {
+  //   return { ...item, Num: index + 1 };
+  // });
 
   const [thisDay, setThisDay] = useState(new Date());
 
   const cols = [
-    {
-      name: "N°",
-      selector: row => row.Num,
-      sortable: true
+    // {
+    //   name: "N°",
+    //   selector: row => row.Num,
+    //   sortable: true
 
-    },
+    // },
     {
       name: "CHAMBRE",
       selector: row => row.room.room_label,
       sortable: true
     },
     {
-      name: "PLACE",
+      name: "NOMBRE DE PLACE",
       selector: row => row.room_category.place_number,
       sortable: true
     },
     {
-      name: "TYPE",
+      name: "TYPE DE CHAMBRE",
       selector: row => row.room_category.room_category_label,
       sortable: true
     },
     {
-      name: "PRIX (FCFA)",
+      name: "PRIX JOURNALIER (FCFA)",
       selector: row => row.room.room_amount,
       sortable: true
     },
@@ -182,7 +182,7 @@ const Occupation = () => {
 
   return (
     <div className="backgroundImgChambre">
-      <Header menuTitle="ATTRIBUER UNE CHAMBRE" />
+      <Header menuTitle="OCCUPATION" />
       {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
       <Container className="pb-5" fluid>
         <Form onSubmit={(e) => Submit(e)} >
@@ -238,12 +238,12 @@ const Occupation = () => {
         </Form>
 
         {
-          roomWithNum && (
+          room && (
             <DataTable
-              title="Chambres disponibles"
+              title="Liste des chambres disponibles"
               columns={cols}
-              data={roomWithNum}
-              keyField="Num"
+              data={room}
+              keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
               onRowMouseEnter={handleMouseEnter}
@@ -267,7 +267,6 @@ const Occupation = () => {
             </Button>
           </ModalFooter>
         </Modal>
-
       </Container>
     </div>
   );

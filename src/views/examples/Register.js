@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Input, Spinner } from 'reactstrap';
+import { Container, Input } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
 import AjoutUser from 'components/Buttons/ButtonAddUser';
-//import GetClient from 'components/Funtions/GetCustomer';
-
-
-// import { client } from 'variables/globalesVar';
-
-//import { client } from 'variables/globalesVar';
-
-
 import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 //import {Oval} from "react-loader-spinner";
@@ -18,19 +10,9 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Users = () => {
 
-
-  const [user, setUser] = useState(); 
-  
-  //const [user, setUser] = useState(client); 
-  //const [filterUser, setfilterUser] = useState(client);
-
-
-  const [users, setUsers] = useState([]);
+const [users, setUsers] = useState([]);
 
 const [pending, setPending] = useState(true);
-//const [rows, setRows] = React.useState([]);
-
-
 
 async function GetUsers  () {
 
