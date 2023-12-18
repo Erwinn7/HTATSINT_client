@@ -59,7 +59,8 @@ const Index = () => {
        <div className='row  mx-n4'>
 <div className='col-4 mx-n2'>
 <Card style={{ width: '310px' }}>
-<CardHeader>St</CardHeader>
+<CardHeader>Info courantes</CardHeader>
+
 <CardBody>
 
 </CardBody>
@@ -67,7 +68,7 @@ const Index = () => {
 </div>
 <div className='col-4 mx-n2'>
   <Card className="card-stats fluid" style={{ width: '310px' }} >
-  <CardHeader>dsdf</CardHeader>
+  <CardHeader>info</CardHeader>
 <RoomStatusChart />
 </Card>
 <Card className="card-stats fluid " style={{ width: '310px' }}>
