@@ -93,7 +93,7 @@ const handleLogout = async () => {
      // console.log('Response from Flask API:', /*data*/);
     }
     const data = response.json();
-   // console.log('Response from Flask API:', data);
+   console.log('Response from Flaskkk API:', data);
    localStorage.clear();
     navigate("/auth/login");
    

@@ -62,14 +62,14 @@ const Login = () => {
 
       if (response.status===200) {
         const data_logger = await response.json();
-        console.log('Response from Flask API:', data_logger);
+       // console.log('Response from Flask API:', data_logger);
   // Récupérer le role de l'utilisateur
   const role = data_logger.user.role.role_name;
   console.log('Role:', role);
 
   // Récupérer l'access token
   const token = data_logger.access_token;
-  console.log('Token:', token);
+  //console.log('Token:', token);
   storeTokenInLocalStorage(token);
   // Rediriger en fonction du rôle
   if (role === 'admin') {
