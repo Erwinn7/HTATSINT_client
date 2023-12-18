@@ -19,7 +19,7 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
    
     // use sweetalert2 to Display confirmation dialog
   MySwal.fire({
-    title: 'Confirmez-vous la solderie de cette facture?',
+    title: ' Etes-vous sur de vouloir solder cette facture?',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -31,6 +31,8 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
    .then( async(result) => {
      if (result.isConfirmed) {
       setSelectedFacture(facture);
+    console.log('la facture:',facture);
+    console.log('la client:',client);
       //CREER UN ETAT POUR GARDER TOUTES LES INFORMATIONS DE LA FACTURE ET LE CLIENT
       const formData = {
         'payer_phone': client.phone_number,

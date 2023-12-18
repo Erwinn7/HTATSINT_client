@@ -1,0 +1,61 @@
+/* mycss.css */
+.chambres-disponibles {
+    /*background-color: #3498db; /* Couleur soit degradee et fade */
+    
+    background: linear-gradient(to right, #f4f5f7, hsl(180, 23%, 97%));
+   /* background-color: #3498db; /* Bleu */
+    border-radius: 10px;
+    color: rgb(2, 2, 2);
+    transition: transform 0.3s ease-in-out; 
+  }
+  .chambres-disponibles:hover {
+    transform: scale(1.1); /* Applique un effet de zoom lors du survol */
+}
+  .arrivees-attendues {
+    /*background-color: #2ecc71; /* Couleur soit degradee et fade */
+    background: linear-gradient(to right, #f0f5f2, #fbfcfb);
+   /* background-color: #2ecc71; /* Vert */
+    border-radius: 10px;
+    color: rgb(8, 8, 8);
+    transition: transform 0.3s ease-in-out; 
+  }
+  
+  .departs-attendus {
+    /*background-color: #f1c40f; /* Couleur  #f39c12 soit degradee et fade */
+    background-image: linear-gradient(to right, hsl(48, 33%, 97%), #faf8f4);
+    background-color: #f39c12; /*Jaune */
+    border-radius: 10px;
+    /*couleur du texte*/
+    color: rgb(5, 5, 5);
+    transition: transform 0.3s ease-in-out; 
+    
+  }
+  
+  .attribuees-aujourd-hui {
+    /* Couleur soit degradee en fonction du temps */
+    background: linear-gradient(to right, #f6f4f7, #f6f5f7);
+
+  /* background-color: #9b59b6; /* Violet */
+   border-radius: 10px;
+   color: rgb(5, 5, 5);
+   transition: transform 0.3s ease-in-out; 
+   
+  }
+  
+  .recette-du-jour {
+    /*couleur degrade*/
+    background: linear-gradient(to right, #f7f6f6, #f7f5f5);
+   /* background-color: #e74c3c; /* Rouge */
+    border-radius: 10px;
+    color: rgb(5, 5, 5);
+    transition: transform 0.3s ease-in-out; 
+   
+  }
+  
+
+  .arrivees-attendues:hover,
+.departs-attendus:hover,
+.attribuees-aujourd-hui:hover,
+.recette-du-jour:hover {
+    transform: scale(1.1);
+}

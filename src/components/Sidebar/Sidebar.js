@@ -74,7 +74,7 @@ const Sidebar = (props) => {
   };
 const handleLogout = async () => {
   const token = localStorage.getItem('accessToken');
-  console.log(localStorage.getItem("accessToken"));
+ // console.log(localStorage.getItem("accessToken"));
   // faire un  appel api fecth pour blcklister le token
   try {
      
@@ -90,19 +90,20 @@ const handleLogout = async () => {
     });
     if (!response.ok) {
       //throw new Error('Network response was not ok');
-      console.log('Response from Flask API:', /*data*/);
+     // console.log('Response from Flask API:', /*data*/);
     }
     const data = response.json();
-    console.log('Response from Flask API:', data);
+   console.log('Response from Flaskkk API:', data);
+   localStorage.clear();
     navigate("/auth/login");
-    localStorage.clear();
-    console.log(localStorage.getItem("accessToken"));
+   
+   // console.log(localStorage.getItem("accessToken"));
    //rediriger vers la page de login
    
-   console.log("Logout");
+   //console.log("Logout");
 
   } catch (error) {
-    console.log('tfkyuh',error);
+   console.log('tfkyuh',error);
   }
 
 
