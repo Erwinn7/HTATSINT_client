@@ -54,7 +54,7 @@ export const routes = [
   },
   {
     path: "/occupation",
-    name: "ATTRIBUER CHAMBRE",
+    name: "OCCUPATION",
     icon: "fa fa-bed  text-dark",
     component: <Occupation />,
     layout: "/admin",

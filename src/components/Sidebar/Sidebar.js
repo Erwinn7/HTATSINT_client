@@ -151,8 +151,8 @@ const handleLogout = async () => {
             </DropdownToggle>
              
               <DropdownMenu right>
-                <DropdownItem className="   " onClick={handleLogout}>
-                  Déconnexion
+                <DropdownItem className="   " style={{color:"red",textAlign:"center"}} onClick={handleLogout}>
+                  Déconnexion <i className="fas fa-sign-out-alt" style={{marginLeft:"5px"}} />
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
