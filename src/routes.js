@@ -116,7 +116,7 @@ export const routesRecep = [
   },
   {
     path: "/occupation",
-    name: "ATTRIBUER CHAMBRE",
+    name: "OCCUPATION",
     icon: "fa fa-bed  text-pink",
     component: <Occupation />,
     layout: "/recep",
