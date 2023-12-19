@@ -6,9 +6,12 @@
 // react plugin used to create charts
 //import { Line, Bar } from "react-chartjs-2";
 // reactstrap components
+import React, { useState } from 'react';
+import { Card, CardBody, CardTitle, CardText, Row, Col, CardHeader } from 'reactstrap';
+
 import {
   //Button,
-  Card,
+ // Card,
   //CardHeader,
  // CardBody,
   //NavItem,
@@ -17,8 +20,8 @@ import {
  // Progress,
   //Table,
   Container,
-  Row,
-  Col,
+ // Row,
+//  Col,
   //CardTitle,
 } from "reactstrap";
 
@@ -32,41 +35,69 @@ import {
 
 import Header from "components/Headers/Header.js";
 import  "assets/css/mycss.css";
+import Cardss from '../components/Dashboard/Cards';
+import RoomStatusChart from '../components/Dashboard/roomStatusChart';
 
-const Index = (props) => {
-  //const [activeNav, setActiveNav] = useState(1);
-  //const [chartExample1Data, setChartExample1Data] = useState("data1");
+import MyCalendar from 'components/Dashboard/Calendar';
 
- // if (window.Chart) {
-   // parseOptions(Chart, chartOptions());
-  //}
 
-  //const toggleNavs = (e, index) => {
-    //e.preventDefault();
-    //setActiveNav(index);
-    //setChartExample1Data("data" + index);
-  //};
+
+const Index = () => {
+  
   return (
-    <>
-      <Header  /> <br></br>  <br></br> 
-     
-      {/* Page content */}
-      <Container className="mt--7 container-background" fluid >
-        
 
+    <div className="backgroundImgClient">
+    <Header menuTitle= "TABLEAU DE BORD" />
+
+    <Container className=" pb-5 my-0" fluid>
+     
+<div className='mx-3 mx-n2'>
+  <Cardss />
+</div>
        
-        <Row className="mt-5">
-         
-          <Col xl="4">
-            <Card className="shadow">
-              
-              
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </>
+       <br/> 
+       <div className='row  mx-n4'>
+<div className='col-4 mx-n2'>
+<Card style={{ width: '310px' }}>
+<CardHeader>Info courantes</CardHeader>
+
+<CardBody>
+
+</CardBody>
+</Card>
+</div>
+<div className='col-4 mx-n2'>
+  <Card className="card-stats fluid" style={{ width: '310px' }} >
+  <CardHeader>info</CardHeader>
+<RoomStatusChart />
+</Card>
+<Card className="card-stats fluid " style={{ width: '310px' }}>
+<CardHeader>dsdf</CardHeader>
+<RoomStatusChart />
+</Card>
+  </div>
+  <div className='col-4 '>
+       <div className='mx-0 mx-n1 container-fluid  '>
+        <Card className='' style={{ width: '315px', height: '700px' }}>
+          <MyCalendar></MyCalendar>
+        </Card>
+        
+      </div>
+</div>
+
+       </div>
+
+      
+    </Container>
+  </div>
+
+
+
+
+
   );
 };
-
+     
+     
+    
 export default Index;

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { NavLink as NavLinkRRD, Link,useNavigate, navigate  } from "react-router-dom";
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
+import { prefix_link } from "variables/globalesVar";
 
 // reactstrap components
 import {
@@ -34,6 +35,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import sidebar from "assets/css/sidebar.css";
 
 var ps;
 
@@ -61,7 +63,8 @@ const Sidebar = (props) => {
             to={prop.layout + prop.path}
             tag={NavLinkRRD}
             onClick={closeCollapse}
-          >
+            className="route-name" 
+ >
             <i className={prop.icon} />
             {prop.name}
           </NavLink>
@@ -69,13 +72,42 @@ const Sidebar = (props) => {
       );
     });
   };
-const handleLogout = () => {
-  console.log(localStorage.getItem("accessToken"));
-  localStorage.clear();
-  console.log(localStorage.getItem("accessToken"));
- //rediriger vers la page de login
- navigate("/auth/login");
- console.log("Logout");
+const handleLogout = async () => {
+  const token = localStorage.getItem('accessToken');
+ // console.log(localStorage.getItem("accessToken"));
+  // faire un  appel api fecth pour blcklister le token
+  try {
+     
+    const response = await fetch( prefix_link+'/api/v1/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        'token': token
+      }),
+    });
+    if (!response.ok) {
+      //throw new Error('Network response was not ok');
+     // console.log('Response from Flask API:', /*data*/);
+    }
+    const data = response.json();
+   console.log('Response from Flaskkk API:', data);
+   localStorage.clear();
+    navigate("/auth/login");
+   
+   // console.log(localStorage.getItem("accessToken"));
+   //rediriger vers la page de login
+   
+   //console.log("Logout");
+
+  } catch (error) {
+   console.log('tfkyuh',error);
+  }
+
+
+ 
 };
   const { bgColor, routes, logo } = props;
   let navbarBrandProps;
@@ -93,7 +125,7 @@ const handleLogout = () => {
 
   return (
     <Navbar
-      className="navbar-vertical fixed-left navbar-light bg-gradient-success"
+      className="navbar-vertical fixed-left navbar-light bg-whitesmoke"
       expand="md"
       id="sidenav-main"
     >
@@ -120,8 +152,8 @@ const handleLogout = () => {
             </DropdownToggle>
              
               <DropdownMenu right>
-                <DropdownItem onClick={handleLogout}>
-                  Déconnexion
+                <DropdownItem className="   " style={{color:"red",textAlign:"center"}} onClick={handleLogout}>
+                  Déconnexion <i className="fas fa-sign-out-alt" style={{marginLeft:"5px"}} />
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

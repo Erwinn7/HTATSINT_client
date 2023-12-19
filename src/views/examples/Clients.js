@@ -25,13 +25,15 @@ import AjoutClient from "components/Buttons/Button";
 //import { client } from "variables/globalesVar";
 import "assets/css/customerDesign.css";
 import { prefix_link } from "variables/globalesVar";
+import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Tables = () => {
-  const [clients, setClients] = useState([]);
+  
+ // const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
   const [clientsMoral, setClientsMoral] = useState([]);
- // definir un etat pour savoir si lelement ajoutClient est monter ou pas
- const [isAjoutClientMounted, setIsAjoutClientMounted] = useState(false);
+  const [pending, setPending] = useState(true);
+ 
 
 //const client = GetClient();
 const handleButtonDelete = (id) => {
@@ -106,16 +108,20 @@ console.error('Une erreur s\'est produite : ', error);
 //console.log('uhrtbdrhdytnphyy:', physiques);
 setClientsPhysique(physiques);
         setClientsMoral(moraux);
+        setPending(false);
 //transformer la liste des clients en tableau
 //const clientsDataArray = Object.value(clientsData)
      
     } catch (error) {
       console.error("Une erreur s'est produite : ", error);
+    } finally {
+      setPending(false);
     }
   }
 
   useEffect(() => {
     fetchData(); // Exécute GetClient au chargement initial
+  
   }, []); // Le tableau de dépendances vide [] signifie que cela ne dépend d'aucune variable, donc cela s'exécutera une seule fois
 
 
@@ -219,7 +225,7 @@ const cols = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="primary" onClick={() => handleButtonDelete(row)}>Sup</Button>
+        <Button color="danger" onClick={() => handleButtonDelete(row)}>Sup</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -311,7 +317,7 @@ const cols2 = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="primary" onClick={() => handleButtonDelete(row)}>Sup</Button>
+        <Button color="danger" onClick={() => handleButtonDelete(row)}>Sup</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -320,6 +326,26 @@ const cols2 = [
     },
 ];
 
+const customStyles = {
+  rows: {
+      style: {
+
+      },
+  },
+  headCells: {
+      style: {
+        color: "#8898aa",
+        backgroundColor: "#f6f9fc",
+        borderColor: "#e9ecef",
+        fontWeight: "bold",
+      },
+  },
+  cells: {
+      style: {
+
+      },
+  },
+};
 
 
 
@@ -337,9 +363,6 @@ const cols2 = [
   
  }
 
-
-
-
   return (
     <div className="backgroundImgClient"> 
     <>
@@ -347,17 +370,12 @@ const cols2 = [
          {/* Page content */}
 
          
-      <Container className="my-5" fluid>
+      <Container className="pb-5 my-5" fluid>
       <div className="row">
       <div className="col">
       <AjoutClient 
       id = "ajout"
       butonTitle= "Ajouter nouveau client"
-      
-      
-
-     
-     
           >
 
       </AjoutClient>
@@ -374,25 +392,31 @@ const cols2 = [
         {/* Table */}
 
         <Row>
-          <div className="col">
+        
+          
+           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <h3 className="mb-0">PERSONNE PHYSIQUE</h3>
               </CardHeader>
-              <DataTable 
+              
+                  <DataTable 
               columns={cols}
               data={clientsPhysique}
               pagination
-              
-              responsive>
-               
-              
-
-
+              customStyles={customStyles}
+              responsive
+              fixedHeader={true}
+              progressPending={pending}
+             
+             progressComponent={<CustomLoader/>}
+               >
+             
               </DataTable>
              
             </Card>
-          </div>
+          </div> 
+         
         </Row>
 
 
@@ -401,7 +425,8 @@ const cols2 = [
         {/* Dark table */}
 
         <Row>
-          <div className="col">
+       
+         <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <h3 className="mb-0">PERSONNE MORALE</h3>
@@ -410,11 +435,18 @@ const cols2 = [
               columns={cols2}
               data={clientsMoral}
               pagination
-              responsive>
+              customStyles={customStyles}
+              responsive
+              progressPending={pending}
+             
+             progressComponent={<CustomLoader/>}>
+               
               </DataTable>
              
             </Card>
           </div>
+        
+         
         </Row>
 
 

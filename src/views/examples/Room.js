@@ -1,84 +1,117 @@
-
 import  {React,useState,useEffect} from "react";
 
 import {Container, Collapse, Button, Card, CardBody ,
-  Modal, ModalBody, ModalFooter, ModalHeader,
+  Modal, ModalBody, ModalFooter,
   Badge,
   Alert,
-  Input
+  Input,
+  Row
 } from "reactstrap";
-// import Axios from "axios";
 
 //  components
 import AddRoomForm from "components/Forms/AddRoomForm.js";
+import UpdateRoomStatus from "components/Forms/UpdateRoomStatus";
 import Header from "components/Headers/Header.js";
 // import {lesChambres} from "variables/globalesVar";
 import "assets/css/roomDesign.css";
 import DataTable from "react-data-table-component";
 import { prefix_link } from "variables/globalesVar";
-import Axios from "axios";
+import axios from "axios";
 
 
 
 const Room = () => {
   const urlGetR = prefix_link + "/api/v1/rooms";
+  const urlPostOneRoom = prefix_link + "/api/v1/room_and_occupants";
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isStatColOpen, setIsStatColOpen] = useState(false);
+
   const [modal, setModal] = useState(false);
   const [room, setRoom] = useState([]);
- 
-  const roomWithNum = room.data?.map((item, index) => {
-    return { ...item, Num: index + 1 };
-  });
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  };
+
   const [filterRoom, setfilterRoom] = useState({});
   const [hoveredRow, setHoveredRow] = useState(null);
   const [alert, setAlert] = useState({ message: '', color: '' });
 
 
-
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
+  const toggleSatCol = () => setIsStatColOpen(!isStatColOpen);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [infoRoom, setInfoRoom] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const cols = [
-    {
-      name : "N°",
-      selector : row  => row.Num,
-      sortable : true
-
-    },
     {
       name : "CHAMBRE",
       selector : row  => row.room.room_label,
       sortable : true
     },
     {
-      name : "PLACE",
+      name : "NOMBRE DE PLACE",
       selector : row  => row.room_category.place_number,
       sortable : true
     },
     {
-      name : "TYPE",
+      name : "TYPE DE CHAMBRE",
       selector : row  => row.room_category.room_category_label,
       sortable : true
     },
     {
-      name : "PRIX (FCFA)",
+      name : "PRIX JOURNALIER (FCFA)",
       selector : row  => row.room.room_amount,
       sortable : true
     },
     {
       name : "STATUT",
-      selector : row  => (
-        <Badge color="" className="badge-dot mr-4">
-          <i className="bg-success" />
-          {row.room.room_status}
-        </Badge>) ,
+      selector : (row)  => {
+        let leStatus = "";
+        let leStyle = "";
+      
+        if (row.room.room_status === "Available_and_clean") {
+          leStatus = "Disponible";
+          leStyle = "bg-success";
+        }else if (row.room.room_status === "Occupied"){
+          leStatus = "Occupée";
+          leStyle = "bg-danger";
+        }else if (row.room.room_status === "Out_of_order"){
+          leStatus = "Réservée";
+          leStyle = "bg-primary";
+        }else if(row.room.room_status === "Available_and_dirty"){
+          leStatus = "Indisponible";
+          leStyle = "bg-dark";
+        }
+      
+        return (
+          <Badge color="dark" className="badge-dot mr-4" >
+            <i className={leStyle} />
+            {leStatus}
+          </Badge>
+        );
+      },
       sortable : true
     }
   ]
 
+  const returnStatut = (statut) => {
+    if (statut=== "Available_and_clean") {
+      return(<span>Disponible</span>)
+    }else if (statut=== "Occupied"){
+      return(<span>Occupée</span>) 
+    }else if (statut === "Out_of_order"){
+    return(<span>Réservée</span>)
+    }else if(statut=== "Available_and_dirty"){
+      return(<span>Indisponible</span>)
+  }
+  }
+ 
   const customStyles = {
     rows: {
         style: {
@@ -105,10 +138,10 @@ const Room = () => {
 
     const fetchData = async () => {
       try {
-        const res = await Axios.get(urlGetR);
-        setRoom(res.data);
+        const res = await axios.get(urlGetR);
+        setRoom(res.data.data);
+        //console.log('rooom : ',res.data.data)
         setAlert({ message: "", color: '' });
-        console.log(res.data);
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
         setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
@@ -117,10 +150,10 @@ const Room = () => {
     
     fetchData();
 
-  }, [urlGetR,modal]);
+  }, [urlGetR,modal,modalOpen]);
 
 const handleFilter = (e) => {
-  setfilterRoom(roomWithNum)
+  setfilterRoom(room)
   console.log("ce qui est tapé",e.target.value);
   console.log("filterRoom",filterRoom);
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
@@ -130,6 +163,24 @@ const handleFilter = (e) => {
 
 
 const handleRowClick = (row) => {
+
+  const fetchRoomData = async () => {
+    try {
+      //console.log("id:",row.room.id)
+      const res = await axios.post(urlPostOneRoom, {
+        id: row.room.id,
+      }, config);      
+      setInfoRoom(res.data);
+      console.log("reponse du serveur: ",res.data);
+    } catch (error) {
+      console.error('Erreur lors de la requête GET', error);
+      setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+    }
+  };
+  
+  fetchRoomData();
+
+
   setSelectedRow(row);
   setModalOpen(true);
 };
@@ -138,7 +189,7 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
-// gestion de coloration au passage de la souris sur la ligne
+  // gestion de coloration au passage de la souris sur la ligne
   const handleMouseEnter = (row) => {
     setHoveredRow(row);
   };
@@ -155,6 +206,23 @@ const closeModal = () => {
       },
     },
   ];
+
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+  
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+    const year = date.getFullYear();
+  
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+  
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  
+    return formattedDate;
+  };
+
 
 
   return (
@@ -186,10 +254,10 @@ const closeModal = () => {
           {
             room && (
               <DataTable
-              title="Liste des Chambres"
+              title="Liste des chambres"
               columns={cols}
-              data={roomWithNum}
-              keyField="Num"
+              data={room}
+              keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
               onRowMouseEnter={handleMouseEnter}
@@ -203,19 +271,45 @@ const closeModal = () => {
 
           </div>
 
-        <Modal isOpen={modalOpen} toggle={closeModal}>
-          <ModalHeader toggle={closeModal}>{selectedRow?.room.room_label.toUpperCase() }</ModalHeader>
-          <ModalBody>
-            {selectedRow && (
-              <div>
-                <p>Type: {selectedRow.room_category.room_category_label}</p>
-                <p>Nombre de place: {selectedRow.room_category.place_number} personnes</p>
-                <p>Statut: {selectedRow.room.room_status}</p>
-                <p>Accessoires: {selectedRow.room_item.map((item) => <span>{item.room_item_label}({item.item_status}), </span> )}</p>
-                <p>Réservé par: client</p>
-                <p>Occupée par: occupant(s)</p>
-                <p>Date entréé: jj/mm/aaaa</p>
-                <p>Date Sortie: jj/mm/aaaa</p>
+        <Modal isOpen={modalOpen} toggle={closeModal} >
+         <ModalBody >
+        
+            {infoRoom && (
+              <div >
+                <div style={{ textAlign:"center", fontWeight:"bold",fontSize:"23px", position:"center",marginBottom:"20px"}}> {selectedRow.room.room_label.toUpperCase()} </div>
+                
+                <div >
+                  <p><span style={{fontWeight:"bold"}}>Type de chambre : </span>{selectedRow.room_category.room_category_label}</p>
+                  <p><span style={{fontWeight:"bold"}}>Nombre de place : </span>{selectedRow.room_category.place_number} personnes</p>
+                  <p style={{textAlign:"justify"}}>
+                    <Row className="ml-0">
+                      <span className="mr-2"  style={{fontWeight:"bold"}}>Statut : </span>{returnStatut(infoRoom.room.room_status)}
+                      <Button className="ml-4" color="primary" onClick={toggleSatCol} style={{ marginBottom: '1rem' }}size="sm" >Modifier</Button>
+                      <Collapse isOpen={isStatColOpen}>
+                        <Card>
+                          <CardBody>
+                          <UpdateRoomStatus roomId={infoRoom.room.id} roomOccupationId={infoRoom.room_occupation.id}  />
+                          </CardBody>
+                        </Card>
+                      </Collapse>
+                    </Row>
+                  </p>
+                  <p><span style={{fontWeight:"bold"}}>Accessoires : </span>{selectedRow.room_item.map((item) => <span>{item.room_item_label}, </span> )}</p>
+                </div>
+                
+              {
+                  (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Occupied")? 
+                  <div>
+                  <p><span style={{fontWeight:"bold"}}>Réservé par : </span>{infoRoom.customer.institute_name !== null ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
+                  <p><span style={{fontWeight:"bold"}}>Occupée par : </span>{infoRoom.room_occupants.map((item) => <span>{item.last_name+" "+item.first_name}, </span> )}</p>
+                  <p><span style={{fontWeight:"bold"}}>Date entrée : </span>{formatDate(infoRoom.room_occupation.start_date)} </p>
+                  <p><span style={{fontWeight:"bold"}}>Date Sortie : </span>{formatDate(infoRoom.room_occupation.end_date)}</p>
+                  </div>
+                  :
+                  <div></div>
+                }
+                
+                
               </div>
             )}
           </ModalBody>
@@ -225,182 +319,6 @@ const closeModal = () => {
             </Button>
           </ModalFooter>
         </Modal>
-
-
-          {/* Table */}
-        {/* <Row className="pb-5">
-          <div className="col">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <h3 className="mb-0">Liste des Chambres</h3>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light ">
-                  <tr>
-                    <th scope="col">CHAMBRE</th>
-                    <th scope="col">PLACE</th>
-                    <th scope="col">TYPE</th>
-                    <th scope="col">PRIX (FCFA)</th>
-                    <th scope="col">STATUT</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                {
-                  lesChambres.map( (laChambre, index) => (
-
-                    <tr key={index}>
-                    <th scope="row">
-                      <span className="mb-0 text-sm">
-                        {laChambre.nom}
-                      </span>
-                    </th>
-                    <th>
-                      <span className="mb-0 text-sm">
-                      {laChambre.nbPlace}
-                      </span>
-                    </th>
-                    <th>
-                      <span className="mb-0 text-sm">
-                      {laChambre.type}
-                      </span>
-                    </th>
-                    <th>
-                      <span className="mb-0 text-sm">
-                      {laChambre.price}.00
-                      </span>
-                    </th>
-                    <th>
-                      <Badge color="" className="badge-dot mr-4">
-                        <i className={laChambre.statut === "DISPONIBLE" ? "bg-success":"bg-danger" } />
-                        {laChambre.statut}
-                      </Badge>
-                      <Button color="primary" onClick={toggleModal} size="sm">
-                        INFO
-                      </Button>
-                      <Modal isOpen={modal} toggle={toggleModal}>
-                        <ModalHeader toggle={toggleModal}>{laChambre.nom}</ModalHeader>
-                        <ModalBody>
-                        <Spinner size="sm">
-                            Loading...
-                        </Spinner>
-                        <span>
-                            {' '} Description de la chambre bientôt disponible...
-                        </span>
-
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button color="danger" onClick={toggleModal}>
-                            Cancel
-                          </Button>
-                        </ModalFooter>
-                      </Modal>
-
-                    </th>
-
-                    <th className="text-right">
-                      <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem
-                            onClick={(e) => e.preventDefault()}
-                            style ={{color:"green"}}
-                          >
-                            DISPONIBLE
-                          </DropdownItem>
-                          <DropdownItem
-                            onClick={(e) => e.preventDefault()}
-                            style ={{color:"blue"}}
-                          >
-                            RESERVEE
-                          </DropdownItem>
-                          <DropdownItem
-                            onClick={(e) => e.preventDefault()}
-                            style ={{color:"orange"}}
-                          >
-                            OCCUPEE
-                          </DropdownItem>
-                          <DropdownItem
-                            onClick={(e) => e.preventDefault()}
-                            style ={{color:"red"}}
-                          >
-                            INDISPONIBLE
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                    </th>
-                  </tr>
-
-
-                    )
-                  )
-
-                }
-                </tbody>
-              </Table>
-              <CardFooter className="py-4">
-                <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
-                </nav>
-              </CardFooter>
-            </Card>
-          </div>
-        </Row> */}
         <p className="pb-5" > </p>
       </Container>
     </div>

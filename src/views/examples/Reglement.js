@@ -1,4 +1,4 @@
-import  { React, useState, useEffect, useCallback } from 'react';
+import  { React, useState, useEffect } from 'react';
 import { Container, Input, Button } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
@@ -8,7 +8,8 @@ import PaymentModal from "components/Forms/AddReglementForm"
 import ModalMoralFactures from 'components/Modals/ModalMoralFacture';
 import ModalPhysiqueFactures from 'components/Modals/ModalPhysiqueFacture';
 import { prefix_link } from 'variables/globalesVar';
-import { useNavigate, navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import CustomLoader from 'components/CustomLoader/CustomLoader';
 const Apayer =  () => {
  // const [room, setRoom] = useState([]); // Assurez-vous de déclarer l'état pour la variable 
  const navigate = useNavigate();
@@ -16,21 +17,23 @@ const Apayer =  () => {
  const [facturesClientSelectionne, setFacturesClientSelectionne] = useState([]);
  const [modalMoralOuvert, setModalMoralOuvert] = useState(false);
  const [modalPhysiqueOuvert, setModalPhysiqueOuvert] = useState(false);
+const [pending, setPending] = useState(true);
  // client selectionne
  const [clientSelectionne, setClientSelectionne] = useState(null);
-const [paymentSuccess, setPaymentSuccess] = useState(false);
  const [clients, setClients] = useState([]); // Ajoutez l'état pour stocker la liste des clients
 
  const handlePaymentSuccess = () => {
   // Cette fonction sera appelée lorsque le paiement est réussi
   // Elle mettra à jour l'état pour déclencher l'effet useEffect
-  setPaymentSuccess(true);
+  
 };
 
-  async function GetClientsInvoice  ()  {
+   const GetClientsInvoice = async () => {
     //const navigate = useNavigate();
+
     try {
       const token = localStorage.getItem('accessToken');
+      //console.log('Response from Flask API:', token);
       const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
         method: 'GET',
         headers: {
@@ -40,62 +43,59 @@ const [paymentSuccess, setPaymentSuccess] = useState(false);
       });
   
       if (!response.ok) {
-        console.log('Response from Flask API:', 'merde');
+        //throw new Error('Network response was not ok');
+        console.log('Response from Flask API:', /*data*/);
       }
  
+    console.log('Response from Flask API:', response);
+    const data = await response.json();
+    if (data.data && data.data.length > 0) {
+      const clientsData = data.data.map(item => {
+        const client = item.customer;
+        const invoices = item.invoice;
+        const totalDue = item.amount;
+        const numberOfInvoices = invoices.length;
+        console.log('Response from Flask API:', client);
+        return {
+          ...client,
+          totalDue,
+          numberOfInvoices,
+          invoices,
+        };
+      });
 
-console.log('Response from Flask API:', 'merde', response);
-  
-      const data = await response.json();
-      if (data.data && data.data.length > 0) {
-        const clientsData = data.data.map(item => {
-          const client = item.customer;
-          const invoices = item.invoice;
-          const totalDue = item.amount;
-          const numberOfInvoices = invoices.length;
-          console.log('Response from Flask API:', client);
-          return {
-            ...client,
-            totalDue,
-            numberOfInvoices,
-            invoices,
-          };
-        });
-  
-        setClients(clientsData);
-        return clientsData;
-      }
-     
-  
-     // return clientsData;
-      
+      setClients(clientsData);
+      return clientsData;
+
+  }
+    
     } catch (error) {
-      // emettre une alerte d'erreur
-      if (error.status===401){
-        // rediriger vers la page de connexion
-       // navigate('/auth/login');
-      }
+    console.log('tfkyuh',error);
       console.error('Une erreurrrrr s\'est produite : ', error);
-    };
+     navigate('/auth/login');
+    }
   };
-  
+  const fetchData =  async () => {
+    try {
+     // console.log('Response from Flask APIdddddd:', clients);
+      const res = await GetClientsInvoice();
+      setClients(res);
+      setPending(false);
+     // console.log(res.data);
+    } catch (error) {
+      navigate('/auth/login');
+     
+      console.error('Erreur lors de la requête GET', error);
+    }
+  };
 
   
   useEffect(() => {
    
-    const fetchData =  async () => {
-      try {
-        const res = await GetClientsInvoice();
-        setClients(res);
-       // console.log(res.data);
-      } catch (error) {
-       // navigate('/auth/login');
-        console.error('Erreur lors de la requête GET', error);
-      }
-    };
+  
    fetchData();
     
-  }, [   modalMoralOuvert] ); 
+  }, [  ] ); 
 
 
 // recuperer la listes des client depuis la reponse de l'api
@@ -117,7 +117,7 @@ console.log('Response from Flask API:', 'merde', response);
     {
       name: 'NOM',
       
-      selector: (clients) => clients.first_name,
+      selector: (clients) => clients.first_name? clients.first_name : '---',
       sortable: true,
       //ajouez du style css
       style: {
@@ -133,7 +133,7 @@ console.log('Response from Flask API:', 'merde', response);
     },
     {
       name: 'PRENOM',
-      selector: (clients) => clients.last_name,
+      selector: (clients) => clients.last_name? clients.last_name : '---',
       sortable: true,
       style: {
         // Add your desired CSS styles here
@@ -149,7 +149,7 @@ console.log('Response from Flask API:', 'merde', response);
 
     {
       name: 'INSTITUT',
-      selector: (clients) => clients.institute_name,
+      selector: (clients) => clients.institute_name? clients.institute_name : '---',
       sortable: true,
       style: {
         // Add your desired CSS styles here
@@ -207,7 +207,7 @@ console.log('Response from Flask API:', 'merde', response);
     {
         name: 'PAYER',
         cell: (row) => (
-          <Button color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
+          <Button disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
         ),
         allowOverflow: true,
         button: true,
@@ -250,12 +250,33 @@ console.log('Response from Flask API:', 'merde', response);
   const handleFilter = (e) => {
    
   };
+  const customStyles = {
+    rows: {
+        style: {
+  
+        },
+    },
+    headCells: {
+        style: {
+          color: "#8898aa",
+          backgroundColor: "#f6f9fc",
+          borderColor: "#e9ecef",
+          fontWeight: "bold",
+        },
+    },
+    cells: {
+        style: {
+  
+        },
+    },
+  };
+  
 
   return (
     <div className="backgroundImgClient">
       <Header menuTitle="REGLEMENTS" />
 
-      <Container className="my-5" fluid>
+      <Container className=" pb-5 my-5" fluid>
         <div className="row">
           <div className="float-left col-md-3 col-12">
 
@@ -275,7 +296,15 @@ console.log('Response from Flask API:', 'merde', response);
     // Ajoutez d'autres objets de style pour les colonnes
     
     
-     title="Liste des reglements" columns={cols} data={clients} keyField="id" pagination   
+     title="Liste des factures impayées" 
+     columns={cols} 
+     data={clients} 
+     keyField="id" 
+     pagination  
+     customStyles={customStyles} 
+     progressPending={pending}
+             
+       progressComponent={<CustomLoader/>}
 >
               {/* Ajoutez ici des composants DataTable si nécessaire */}
             

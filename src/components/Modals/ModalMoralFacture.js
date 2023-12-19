@@ -10,15 +10,16 @@ import { useState } from 'react';
 const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
   const [alert, setAlert] = useState({ message: '', color: '' });
   const [showApercueModal, setShowApercueModal] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+ 
+  const [selectedFacture, setSelectedFacture] = useState(null);
 
-
+  
   const MySwal = withReactContent(Swal);
   const handleSolder =  (facture ) => {
- 
+   
     // use sweetalert2 to Display confirmation dialog
   MySwal.fire({
-    title: 'Confirmez-vous la solderie de cette facture?',
+    title: ' Etes-vous sur de vouloir solder cette facture?',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -29,6 +30,9 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
    // handle confirm button click
    .then( async(result) => {
      if (result.isConfirmed) {
+      setSelectedFacture(facture);
+    console.log('la facture:',facture);
+    console.log('la client:',client);
       //CREER UN ETAT POUR GARDER TOUTES LES INFORMATIONS DE LA FACTURE ET LE CLIENT
       const formData = {
         'payer_phone': client.phone_number,
@@ -51,18 +55,13 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
       
           if (!response.ok) {
            // console.log('Response from Flask APIiiiii:', 'merde');
+           //setShowApercueModal(true);
           }
       
           const data = await response.json();
           console.log('Response frommmmmmmmmm Flask API:', data);
-          setAlert({ message:  `Client enregistrer avec succes` , color: 'success' });
-          //
-          setTimeout(() => {
-            setAlert({ message: '', color: '' });
-          }, 5000);
-setPaymentSuccess(true);
+          
           setShowApercueModal(true);
-
 
 
           
@@ -71,6 +70,8 @@ setPaymentSuccess(true);
           
         } catch (error) {
           // emettre une alerte d'erreur
+          //setShowApercueModal(true);
+
           console.error('Une erreur s\'est produiteeeeeee : ', error);
         }
       ;
@@ -101,7 +102,10 @@ setPaymentSuccess(true);
           ))}
         </ModalBody>
         {showApercueModal && (
-        <ModalApercueFacture ouvert={true} toggle={() => setShowApercueModal(false)} />
+        <ModalApercueFacture  client={client} 
+        //la facture concerner par le paiement
+        facture={selectedFacture}
+         ouvert={true}  toggle={() => setShowApercueModal(false)} />
       )}
       </Modal>
     );

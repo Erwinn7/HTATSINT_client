@@ -54,7 +54,7 @@ export const routes = [
   },
   {
     path: "/occupation",
-    name: "ATTRIBUER CHAMBRE",
+    name: "OCCUPATION",
     icon: "fa fa-bed  text-dark",
     component: <Occupation />,
     layout: "/admin",
@@ -66,6 +66,7 @@ export const routes = [
     icon: "ni ni-single-02 text-dark",
     component: <Register />,
     layout: "/admin",
+    
   }
   
 ];
@@ -115,7 +116,7 @@ export const routesRecep = [
   },
   {
     path: "/occupation",
-    name: "ATTRIBUER CHAMBRE",
+    name: "OCCUPATION",
     icon: "fa fa-bed  text-pink",
     component: <Occupation />,
     layout: "/recep",
