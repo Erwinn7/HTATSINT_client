@@ -7,7 +7,6 @@ import {Container, Collapse, Button, Card, CardBody ,
   Input,
   Row
 } from "reactstrap";
-// import axios from "axios";
 
 //  components
 import AddRoomForm from "components/Forms/AddRoomForm.js";
@@ -151,7 +150,7 @@ const Room = () => {
     
     fetchData();
 
-  }, [urlGetR,modal]);
+  }, [urlGetR,modal,modalOpen]);
 
 const handleFilter = (e) => {
   setfilterRoom(room)
@@ -289,7 +288,7 @@ const closeModal = () => {
                       <Collapse isOpen={isStatColOpen}>
                         <Card>
                           <CardBody>
-                          <UpdateRoomStatus roomId={infoRoom.room.id} roomOccupationId={infoRoom.room_occupation.id} />
+                          <UpdateRoomStatus roomId={infoRoom.room.id} roomOccupationId={infoRoom.room_occupation.id}  />
                           </CardBody>
                         </Card>
                       </Collapse>

@@ -6,7 +6,7 @@ import  axios  from "axios";
 import { prefix_link } from "variables/globalesVar";
 
 
-const  UpdateRoomStatus = ({roomId, roomOccupationId})  => {
+const  UpdateRoomStatus = ({roomId, roomOccupationId })  => {
     const urlUpdateRS = prefix_link+"/api/v1/update_room";
     const [save, setSave] = useState(true)
     const [dataRS, setdataRS] = useState(
@@ -52,6 +52,8 @@ const  UpdateRoomStatus = ({roomId, roomOccupationId})  => {
         
         fetchData();
 
+        refreshParent();
+
     }
 
     return (
@@ -71,8 +73,8 @@ const  UpdateRoomStatus = ({roomId, roomOccupationId})  => {
 
                             <option  value="">Sélectionnez un Statut</option>
                             <option  value="Available_and_clean">Disponible</option>
-                            <option  value="Occupied">Occupée</option>
-                            <option  value="Out_of_order">Réservée</option>
+                            {/* <option  value="Occupied">Occupée</option>
+                            <option  value="Out_of_order">Réservée</option> */}
                             <option  value="Available_and_dirty">Indisponible</option>
                             
                         </Input>
