@@ -8,7 +8,7 @@ function CustomLoader  (){
  return (
     <ThreeDots 
     height="80" 
-    width="100" 
+    width="50" 
     radius="9"
     color="black" 
     ariaLabel="three-dots-loading"

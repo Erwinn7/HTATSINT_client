@@ -1,9 +1,8 @@
 import { Card, CardBody, CardTitle, CardText, Row, Col,Modal, ModalBody, ModalFooter, ModalHeader, CardFooter, CardHeader } from 'reactstrap';
 import 'assets/css/card.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBed, faSignInAlt, faSignOutAlt, faMoneyBillAlt, faUser } from '@fortawesome/free-solid-svg-icons';
-import React, { useState } from 'react';
 
+import React, { useState, useEffect } from 'react';
+import { prefix_link } from 'variables/globalesVar';
     
 
 
@@ -22,6 +21,84 @@ const Cardss = () => {
 
   const [modal5, setModal5] = useState(false);
   const toggleModal5 = () => setModal5(!modal5);
+  const [room_availlable, setRoom_availlable] = useState(0); 
+  const [room, setRoom] = useState([]);
+//sz,.cvbhjvbbbbbbbbbbbbbbbbbbbbbbbbbb
+const GetAvailableRooms = async () => {
+  //const navigate = useNavigate();
+
+  try {
+    const token = localStorage.getItem('accessToken');
+    //console.log('Response from Flask API:', token);
+    const response = await fetch(prefix_link + '/api/v1/room_availlable', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    if (!response.ok) {
+      //throw new Error('Network response was not ok');
+      console.log('Response from Flask API:', /*data*/);
+    }
+  const data = await response.json();
+  
+
+  if (data && data.length > 0) {
+    console.log('Response from Flask API:', data);
+  /* const roomData = data.map(item => {
+        const room = item;
+       
+      };
+    });
+
+    setClients(clientsData);
+    return clientsData;
+*/
+return data;
+}
+  
+  } catch (error) {
+  console.log('tfkyuh',error);
+    console.error('Une erreurrrrr s\'est produite : ', error);
+  // navigate('/auth/login');
+  }
+};
+
+const fetchData =  async () => {
+  try {
+   // console.log('Response from Flask APIdddddd:', clients);
+    const res = await GetAvailableRooms();
+   const room_availlable= res.length;
+    console.log('rthwrh:',res);
+    setRoom_availlable(room_availlable);
+  } catch (error) {
+   // navigate('/auth/login');
+   
+    console.error('Erreur lors de la requête GET', error);
+  }
+};
+
+
+useEffect(() => {
+ 
+
+ fetchData();
+  
+}, [  ] ); 
+
+
+
+
+
+
+
+
+
+
+
+
   // Simuler des données pour les quatre cartes
   const chambreDisponible = 58;
   const arriveeAttendue = 4;
@@ -43,13 +120,13 @@ const Cardss = () => {
             <CardBody >
              
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#2298e7'}}>
-            <div>{chambreDisponible}</div>
+            <div>{room_availlable}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#2298e7' }}>CHAMBRES</div>
             </CardTitle>
              
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {chambreDisponible}  </span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {room_availlable}  </span> 
              </div>
             </CardFooter>
           </Card>
