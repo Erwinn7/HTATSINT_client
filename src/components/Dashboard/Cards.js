@@ -1,4 +1,4 @@
-import { Card, CardBody, CardTitle, CardText, Row, Col,Modal, ModalBody, ModalFooter, ModalHeader, CardFooter, CardHeader } from 'reactstrap';
+import { Card, CardBody, CardTitle,  Row, Col,Modal, ModalBody, CardFooter, CardHeader } from 'reactstrap';
 import 'assets/css/card.css';
 import DataTable from 'react-data-table-component';
 
@@ -10,7 +10,8 @@ import axios from 'axios';
 
 const Cardss = () => {
   const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
-  const urlGetRE = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
+  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
+  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui 
   const [modal1, setModal1] = useState(false);
   const toggleModal1 = () => setModal1(!modal1);
 
@@ -25,8 +26,10 @@ const Cardss = () => {
 
   const [modal5, setModal5] = useState(false);
   const toggleModal5 = () => setModal5(!modal5);
-  const [room_availlable, setRoom_availlable] = useState(0); 
-  const [room, setRoom] = useState([]);
+
+  const [roomAvaillable, setRoomAvaillable] = useState(); 
+  const [endedRoom, setEndedRoom] = useState(); 
+  const [roomOccupied, setRoomOccupied] = useState(); 
 
 
 
@@ -56,19 +59,45 @@ const cols = [
 
 
 useEffect(() => {
- const fetchData =  async () => {
+ const fetchRoomAvaillable =  async () => {
   try {
     const res = await axios.get(urlGetRA);
     console.log('rthwrh:',res.data);
-    setRoom_availlable(res.data);
+    setRoomAvaillable(res.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
 };
 
- fetchData();
+const fetchEndedRoom =  async () => {
+  try {
+    const res = await axios.get(urlGetER);
+    console.log('rthwrh:',res.data);
+    setEndedRoom(res.data);
+  } catch (error) {   
+    console.error('Erreur lors de la requête GET', error);
+  }
+};
+
+const fetchRoomOccupied =  async () => {
+  try {
+    const res = await axios.get(urlGetOR);
+    console.log('rthwrh:',res.data);
+    setRoomOccupied(res.data);
+  } catch (error) {   
+    console.error('Erreur lors de la requête GET', error);
+  }
+};
+
+
+
+
+
+fetchRoomAvaillable();
+fetchEndedRoom();
+fetchRoomOccupied();
   
-}, [urlGetRA] ); 
+}, [urlGetRA,urlGetER,urlGetOR] ); 
 
 
 const roomTable = (room) => {
@@ -133,13 +162,13 @@ const customStyles = {
             <CardBody >
              
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#2298e7'}}>
-            <div>{room_availlable.length}</div>
+            <div>{roomAvaillable.length}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#2298e7' }}>CHAMBRES</div>
             </CardTitle>
              
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {room_availlable.length}  </span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {roomAvaillable.length}  </span> 
              </div>
             </CardFooter>
           </Card>
@@ -223,8 +252,7 @@ const customStyles = {
       </Row>
       <Modal isOpen={modal1} toggle={toggleModal1} size='lg'>
         <ModalBody>
-          {room_availlable &&(roomTable(room_availlable))}
-       
+          {roomAvaillable &&(roomTable(roomAvaillable))}
         </ModalBody>
       </Modal>
 
@@ -238,17 +266,13 @@ const customStyles = {
 
       <Modal isOpen={modal3} toggle={toggleModal3}>
         <ModalBody>
-          {/* Contenu du modal 2 */}
-          <h5>Détails de la carte 2</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
+        {endedRoom &&(roomTable(endedRoom))}
         </ModalBody>
       </Modal>
 
       <Modal isOpen={modal4} toggle={toggleModal4}>
         <ModalBody>
-          {/* Contenu du modal 2 */}
-          <h5>Détails de la carte 2</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
+        {roomOccupied &&(roomTable(roomOccupied))}
         </ModalBody>
       </Modal>
 
