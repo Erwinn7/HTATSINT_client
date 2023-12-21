@@ -1,12 +1,17 @@
-import { Card, CardBody, CardTitle, CardText, Row, Col,Modal, ModalBody, ModalFooter, ModalHeader, CardFooter, CardHeader } from 'reactstrap';
+import { Card, CardBody, CardTitle,  Row, Col,Modal, ModalBody, CardFooter, CardHeader } from 'reactstrap';
 import 'assets/css/card.css';
+import DataTable from 'react-data-table-component';
 
 import React, { useState, useEffect } from 'react';
 import { prefix_link } from 'variables/globalesVar';
+import axios from 'axios';
     
 
 
 const Cardss = () => {
+  const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
+  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
+  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui 
   const [modal1, setModal1] = useState(false);
   const toggleModal1 = () => setModal1(!modal1);
 
@@ -21,77 +26,114 @@ const Cardss = () => {
 
   const [modal5, setModal5] = useState(false);
   const toggleModal5 = () => setModal5(!modal5);
-  const [room_availlable, setRoom_availlable] = useState(0); 
-  const [room, setRoom] = useState([]);
-//sz,.cvbhjvbbbbbbbbbbbbbbbbbbbbbbbbbb
-const GetAvailableRooms = async () => {
-  //const navigate = useNavigate();
 
+  const [roomAvaillable, setRoomAvaillable] = useState(); 
+  const [endedRoom, setEndedRoom] = useState(); 
+  const [roomOccupied, setRoomOccupied] = useState(); 
+
+
+
+const cols = [
+  {
+    name : "CHAMBRE",
+    selector : row  => row.room.room_label,
+    sortable : true
+  },
+  {
+    name : "NOMBRE DE PLACE",
+    selector : row  => row.room_category.place_number,
+    sortable : true
+  },
+  {
+    name : "TYPE DE CHAMBRE",
+    selector : row  => row.room_category.room_category_label,
+    sortable : true
+  },
+  {
+    name : "PRIX JOURNALIER (FCFA)",
+    selector : row  => row.room.room_amount,
+    sortable : true
+  }
+]
+
+
+
+useEffect(() => {
+ const fetchRoomAvaillable =  async () => {
   try {
-    const token = localStorage.getItem('accessToken');
-    //console.log('Response from Flask API:', token);
-    const response = await fetch(prefix_link + '/api/v1/room_availlable', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    });
-
-    if (!response.ok) {
-      //throw new Error('Network response was not ok');
-      console.log('Response from Flask API:', /*data*/);
-    }
-  const data = await response.json();
-  
-
-  if (data && data.length > 0) {
-    console.log('Response from Flask API:', data);
-  /* const roomData = data.map(item => {
-        const room = item;
-       
-      };
-    });
-
-    setClients(clientsData);
-    return clientsData;
-*/
-return data;
-}
-  
-  } catch (error) {
-  console.log('tfkyuh',error);
-    console.error('Une erreurrrrr s\'est produite : ', error);
-  // navigate('/auth/login');
+    const res = await axios.get(urlGetRA);
+    console.log('rthwrh:',res.data);
+    setRoomAvaillable(res.data);
+  } catch (error) {   
+    console.error('Erreur lors de la requête GET', error);
   }
 };
 
-const fetchData =  async () => {
+const fetchEndedRoom =  async () => {
   try {
-   // console.log('Response from Flask APIdddddd:', clients);
-    const res = await GetAvailableRooms();
-   const room_availlable= res.length;
-    console.log('rthwrh:',res);
-    setRoom_availlable(room_availlable);
-  } catch (error) {
-   // navigate('/auth/login');
-   
+    const res = await axios.get(urlGetER);
+    console.log('rthwrh:',res.data);
+    setEndedRoom(res.data);
+  } catch (error) {   
+    console.error('Erreur lors de la requête GET', error);
+  }
+};
+
+const fetchRoomOccupied =  async () => {
+  try {
+    const res = await axios.get(urlGetOR);
+    console.log('rthwrh:',res.data);
+    setRoomOccupied(res.data);
+  } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
 };
 
 
-useEffect(() => {
- 
 
- fetchData();
+
+
+fetchRoomAvaillable();
+fetchEndedRoom();
+fetchRoomOccupied();
   
-}, [  ] ); 
+}, [urlGetRA,urlGetER,urlGetOR] ); 
 
 
+const roomTable = (room) => {
+  return(
+      <DataTable
+        title="Liste des chambres"
+        columns={cols}
+        data={room}
+        keyField="CHAMBRE"
+        customStyles={customStyles}
+        highlightOnHover
+        pagination >
+      </DataTable> 
+  )
+}
 
+const customStyles = {
+  rows: {
+      style: {
 
+      },
+  },
+  headCells: {
+      style: {
+        color: "#8898aa",
+        backgroundColor: "#f6f9fc",
+        borderColor: "#e9ecef",
+        fontWeight: "bold",
+      },
+  },
+  cells: {
+      style: {
 
+      },
+  },
+};
 
 
 
@@ -100,7 +142,7 @@ useEffect(() => {
 
 
   // Simuler des données pour les quatre cartes
-  const chambreDisponible = 58;
+  // const chambreDisponible = 58;
   const arriveeAttendue = 4;
   const departAttendu = 4;
   const recetteDuJour = 900000000;
@@ -120,13 +162,13 @@ useEffect(() => {
             <CardBody >
              
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#2298e7'}}>
-            <div>{room_availlable}</div>
+            <div>{roomAvaillable?.length}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#2298e7' }}>CHAMBRES</div>
             </CardTitle>
              
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {room_availlable}  </span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {roomAvaillable?.length}  </span> 
              </div>
             </CardFooter>
           </Card>
@@ -208,11 +250,9 @@ useEffect(() => {
         {/* Carte supplémentaire : Chambres attribuées aujourd'hui */}
        
       </Row>
-      <Modal isOpen={modal1} toggle={toggleModal1}>
+      <Modal isOpen={modal1} toggle={toggleModal1} size='lg'>
         <ModalBody>
-          {/* Contenu du modal */}
-          <h5>Détails de la carte sélectionnée</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal */}
+          {roomAvaillable &&(roomTable(roomAvaillable))}
         </ModalBody>
       </Modal>
 
@@ -226,17 +266,13 @@ useEffect(() => {
 
       <Modal isOpen={modal3} toggle={toggleModal3}>
         <ModalBody>
-          {/* Contenu du modal 2 */}
-          <h5>Détails de la carte 2</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
+        {endedRoom &&(roomTable(endedRoom))}
         </ModalBody>
       </Modal>
 
       <Modal isOpen={modal4} toggle={toggleModal4}>
         <ModalBody>
-          {/* Contenu du modal 2 */}
-          <h5>Détails de la carte 2</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
+        {roomOccupied &&(roomTable(roomOccupied))}
         </ModalBody>
       </Modal>
 

@@ -111,6 +111,17 @@ const Room = () => {
       return(<span>Indisponible</span>)
   }
   }
+
+  const updateRoomStateInModal = (newState) => {
+  setInfoRoom((prevInfoRoom) => ({
+    ...prevInfoRoom,
+    room: {
+      ...prevInfoRoom.room,
+      room_status: newState,
+    },
+  }));
+
+};
  
   const customStyles = {
     rows: {
@@ -140,6 +151,7 @@ const Room = () => {
       try {
         const res = await axios.get(urlGetR);
         setRoom(res.data.data);
+        setfilterRoom(res.data.data);
         //console.log('rooom : ',res.data.data)
         setAlert({ message: "", color: '' });
       } catch (error) {
@@ -153,11 +165,7 @@ const Room = () => {
   }, [urlGetR,modal,modalOpen]);
 
 const handleFilter = (e) => {
-  setfilterRoom(room)
-  console.log("ce qui est tapé",e.target.value);
-  console.log("filterRoom",filterRoom);
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
-  console.log("newRoom",newRoom);
   setRoom(newRoom);
 }
 
@@ -247,8 +255,8 @@ const closeModal = () => {
 
         {/* liste des chambres  */}
         {/* table dynamique  */}
-          <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
-              <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} />
+          <div className="float-right col-md-12 col-12 pb-2  " style={{width:"22%",display:"flex",justifyContent:"left",right:"0"}}>
+              <Input type="text" placeholder="Recherchez une chambre..." onChange={(e)=> handleFilter(e)} />
           </div>
           <div>
           {
@@ -283,12 +291,12 @@ const closeModal = () => {
                   <p><span style={{fontWeight:"bold"}}>Nombre de place : </span>{selectedRow.room_category.place_number} personnes</p>
                   <p style={{textAlign:"justify"}}>
                     <Row className="ml-0">
-                      <span className="mr-2"  style={{fontWeight:"bold"}}>Statut : </span>{returnStatut(infoRoom.room.room_status)}
+                      <span className="mr-2"  style={{fontWeight:"bold"}}>Statut : </span>{returnStatut(infoRoom.room.room_status) }
                       <Button className="ml-4" color="primary" onClick={toggleSatCol} style={{ marginBottom: '1rem' }}size="sm" >Modifier</Button>
                       <Collapse isOpen={isStatColOpen}>
                         <Card>
                           <CardBody>
-                          <UpdateRoomStatus roomId={infoRoom.room.id} roomOccupationId={infoRoom.room_occupation.id}  />
+                          <UpdateRoomStatus roomId={infoRoom.room.id} roomOccupationId={infoRoom.room_occupation.id} updateRS={updateRoomStateInModal} />
                           </CardBody>
                         </Card>
                       </Collapse>

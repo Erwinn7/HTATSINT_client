@@ -23,19 +23,11 @@ const Occupation = () => {
     },
   };
 
-  // const roomWithNum = room.data?.map((item, index) => {
-  //   return { ...item, Num: index + 1 };
-  // });
 
   const [thisDay, setThisDay] = useState(new Date());
 
   const cols = [
-    // {
-    //   name: "N°",
-    //   selector: row => row.Num,
-    //   sortable: true
 
-    // },
     {
       name: "CHAMBRE",
       selector: row => row.room.room_label,
@@ -157,15 +149,15 @@ const Occupation = () => {
     //lancer la requete pour les la récupération des chambres en fonction des dates 
 
     const fetchData = async () => {
-      console.log(datesRoom)
+      //console.log(datesRoom)
       try {
         const response = await axios.post(urlGetRoombyDate, {
           start_date: datesRoom.dateArrivee,
           end_date: datesRoom.dateDepart,
         }, config);
 
-        setRoom(response.data);
-        console.log(response.data);
+        setRoom(response.data.data);
+        //console.log(response.data);
         setAlert({ message: "", color: '' });
         setSave(true);
       } catch (error) {
