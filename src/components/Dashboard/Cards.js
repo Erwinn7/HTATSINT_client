@@ -62,8 +62,8 @@ useEffect(() => {
  const fetchRoomAvaillable =  async () => {
   try {
     const res = await axios.get(urlGetRA);
-    console.log('rthwrh:',res.data);
-    setRoomAvaillable("Room Available:",res.data);
+    console.log("Room Available:",res.data);
+    setRoomAvaillable(res.data.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
@@ -72,8 +72,8 @@ useEffect(() => {
 const fetchEndedRoom =  async () => {
   try {
     const res = await axios.get(urlGetER);
-    console.log('rthwrh:',res.data);
-    setEndedRoom("Ended Room:",res.data);
+    console.log("Ended Room:",res.data);
+    setEndedRoom(res.data.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
@@ -82,8 +82,8 @@ const fetchEndedRoom =  async () => {
 const fetchRoomOccupied =  async () => {
   try {
     const res = await axios.get(urlGetOR);
-    console.log('rthwrh:',res.data);
-    setRoomOccupied("Room occupied",res.data);
+    console.log("Room occupied",res.data);
+    setRoomOccupied(res.data.data);  
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
@@ -146,7 +146,7 @@ const customStyles = {
   const arriveeAttendue = 4;
   //const departAttendu = 4;
   const recetteDuJour = 900000000;
-  const chambreAttribueeAujourdHui = 7;
+  //const chambreAttribueeAujourdHui = 7;
 
 
   return (
@@ -218,7 +218,7 @@ const customStyles = {
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#808080' }}>
-            <div>{chambreAttribueeAujourdHui}</div>
+            <div>{roomOccupied?.length}</div>
             <div style={{ marginTop: '-19px', fontSize: '12px', fontWeight: 'bold',  }}> ENREGISTREES</div>
             </CardTitle>
              
@@ -256,7 +256,7 @@ const customStyles = {
         </ModalBody>
       </Modal>
 
-      <Modal isOpen={modal2} toggle={toggleModal2}>
+      <Modal isOpen={modal2} toggle={toggleModal2} size='lg'>
         <ModalBody>
           {/* Contenu du modal 2 */}
           <h5>Détails de la carte 2</h5>
@@ -264,13 +264,13 @@ const customStyles = {
         </ModalBody>
       </Modal>
 
-      <Modal isOpen={modal3} toggle={toggleModal3}>
+      <Modal isOpen={modal3} toggle={toggleModal3} size='lg'>
         <ModalBody>
         {endedRoom &&(roomTable(endedRoom))}
         </ModalBody>
       </Modal>
 
-      <Modal isOpen={modal4} toggle={toggleModal4}>
+      <Modal isOpen={modal4} toggle={toggleModal4} size='lg'>
         <ModalBody>
         {roomOccupied &&(roomTable(roomOccupied))}
         </ModalBody>
