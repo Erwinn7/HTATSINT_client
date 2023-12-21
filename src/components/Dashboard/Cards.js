@@ -63,7 +63,7 @@ useEffect(() => {
   try {
     const res = await axios.get(urlGetRA);
     console.log('rthwrh:',res.data);
-    setRoomAvaillable(res.data);
+    setRoomAvaillable("Room Available:",res.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
@@ -73,7 +73,7 @@ const fetchEndedRoom =  async () => {
   try {
     const res = await axios.get(urlGetER);
     console.log('rthwrh:',res.data);
-    setEndedRoom(res.data);
+    setEndedRoom("Ended Room:",res.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
@@ -83,7 +83,7 @@ const fetchRoomOccupied =  async () => {
   try {
     const res = await axios.get(urlGetOR);
     console.log('rthwrh:',res.data);
-    setRoomOccupied(res.data);
+    setRoomOccupied("Room occupied",res.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
   }
@@ -144,7 +144,7 @@ const customStyles = {
   // Simuler des données pour les quatre cartes
   // const chambreDisponible = 58;
   const arriveeAttendue = 4;
-  const departAttendu = 4;
+  //const departAttendu = 4;
   const recetteDuJour = 900000000;
   const chambreAttribueeAujourdHui = 7;
 
@@ -198,14 +198,14 @@ const customStyles = {
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#f39c12'}}>
-            <div>{departAttendu}</div>
+            <div>{endedRoom?.length}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#f39c12' }}>ATTENDUES</div>
             </CardTitle>
               
             </CardBody>
 
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {departAttendu}  </span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {endedRoom?.length} </span> 
              </div>
             
             </CardFooter>
