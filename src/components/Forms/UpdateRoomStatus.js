@@ -6,7 +6,7 @@ import  axios  from "axios";
 import { prefix_link } from "variables/globalesVar";
 
 
-const  UpdateRoomStatus = ({roomId, roomOccupationId })  => {
+const  UpdateRoomStatus = ({roomId, roomOccupationId,updateRS })  => {
     const urlUpdateRS = prefix_link+"/api/v1/update_room";
     const [save, setSave] = useState(true)
     const [dataRS, setdataRS] = useState(
@@ -43,7 +43,7 @@ const  UpdateRoomStatus = ({roomId, roomOccupationId })  => {
           // console.log(res.data) 
           setdataRS(res.data) 
           setSave(true)
-           
+          updateRS(dataRS.room_status);
         } catch (error) {
             console.error('Erreur lors de la requête Post', error);
             setSave(true);
@@ -51,8 +51,6 @@ const  UpdateRoomStatus = ({roomId, roomOccupationId })  => {
         };
         
         fetchData();
-
-        refreshParent();
 
     }
 
