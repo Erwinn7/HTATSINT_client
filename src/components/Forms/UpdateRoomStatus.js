@@ -52,7 +52,7 @@ const  UpdateRoomStatus = ({roomId, roomOccupationId })  => {
         
         fetchData();
 
-        refreshParent();
+        
 
     }
 

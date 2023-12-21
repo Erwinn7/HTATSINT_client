@@ -1,41 +1,3 @@
-/*import React from 'react';
-import { Doughnut } from 'react-chartjs-2';
-
-const RoomStatusChart = () => {
-  // Données de l'état des chambres
-  const data = {
-    labels: ['Disponible', 'Bloquée', 'Réservée', 'Maintenance', 'Fermée', 'Ouverte'],
-    datasets: [
-      {
-        data: [20, 5, 10, 8, 2, 5], // Remplacez ces valeurs par les données réelles
-        backgroundColor: [
-          '#3498db', // Bleu pour Disponible
-          '#e74c3c', // Rouge pour Bloquée
-          '#2ecc71', // Vert pour Réservée
-          '#f39c12', // Jaune pour Maintenance
-          '#8e44ad', // Violet pour Fermée
-          '#27ae60', // Autre couleur pour Ouverte
-        ],
-      },
-    ],
-  };
-
-  // Options du diagramme
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
-  return (
-    <div>
-      <Doughnut data={data} options={options} />
-    </div>
-  );
-};
-
-export default RoomStatusChart;
-
-*/
 
 import React from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -54,7 +16,9 @@ const RoomStatusChart = () => {
           data: [12, 19, 3, 5, 2, 3],
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
+            // 'rgba(54, 162, 235, 0.2)',
+            //couleur grise fonce
+            '  rgb(128, 128, 128);' ,
             'rgba(255, 206, 86, 0.2)',
             'rgba(75, 192, 192, 0.2)',
             'rgba(153, 102, 255, 0.2)',
@@ -73,11 +37,31 @@ const RoomStatusChart = () => {
       ],
     };
     
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          // position: 'top',
+          position: 'top', // Mettez 'right' pour placer la légende à droite du diagramme
+        },
+        datalabels: {
+          color: 'white',
+          anchor: 'end',
+          align: 'end',
+          font: {
+            size: 5,
+          },
+        },
+      },
+    };
+  
    
       return (     
 
-<div>
-<Pie data={data} />;
+<div style={{height:'300px'}}>
+<Pie data={data} options={options} />;
 </div>
 
       );
