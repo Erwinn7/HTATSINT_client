@@ -1,27 +1,42 @@
 import { useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-
 import 'assets/css/Calendar.css';
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
-type ValuePiece = Date | null;
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+
 
 const MyCalendar =()=> {
-  const [value, onChange] = useState(new Date());
+ // État pour stocker la date sélectionnée
+ const [selectedDate, setSelectedDate] = useState(new Date());
 
-  return (
-    <div className="sample">
-      <header>
-       
-      </header>
-      <div className="sample__container">
-        <main className="">
-          <Calendar onChange={onChange} showWeekNumbers value={value} />
-        </main>
-      </div>
-    </div>
-  );
+ // Fonction pour gérer le changement de date
+ const handleDateChange = (date) => {
+   setSelectedDate(date);
+ };
+
+ return (
+   <LocalizationProvider dateAdapter={AdapterDayjs} locale="fr">
+   <DemoContainer
+   components={[ 'StaticDatePicker']} >
+    <DemoItem >
+      {/* Utilisation du composant StaticDatePicker */}
+      <StaticDatePicker
+        displayStaticWrapperAs="desktop"
+        value={selectedDate}
+        onChange={handleDateChange}
+        renderInput={(params) => <TextField {...params} />}
+        label="Sélectionnez une date"
+      />
+     </DemoItem>
+  </DemoContainer>
+
+   </LocalizationProvider>
+ );
 }
 export default MyCalendar;

@@ -12,7 +12,6 @@ import {Container, Collapse, Button, Card, CardBody ,
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import UpdateRoomStatus from "components/Forms/UpdateRoomStatus";
 import Header from "components/Headers/Header.js";
-// import {lesChambres} from "variables/globalesVar";
 import "assets/css/roomDesign.css";
 import DataTable from "react-data-table-component";
 import { prefix_link } from "variables/globalesVar";

@@ -10,8 +10,10 @@ import axios from 'axios';
 
 const Cardss = () => {
   const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
-  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
-  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui 
+  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée   
+  const urlGetR = prefix_link + "/api/v1/rooms";
+  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
+
   const [modal1, setModal1] = useState(false);
   const toggleModal1 = () => setModal1(!modal1);
 
@@ -28,6 +30,7 @@ const Cardss = () => {
   const toggleModal5 = () => setModal5(!modal5);
 
   const [roomAvaillable, setRoomAvaillable] = useState(); 
+  const [roomNumber, setRoomNumber] = useState(); 
   const [endedRoom, setEndedRoom] = useState(); 
   const [roomOccupied, setRoomOccupied] = useState(); 
 
@@ -89,15 +92,23 @@ const fetchRoomOccupied =  async () => {
   }
 };
 
-
+const fetchRoomNumber = async () => {
+  try {
+    const res = await axios.get(urlGetR);
+    setRoomNumber(res.data.data.length);
+  } catch (error) {
+    console.error('Erreur lors de la requête GET', error);
+  }
+};
 
 
 
 fetchRoomAvaillable();
 fetchEndedRoom();
 fetchRoomOccupied();
+fetchRoomNumber();
   
-}, [urlGetRA,urlGetER,urlGetOR] ); 
+}, [urlGetRA,urlGetER,urlGetOR,urlGetR] ); 
 
 
 const roomTable = (room) => {
@@ -113,6 +124,8 @@ const roomTable = (room) => {
       </DataTable> 
   )
 }
+
+
 
 const customStyles = {
   rows: {
@@ -143,7 +156,7 @@ const customStyles = {
 
   // Simuler des données pour les quatre cartes
   // const chambreDisponible = 58;
-  const arriveeAttendue = 4;
+  //const arriveeAttendue = 4;
   //const departAttendu = 4;
   const recetteDuJour = 900000000;
   //const chambreAttribueeAujourdHui = 7;
@@ -162,30 +175,32 @@ const customStyles = {
             <CardBody >
              
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#2298e7'}}>
-            <div>{roomAvaillable?.length}</div>
+            <div>{roomAvaillable?.length ? roomAvaillable.length : 0}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#2298e7' }}>CHAMBRES</div>
             </CardTitle>
              
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {roomAvaillable?.length}  </span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {roomNumber ? roomNumber : 0}</span> 
              </div>
             </CardFooter>
           </Card>
         </Col>
 
         {/* Carte 2 : Arrivées Attendues */}
-        <Col md={2} className='' >
-          <Card className='arrivees-attendues'  style={{ width: '150px', height: '200px' }} onClick={toggleModal2}>
-          <CardHeader className='text-center' style={{ width: '149px',marginTop: '0', height: '15px',fontWeight: 'bold' }}>ARRIVEES</CardHeader>
+        <Col md={2}>
+          <Card className='arrivees-attendues'  style={{ width: '150px', height: '200px'}} 
+          // onClick={toggleModal2}
+          >
+          <CardHeader className='text-center' style={{ width: '149px',marginTop: '0', height: '15px',fontWeight: 'bold' }}>ARRIVEE</CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: 'red'}}>
-            <div>{arriveeAttendue}</div>
+            <div>0</div> 
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: 'red' }}>ATTENDUES</div>
             </CardTitle>
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {arriveeAttendue}  </span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}>0</span> 
              </div>
             </CardFooter>
           </Card>
@@ -198,34 +213,32 @@ const customStyles = {
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#f39c12'}}>
-            <div>{endedRoom?.length}</div>
+            <div>{endedRoom?.length ? endedRoom.length : 0}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#f39c12' }}>ATTENDUES</div>
             </CardTitle>
               
             </CardBody>
 
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {endedRoom?.length} </span> 
-             </div>
-            
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}>  AUJOURD'HUI</div>
             </CardFooter>
           </Card>
         </Col>
 
         <Col  md={3} className=''>
           <Card className='attribuees-aujourd-hui' style={{ width: '150px', height: '200px' }} onClick={toggleModal4}>
-          <CardHeader className='text-center' style={{ width: '149px',marginTop: '0', height: '15px',fontWeight: 'bold' }}>CHAMBRES
+          <CardHeader className='text-center' style={{ width: '149px',marginTop: '0', height: '15px',fontWeight: 'bold' }}>OCCUPEE
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#808080' }}>
-            <div>{roomOccupied?.length}</div>
-            <div style={{ marginTop: '-19px', fontSize: '12px', fontWeight: 'bold',  }}> ENREGISTREES</div>
+            <div>{roomOccupied?.length ? roomOccupied.length : 0}</div>
+            <div style={{ marginTop: '-19px', fontSize: '12px', fontWeight: 'bold',  }}> CHAMBRES</div>
             </CardTitle>
              
             </CardBody>
 
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold', fontSize: '12px'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}>  AUJOUD'HUI</div>
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}>  AUJOURD'HUI</div>
             </CardFooter>
           </Card>
         </Col>
@@ -259,7 +272,7 @@ const customStyles = {
       <Modal isOpen={modal2} toggle={toggleModal2} size='lg'>
         <ModalBody>
           {/* Contenu du modal 2 */}
-          <h5>Détails de la carte 2</h5>
+          <h5>Aucune réservation pour le moment</h5>
           {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
         </ModalBody>
       </Modal>
@@ -279,8 +292,8 @@ const customStyles = {
       <Modal isOpen={modal5} toggle={toggleModal5}>
         <ModalBody>
           {/* Contenu du modal 2 */}
-          <h5>Détails de la carte 2</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
+          <h5>Bientôt disponible</h5>
+          {/* Ajoutez ici les détails spécifiqxues à afficher dans le modal 2 */}
         </ModalBody>
       </Modal>
      
