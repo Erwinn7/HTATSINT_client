@@ -136,6 +136,7 @@ useEffect(() => {
           try {
             console.log("itemToSend:", itemToSend);
             const res = await axios.post(urlPostOccupant, itemToSend, config);
+            console.log("oject qddtendu:", itemToSend);
             console.log("Occupant ajouté :", res.data);
           } catch (error) {
             console.error('Erreur lors de la requête POST', error);

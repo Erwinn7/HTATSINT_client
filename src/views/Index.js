@@ -37,13 +37,10 @@ const Index = () => {
         </div>
         <div className='col-4 mx-n2'>
           <Card className="card-stats fluid" style={{ width: '310px' }} >
-          <CardHeader>info</CardHeader>
+          <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}> Statut des chambres</div></CardHeader>
           <RoomStatusChart />
           </Card>
-          <Card className="card-stats fluid " style={{ width: '310px' }}>
-          <CardHeader>dsdf</CardHeader>
-          <RoomStatusChart />
-          </Card>
+         
         </div>
         <div className='col-4 '>
           <div className='mx-0 mx-n1 container-fluid  '>

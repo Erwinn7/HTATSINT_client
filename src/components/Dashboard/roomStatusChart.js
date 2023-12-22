@@ -1,36 +1,153 @@
 
-import React from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import React, { useState, useEffect } from 'react';
+import { Chart as ChartJS , ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import { prefix_link } from 'variables/globalesVar';
+import { useNavigate } from 'react-router-dom';
 
+const RoomStatusChart = () => {  
+  const navigate = useNavigate();
 
-const RoomStatusChart = () => {
+  const [RoomAvailables, setRoomAvailables] = useState([]); // Assurez-vous de déclarer l'état pour la variable
+  const [RoomOccupieds, setRoomOccupieds] = useState([]); // Assurez-vous de déclarer l'état pour la variable
+  const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
+  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
+  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui
+  //recuperation de data
+  
+  const RoomAvailable = async () => {
+  
+    try {
+      const token = localStorage.getItem('accessToken');
+      const email= localStorage.getItem('email');
+
+     // console.log('Response from Flask API:', email);
+      const response = await fetch(urlGetRA, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'email': `${email}`
+        },
+      });
+  
+      if (!response.ok) {
+        //throw new Error('Network response was not ok');
+        console.log('Response from Flask API:', /*data*/);
+      }
+ 
+   // console.log('Response from Flask API:', response);
+    const data = await response.json();
+   
+   return data;
     
-    //ChartJS.register(ArcElement, Tooltip, Legend);
+    } catch (error) {
+     //navigate('/auth/login');
+     console.log('Response erro from Flask API:', error);
+    }
+  };
+  const fetchroomAvailables =  async () => {
+    try {
+     // console.log('Response from Flask APIdddddd:', clients);
+      const res = await RoomAvailable();
+      setRoomAvailables(res.data);
+     
+     // console.log(res.data);
+    } catch (error) {
+     // navigate('/auth/login');
+     
+      console.error('Erreur lors de la requête GET', error);
+    }
+  };
 
+
+  
+
+  const roomOccupied = async () => {
+  
+    try {
+      const token = localStorage.getItem('accessToken');
+      const email= localStorage.getItem('email');
+
+     // console.log('Response from Flask API:', email);
+      const response = await fetch(urlGetOR, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'email': `${email}`
+        },
+      });
+  
+      if (!response.ok) {
+        //throw new Error('Network response was not ok');
+        //console.log('Response from Flask API:', /*data*/);
+      }
+ 
+   // console.log('Response from Flask API:', response);
+    const data = await response.json();
+  // console.log('Response from Flask API:', data);
+   return data;
+    
+    } catch (error) {
+     //navigate('/auth/login');
+     //console.log('Response erro from Flask API:', error);
+    }
+  };
+  const fetchRoomOccupied=  async () => {
+    try {
+     // console.log('Response from Flask APIdddddd:', clients);
+      const res = await roomOccupied();
+      setRoomOccupieds(res.data);
+     
+    // console.log(res.data);
+    } catch (error) {
+     // navigate('/auth/login');
+     
+      console.error('Erreur lors de la requête GET', error);
+    }
+  };
+
+
+
+  
+  useEffect(() => {
+   
+  
+    fetchroomAvailables();
+    fetchRoomOccupied();
+  }, [  ] ); 
+
+  const RA = RoomAvailables?.length;
+
+const OR = RoomOccupieds?.length;
+
+
+
+
+   
      const data = {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: ['Disponible', 'Occuppée', 'Reservation', 'Indisponible'],
       datasets: [
+       
         {
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
+          label: '# Statut Chambres',
+          data: [RA, OR, 0, 5],
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            // 'rgba(54, 162, 235, 0.2)',
+        'rgb(34, 152, 231)',
+           // 'rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)',
             //couleur grise fonce
-            '  rgb(128, 128, 128);' ,
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
+            'rgb(68,68,68)'  ,
+            'rgb(255, 0, 0)',
+            'rgb(0, 13, 6)'
+            
           ],
           borderColor: [
             'rgba(255, 99, 132, 1)',
             'rgba(54, 162, 235, 1)',
             'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
+            'rgba(75, 192, 192, 1)'
+            
           ],
           borderWidth: 1,
         },
@@ -42,16 +159,20 @@ const RoomStatusChart = () => {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: true,
+          display: false,
           // position: 'top',
-          position: 'top', // Mettez 'right' pour placer la légende à droite du diagramme
+          // align: 'start',
+         
+         //mettre la legende en bas
+         position: 'right',  // Mettez 'right' pour placer la légende à droite du diagramme
         },
+       
         datalabels: {
           color: 'white',
           anchor: 'end',
           align: 'end',
           font: {
-            size: 5,
+            size: 4,
           },
         },
       },

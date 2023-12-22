@@ -49,7 +49,10 @@ const Login = () => {
     const storeTokenInLocalStorage = (token) => {
       localStorage.setItem('accessToken', token);
     };
-
+// FONCTION POUR STOKER LEMAIL DANS LE LOCALSTORAGE
+const storeEmailInLocalStorage = (email) => {
+  localStorage.setItem('email', email);
+}
     try {
       setLoading(true);
       const response = await fetch( prefix_link+'/api/v1/login', {
@@ -65,10 +68,13 @@ const Login = () => {
        // console.log('Response from Flask API:', data_logger);
   // Récupérer le role de l'utilisateur
   const role = data_logger.user.role.role_name;
-  console.log('Role:', role);
+  console.log('Role:', data_logger);
 
   // Récupérer l'access token
   const token = data_logger.access_token;
+  const email= data_logger.user.user.email;
+   console.log('email:', email);
+  storeEmailInLocalStorage(email);
   //console.log('Token:', token);
   storeTokenInLocalStorage(token);
   // Rediriger en fonction du rôle
