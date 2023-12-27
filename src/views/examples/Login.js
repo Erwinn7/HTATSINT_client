@@ -52,6 +52,17 @@ const Login = () => {
 // FONCTION POUR STOKER LEMAIL DANS LE LOCALSTORAGE
 const storeEmailInLocalStorage = (email) => {
   localStorage.setItem('email', email);
+};
+
+const storeNameLocalStorage = (name) => {
+  localStorage.setItem('name', name);
+}
+
+const storeSurnameInLocalStorage = (surname) => {
+  localStorage.setItem('surname', surname);
+};
+const storeIdInLocalStorage = (id) => {
+  localStorage.setItem('id', id);
 }
     try {
       setLoading(true);
@@ -120,14 +131,16 @@ const storeEmailInLocalStorage = (email) => {
       document.getElementById('email').value = '';
       document.getElementById('hashed_password').value = '';
       console.error('Error sending data to Flask API:', error.message);
-      setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
+       setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
+  setTimeout(() => {
+     
+        window.location.reload();
+      }, 5000);
       setFormData((prevData) => ({
         email: '',
   hashed_password: ''
       }));
-      setTimeout(() => {
-       // window.location.reload();
-      }, 5000);
+    
     }finally {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
     }
