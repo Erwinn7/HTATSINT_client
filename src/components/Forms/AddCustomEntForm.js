@@ -46,13 +46,14 @@ function MyFormEnt() {
         //
         setTimeout(() => {
           setAlert({ message: '', color: '' });
-        }, 5000);
-        // vider les champs du formulaire
-        document.getElementById('phone_number').value = '';
+           document.getElementById('phone_number').value = '';
         document.getElementById('institute_name').value = '';
         document.getElementById('ifu').value = '';
         document.getElementById('email').value = '';
         document.getElementById('address').value = '';
+        }, 5000);
+        // vider les champs du formulaire
+       
     
       }else{
         setAlert({ message:  `Erreur!Contacter le service technique` , color: 'danger' });
@@ -118,11 +119,11 @@ function MyFormEnt() {
         }
        
       });
-
+ const data = await response.json();
       if (response.status ===404) {
         //Aucun client avec ce numero de telephone
-        const data = await response.json();
-        console.log(`Response from flask API: `, data);
+      // 
+        //console.log(`Response from flask API: `, data);
         document.getElementById('institute_name').value = '';
 document.getElementById('ifu').value = '';
 document.getElementById('email').value = '';
@@ -132,9 +133,9 @@ setIsExistingMoralClient(false);
 
       if (response.status ===200) {
         //un client avec ce numero de telephone
-        const data = await response.json();
+       // const data = await response.json();
         //console.log('Response from Flask API:', data);
-        console.log(`${name}: ${value}`);
+        //console.log(`${name}: ${value}`);
 if (data.type_customer.type_custormer=== "Morale") {
 // PRE-REMPLIRE LE FORMULAIRE
 
@@ -144,10 +145,10 @@ document.getElementById('ifu').value = data.customer.ifu;
 document.getElementById('email').value = data.customer.email;
 document.getElementById('address').value = data.customer.address;
 // ENVOI D'ALERTE
-setAlert({ message:  `le client ${data.customer.institute_name} existe deja avec ce numero de telephone` , color: 'danger' });
+setAlert({ message:  `le client ${data.customer.institute_name} existe deja avec ce numero de telephone.Veuillez changer le numero de telephone` , color: 'danger' });
 //
 setTimeout(() => {
-setAlert({ message: '', color: '' });
+//setAlert({ message: '', color: '' });
 }, 10000);
 // desactiver le bouton enregistrer
 
@@ -155,7 +156,7 @@ setIsExistingMoralClient(true);
 
 } else{
 setIsExistingMoralClient(true);
-setAlert({ message: 'Ce numero est deja enregistrer pour un client de type physique.', color: 'primary' });
+setAlert({ message: 'Ce numero est deja enregistrer pour un client de type physique.Veuillez changer le numero de telephone', color: 'primary' });
 setTimeout(() => {
   setAlert({ message: '', color: '' });
   }, 10000);

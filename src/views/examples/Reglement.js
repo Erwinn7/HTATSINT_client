@@ -45,14 +45,14 @@ const [pending, setPending] = useState(true);
        
         },
       });
-  
+  const data = await response.json();
       if (!response.ok) {
         //throw new Error('Network response was not ok');
         console.log('Response from Flask API:', /*data*/);
       }
  
-   // console.log('Response from Flask API:', response);
-    const data = await response.json();
+    console.log('Response from Flask API:', data);
+    
     if (data.data && data.data.length > 0) {
       const clientsData = data.data.map(item => {
         const client = item.customer;
@@ -76,7 +76,7 @@ const [pending, setPending] = useState(true);
     } catch (error) {
     console.log('tfkyuh',error);
      // console.error('Une erreurrrrr s\'est produite : ', error);
-     navigate('/auth/login');
+     //navigate('/auth/login');
     }
   };
   const fetchData =  async () => {

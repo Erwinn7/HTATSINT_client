@@ -3,12 +3,15 @@ import { Button, Form, FormGroup, Label, Input, Col, Alert , Spinner} from 'reac
 import { prefix_link } from "variables/globalesVar";
 
 const CreateUserForm = () => {
+  const token = localStorage.getItem('accessToken');
+  const id= localStorage.getItem('id');
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     role_name:'',
     hashed_password: '',
     email: '',
+    user_id : `${id}`
   });
 
   const [alert, setAlert] = useState({ message: '', color: '' });
@@ -19,10 +22,10 @@ const CreateUserForm = () => {
     : value;
     setFormData((prevFormData) => {
       const updatedFormData = { ...prevFormData, [name]: selectedValue };
-      console.log(updatedFormData);
+     // console.log(updatedFormData);
       return updatedFormData;
     });
-    console.log('hand',formData);
+   // console.log('hand',formData);
   };
   const [loading, setLoading] = useState(false);
 
@@ -42,8 +45,7 @@ const CreateUserForm = () => {
     // Appel à votre API pour enregistrer l'utilisateur (remplacez cela par votre propre logique)
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const token = localStorage.getItem('accessToken');
-      const id= localStorage.getItem('id');
+     
       if (formData.hashed_password !== formData.confirmPassword) {
         setAlert({ message: 'Les mots de passe ne correspondent pas.', color: 'danger' });
         return;
@@ -63,7 +65,7 @@ setFormData({
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
-            'id': id
+            
           },
           body: JSON.stringify(formData),
         });
@@ -73,12 +75,20 @@ setFormData({
           setAlert({ message: 'Utilisateur créé avec succès.', color: 'success' });
           setTimeout(() => {
             setAlert({ message: '', color: '' });
+            //vider le formulaire
+            document.getElementById('first_name').value = '';
+            document.getElementById('last_name').value = '';
+            document.getElementById('role_name').value = '';
+            document.getElementById('hashed_password').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('confirmPassword').value = '';
+
           }, 10000);
          
           console.log('Response from Flask API:', users_data);
          //throw new Error('Network response was not ok');
         } else{
-          setAlert({ message: 'Cet utilisateur existe deja . ', color: 'danger' });
+          setAlert({ message: 'L email est déja utilisé . ', color: 'danger' });
           setTimeout(() => {
             setAlert({ message: '', color: '' });
           }, 10000);
@@ -93,6 +103,12 @@ setFormData({
         setAlert({ message: 'Defaut de connexion au serveur.Contacter service technique ', color: 'danger' });
         setTimeout(() => {
           setAlert({ message: '', color: '' });
+          document.getElementById('first_name').value = '';
+            document.getElementById('last_name').value = '';
+            document.getElementById('role_name').value = '';
+            document.getElementById('hashed_password').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('confirmPassword').value = '';
         }, 10000);
       
         console.error('Error sending data to Flask API:', error.message);

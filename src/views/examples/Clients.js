@@ -29,6 +29,7 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Tables = () => {
   const token = localStorage.getItem('accessToken');
+  const tokenn ='1235478952';
  // const id= localStorage.getItem('id');
  // const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
@@ -52,13 +53,21 @@ async function GetClient  () {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${tokenn}`
       }
     });
 
     if (!response.ok) {
       //throw new Error('Network response was not ok');
-      console.log('Response from Flask API:', /*data*/);
+      console.log('Response from Flask API:', response);
+      if (response.status === 401) {
+        // Gérer le statut 401 ici (par exemple, rediriger vers la page de connexion)
+        //navigate('/auth/login');
+        console.log('Redirection vers la page de connexion');
+      } else {
+        // Gérer les autres erreurs
+        console.log('Erreur inattendue:', response.status);
+      }
     }
 
     const data = await response.json();
@@ -96,6 +105,7 @@ async function GetClient  () {
   return clientsData;
 } catch (error) {
 console.error('Une erreur s\'est produite : ', error);
+console.log('Response from Flask API:', error.type);
 }
 };
 

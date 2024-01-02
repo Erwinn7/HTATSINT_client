@@ -16,7 +16,7 @@ const [pending, setPending] = useState(true);
 
 async function GetUsers  () {
   const token = localStorage.getItem('accessToken');
-  const id = localStorage.getItem('id');
+  
 
   try {
     const response = await fetch(prefix_link + '/api/v1/users', {
@@ -24,7 +24,7 @@ async function GetUsers  () {
       headers: {
         'Content-Type': 'application/json',
 'Authorization': `Bearer ${token}`,
-'id': id
+
 
       }
     });
@@ -34,7 +34,7 @@ async function GetUsers  () {
     }
 
     const data = await response.json();
-    console.log('Response from Flask API:', data);
+    //console.log('Response from Flask API:', data);
     if (data && data.data.length > 0) {
       const usersData = data.data.map(item => ({
         id: item.employee.id,
@@ -46,7 +46,7 @@ async function GetUsers  () {
       }));
       
       
-      console.log('Response from Flask API:', usersData);
+     // console.log('Response from Flask API:', usersData);
       //setUsers(usersData);
      return usersData;
     } else {

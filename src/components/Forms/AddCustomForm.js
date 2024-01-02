@@ -57,9 +57,7 @@ function MyForm() {
           //
           setTimeout(() => {
             setAlert({ message: '', color: '' });
-          }, 5000);
-          // vider les champs du formulaire
-          document.getElementById('phone_number').value = '';
+             document.getElementById('phone_number').value = '';
           document.getElementById('first_name').value = '';
           document.getElementById('last_name').value = '';
           document.getElementById('gender').value = '';
@@ -67,7 +65,8 @@ function MyForm() {
           document.getElementById('email').value = '';
           document.getElementById('date_of_birth').value = '';
           document.getElementById('address').value = '';
-// fermer la modal
+          }, 5000);
+          
           
 
         }else{
@@ -163,7 +162,7 @@ if (data.type_customer.type_custormer=== "Physique") {
   setAlert({ message:  `le client ${data.customer.last_name} ${data.customer.first_name} existe deja avec ce numero de telephone` , color: 'danger' });
 //
 setTimeout(() => {
-  setAlert({ message: '', color: '' });
+ // setAlert({ message: '', color: '' });
 }, 10000);
 // desactiver le bouton enregistrer
 
@@ -183,19 +182,19 @@ setIsExistingPhysiqueClient(true);
         document.getElementById('phone_number').value = '';
         setTimeout(() => {
           setAlert({ message: '', color: '' });
+          // vider le formulaire
+          document.getElementById('phone_number').value = '';
+          document.getElementById('first_name').value = '';
+          document.getElementById('last_name').value = '';
+          document.getElementById('gender').value = '';
+          document.getElementById('ifu').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('date_of_birth').value = '';
+          document.getElementById('address').value = '';
+
         }, 5000);
        
-        setFormData ({
-    
-          first_name: '',
-          last_name: '',
-         gender: '',
-          ifu: '',
-          email:'',
-          date_of_birth: '',
-          address: ''
-          
-        })
+      
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
       }
