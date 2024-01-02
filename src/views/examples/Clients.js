@@ -28,7 +28,8 @@ import { prefix_link } from "variables/globalesVar";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Tables = () => {
-  
+  const token = localStorage.getItem('accessToken');
+ // const id= localStorage.getItem('id');
  // const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
   const [clientsMoral, setClientsMoral] = useState([]);
@@ -48,7 +49,11 @@ async function GetClient  () {
   try {
     
     const response = await fetch( prefix_link+'/api/v1/clients', {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
     });
 
     if (!response.ok) {
@@ -57,7 +62,7 @@ async function GetClient  () {
     }
 
     const data = await response.json();
-console.log('Response from Flask API:', data.data);
+//console.log('Response from Flask API:', data.data);
     const clientsData = Object.values(data.data).map(item => {
       if (item && item.customer) {
 
@@ -77,11 +82,11 @@ console.log('Response from Flask API:', data.data);
 
     
         
-        console.log('Response frommmmmmaa Flask API:', clientData);
+      //  console.log('Response frommmmmmaa Flask API:', clientData);
         return clientData;
         
       } else {
-        console.log('Response frommmmmm Flask API:', /*data*/);
+        //console.log('Response frommmmmm Flask API:', /*data*/);
         return null; // ou toute autre valeur par défaut que vous préférez
       }
     });

@@ -4,7 +4,8 @@ import { Form, Row, Col, FormGroup, Label, Input, Button , Spinner,Alert} from '
 import { prefix_link } from 'variables/globalesVar';
 
 function MyFormEnt() {
-
+  const token = localStorage.getItem('accessToken');
+  const id= localStorage.getItem('id');
   const [isExistingMoralClient, setIsExistingMoralClient] = useState(false);
   const [alert, setAlert] = useState({ message: '', color: '' });
 
@@ -17,22 +18,23 @@ function MyFormEnt() {
     address: '',
     phone_number:'',
     
-    customer_type_id:'111f9b06-0037-4147-b820-3f7361e4d111'
+    customer_type_id:'4525d856-d4b8-412d-87b7-7b7f3dc59c41',
+    user_id : `${id}`
   });
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('accessToken');
-    const id= localStorage.getItem('id');
+   
 
     try {
       setLoading(true);
+      console.log('formData:',id);
       const response = await fetch(prefix_link+'/api/v1/client', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'id': id
+          
         },
         body: JSON.stringify(formData),
       });
@@ -109,7 +111,11 @@ function MyFormEnt() {
     try {
      
       const response = await fetch( prefix_link+'/api/v1/client_by_phone/'+value, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
        
       });
 
@@ -128,7 +134,7 @@ setIsExistingMoralClient(false);
         //un client avec ce numero de telephone
         const data = await response.json();
         //console.log('Response from Flask API:', data);
-        //console.log(`${name}: ${value}`);
+        console.log(`${name}: ${value}`);
 if (data.type_customer.type_custormer=== "Morale") {
 // PRE-REMPLIRE LE FORMULAIRE
 
