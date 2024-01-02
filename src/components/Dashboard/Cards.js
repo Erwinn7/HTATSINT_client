@@ -14,6 +14,7 @@ const Cardss = () => {
   const urlGetR = prefix_link + "/api/v1/rooms";
   const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
 
+
   const [modal1, setModal1] = useState(false);
   const toggleModal1 = () => setModal1(!modal1);
 
@@ -62,9 +63,18 @@ const cols = [
 
 
 useEffect(() => {
+  const token = localStorage.getItem('accessToken');
+
+  const config = {
+    headers: {
+     'Content-Type': 'application/json',
+     'Access-Control-Allow-Origin': '*',
+     'Authorization': `Bearer ${token}`,
+    },
+};
  const fetchRoomAvaillable =  async () => {
   try {
-    const res = await axios.get(urlGetRA);
+    const res = await axios.get(urlGetRA,config);
     console.log("Room Available:",res.data);
     setRoomAvaillable(res.data.data);
   } catch (error) {   
@@ -74,7 +84,7 @@ useEffect(() => {
 
 const fetchEndedRoom =  async () => {
   try {
-    const res = await axios.get(urlGetER);
+    const res = await axios.get(urlGetER,config);
     console.log("Ended Room:",res.data);
     setEndedRoom(res.data.data);
   } catch (error) {   
@@ -84,7 +94,7 @@ const fetchEndedRoom =  async () => {
 
 const fetchRoomOccupied =  async () => {
   try {
-    const res = await axios.get(urlGetOR);
+    const res = await axios.get(urlGetOR,config);
     console.log("Room occupied",res.data);
     setRoomOccupied(res.data.data);  
   } catch (error) {   
@@ -94,7 +104,7 @@ const fetchRoomOccupied =  async () => {
 
 const fetchRoomNumber = async () => {
   try {
-    const res = await axios.get(urlGetR);
+    const res = await axios.get(urlGetR,config);
     setRoomNumber(res.data.data.length);
   } catch (error) {
     console.error('Erreur lors de la requête GET', error);

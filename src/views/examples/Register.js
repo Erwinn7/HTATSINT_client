@@ -15,10 +15,18 @@ const [users, setUsers] = useState([]);
 const [pending, setPending] = useState(true);
 
 async function GetUsers  () {
+  const token = localStorage.getItem('accessToken');
+  const id = localStorage.getItem('id');
 
   try {
     const response = await fetch(prefix_link + '/api/v1/users', {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+'Authorization': `Bearer ${token}`,
+'id': id
+
+      }
     });
 
     if (!response.ok) {

@@ -20,6 +20,7 @@ import axios from "axios";
 
 
 const Room = () => {
+  const token = localStorage.getItem('accessToken');
   const urlGetR = prefix_link + "/api/v1/rooms";
   const urlPostOneRoom = prefix_link + "/api/v1/room_and_occupants";
 
@@ -32,6 +33,7 @@ const Room = () => {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
     },
   };
 
@@ -178,7 +180,7 @@ const handleRowClick = (row) => {
         id: row.room.id,
       }, config);      
       setInfoRoom(res.data);
-      console.log("reponse du serveur: ",res.data);
+      console.log("reponse du serveurrrr: ",res.data);
     } catch (error) {
       console.error('Erreur lors de la requête GET', error);
       setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });

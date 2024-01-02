@@ -10,6 +10,9 @@ import { prefix_link } from "variables/globalesVar";
 
 const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart}) => {
 
+  const token = localStorage.getItem('accessToken');
+  const user_id= localStorage.getItem('id');
+
 const urlGetCustomer = prefix_link+"/api/v1/clients";
 const urlPostOccupant = prefix_link+"/api/v1/occupant";
 const urlPostInvoice = prefix_link+"/api/v1/invoice";
@@ -33,6 +36,7 @@ const initOccupants = {
         type_of_document : "",
         document_number : "",
         motif : "",
+        user_id : user_id
       }
 
 
@@ -42,6 +46,7 @@ const config = {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*', 
+      'Authorization': `Bearer ${token}`,
     },
   };
 
@@ -136,6 +141,7 @@ useEffect(() => {
           try {
             console.log("itemToSend:", itemToSend);
             const res = await axios.post(urlPostOccupant, itemToSend, config);
+            console.log("oject qddtendu:", itemToSend);
             console.log("Occupant ajouté :", res.data);
           } catch (error) {
             console.error('Erreur lors de la requête POST', error);

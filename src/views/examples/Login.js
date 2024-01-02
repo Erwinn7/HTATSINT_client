@@ -49,7 +49,24 @@ const Login = () => {
     const storeTokenInLocalStorage = (token) => {
       localStorage.setItem('accessToken', token);
     };
+// FONCTION POUR STOKER LEMAIL DANS LE LOCALSTORAGE
+const storeEmailInLocalStorage = (email) => {
+  localStorage.setItem('email', email);
+};
 
+const storeNameLocalStorage = (name) => {
+  localStorage.setItem('name', name);
+}
+
+const storeSurnameInLocalStorage = (surname) => {
+  localStorage.setItem('surname', surname);
+};
+const storeIdInLocalStorage = (id) => {
+  localStorage.setItem('id', id);
+};
+const storeRoleInLocalStorage = (role) => {
+  localStorage.setItem('role', role);
+}
     try {
       setLoading(true);
       const response = await fetch( prefix_link+'/api/v1/login', {
@@ -65,12 +82,25 @@ const Login = () => {
        // console.log('Response from Flask API:', data_logger);
   // Récupérer le role de l'utilisateur
   const role = data_logger.user.role.role_name;
-  console.log('Role:', role);
+  console.log('Role:', data_logger);
 
   // Récupérer l'access token
   const token = data_logger.access_token;
+  const email= data_logger.user.user.email;
+  const name = data_logger.user.employee.first_name;
+  const surname = data_logger.user.employee.last_name;
+  const id = data_logger.user.user.id;
+   console.log('email:', email);
+   console.log('name:', name);
+   console.log('surname:', surname);
+   console.log('id:', id);
+  storeEmailInLocalStorage(email);
   //console.log('Token:', token);
   storeTokenInLocalStorage(token);
+  storeNameLocalStorage(name);
+  storeSurnameInLocalStorage(surname);
+  storeIdInLocalStorage(id);
+  storeRoleInLocalStorage(role);
   // Rediriger en fonction du rôle
   if (role === 'admin') {
     navigate('/admin/index');
@@ -114,14 +144,16 @@ const Login = () => {
       document.getElementById('email').value = '';
       document.getElementById('hashed_password').value = '';
       console.error('Error sending data to Flask API:', error.message);
-      setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
+       setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
+  setTimeout(() => {
+     setAlert({ message: '', color: '' });
+       // window.location.reload();
+      }, 5000);
       setFormData((prevData) => ({
         email: '',
   hashed_password: ''
       }));
-      setTimeout(() => {
-       // window.location.reload();
-      }, 5000);
+    
     }finally {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
     }

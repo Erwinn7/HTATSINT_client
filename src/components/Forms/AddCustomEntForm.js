@@ -18,12 +18,12 @@ function MyFormEnt() {
     phone_number:'',
     
     customer_type_id:'111f9b06-0037-4147-b820-3f7361e4d111'
-   
-    // ...
   });
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('accessToken');
+    const id= localStorage.getItem('id');
 
     try {
       setLoading(true);
@@ -31,6 +31,8 @@ function MyFormEnt() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'id': id
         },
         body: JSON.stringify(formData),
       });
@@ -125,8 +127,8 @@ setIsExistingMoralClient(false);
       if (response.status ===200) {
         //un client avec ce numero de telephone
         const data = await response.json();
-        console.log('Response from Flask API:', data);
-        console.log(`${name}: ${value}`);
+        //console.log('Response from Flask API:', data);
+        //console.log(`${name}: ${value}`);
 if (data.type_customer.type_custormer=== "Morale") {
 // PRE-REMPLIRE LE FORMULAIRE
 
@@ -167,7 +169,7 @@ document.getElementById('address').value = '';
       setTimeout(() => {
         setAlert({ message: '', color: '' });
       }, 5000);
-      console.log(`${name}: ${value}`);
+      //console.log(`${name}: ${value}`);
      
     }finally {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)

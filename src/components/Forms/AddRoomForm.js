@@ -6,17 +6,20 @@ import { prefix_link } from "variables/globalesVar";
 
 
 const AddRoomForm = () => {
-
+  const token = localStorage.getItem('accessToken');
+  const user_id= localStorage.getItem('id');
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
   const urlAddR = prefix_link+"/api/v1/room_item";
   const urlGetRT = prefix_link+"/api/v1/room_categories/?page=1";
+  
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', 
+     'Content-Type': 'application/json',
+     'Access-Control-Allow-Origin': '*',
+     'Authorization': `Bearer ${token}`,
     },
-  };
+};
 
   const [roomType, setRoomType] = useState([]);
   const [ctrlSoumission, setCtrlSoumission] = useState("")
@@ -25,20 +28,31 @@ const AddRoomForm = () => {
                     room_label: "",
                     room_amount: 0, 
                     room_category_id: "",
-                    room_item_label: ""
+                    room_item_label: "",
+                    user_id: user_id
                     }
   const [dataR, setdataR] = useState({...initdataR})
 
 
   useEffect ( () => {
-    Axios.get(urlGetRT)
+    const token = localStorage.getItem('accessToken');
+
+    const config = {
+      headers: {
+       'Content-Type': 'application/json',
+       'Access-Control-Allow-Origin': '*',
+       'Authorization': `Bearer ${token}`,
+      },
+  };
+    
+    Axios.get(urlGetRT,config)
       .then( res => {
         setRoomType(res.data);
         console.log(res.data);
       }).catch( err => {
           console.log(err)           
     });
-  }, [urlGetRT,modal]);
+  }, [urlGetRT, modal]);
 
   const handle = (e) =>  {
     const newdataR = {...dataR}
@@ -48,7 +62,7 @@ const AddRoomForm = () => {
   }
 
   const roomSubmit = (e) => {
-    console.log(dataR)
+    console.log("CHAMBRE;",dataR)
     setSave(false)
     e.preventDefault();
 
@@ -63,7 +77,7 @@ const AddRoomForm = () => {
       // Pour chaque nouvel objet, envoyez une requête POST avec Axios
       dataToSend.forEach((itemToSend) => {
 
-        //console.log(itemToSend)
+        console.log("itemToSend:",itemToSend)
         Axios.post(urlAddR,itemToSend,config)
         .then( res => {
           console.log(res.data)

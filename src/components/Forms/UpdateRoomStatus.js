@@ -7,19 +7,23 @@ import { prefix_link } from "variables/globalesVar";
 
 
 const  UpdateRoomStatus = ({roomId, roomOccupationId,updateRS })  => {
+    const token = localStorage.getItem('accessToken');
+    const user_id= localStorage.getItem('id');
     const urlUpdateRS = prefix_link+"/api/v1/update_room";
     const [save, setSave] = useState(true)
     const [dataRS, setdataRS] = useState(
         {
             room_id: roomId,
             room_occupation_id: roomOccupationId,
-            room_status: ""
+            room_status: "",
+            user_id: user_id
         }
     )
     const config = {
          headers: {       
           'Content-Type': 'application/json',
            'Access-Control-Allow-Origin': '*', 
+           'Authorization': `Bearer ${token}`,
          },
     };
 
@@ -51,6 +55,8 @@ const  UpdateRoomStatus = ({roomId, roomOccupationId,updateRS })  => {
         };
         
         fetchData();
+
+
 
     }
 

@@ -7,15 +7,19 @@ import { prefix_link } from "variables/globalesVar";
 
 
 const  AddTypeRoomForm = ()  => {
+
+    const token = localStorage.getItem('accessToken');
+    const user_id= localStorage.getItem('id');
     const urlAddRT = prefix_link+"/api/v1/room_category";
     const [ctrlSoumission, setCtrlSoumission] = useState("")
     const [save, setSave] = useState(true)
-    const initdataRT = {room_category_label:"",place_number:""}
+    const initdataRT = {room_category_label:"",place_number:"",user_id:user_id}
     const [dataRT, setdataRT] = useState({...initdataRT})
     const config = {
          headers: {
           'Content-Type': 'application/json',
-           'Access-Control-Allow-Origin': '*', 
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${token}`,
          },
     };
 

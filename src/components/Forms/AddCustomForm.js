@@ -7,6 +7,7 @@ function MyForm() {
   const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
   //const [paymentSuccess, setPaymentSuccess] = useState(false);
   //const [clients, setClients] = useState([]);
+  const id= localStorage.getItem('id');
 
     const [formData, setFormData] = useState({
       // Initial state of your form data
@@ -18,8 +19,8 @@ function MyForm() {
       phone_number: '',
       email:'',
       address: '',
-      customer_type_id:'fd26597d-6a0a-4497-81b2-1612e7fa07c4'
-     
+      customer_type_id:'fd26597d-6a0a-4497-81b2-1612e7fa07c4',
+       id_user : `${id}`,
       // ...
     });
     const [loading, setLoading] = useState(false);
@@ -27,6 +28,8 @@ function MyForm() {
     
     const handleSubmit = async (e) => {
       e.preventDefault();
+      const token = localStorage.getItem('accessToken');
+      const id= localStorage.getItem('id');
   
       try {
         setLoading(true);
@@ -34,6 +37,8 @@ function MyForm() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'id': id
           },
           body: JSON.stringify(formData),
         });

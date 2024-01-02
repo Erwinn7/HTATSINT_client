@@ -33,12 +33,16 @@ const [pending, setPending] = useState(true);
 
     try {
       const token = localStorage.getItem('accessToken');
-      //console.log('Response from Flask API:', token);
+      const id= localStorage.getItem('id');
+
+     // console.log('Response from Flask API:', email);
       const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'id': id
+       
         },
       });
   
@@ -47,7 +51,7 @@ const [pending, setPending] = useState(true);
         console.log('Response from Flask API:', /*data*/);
       }
  
-    console.log('Response from Flask API:', response);
+   // console.log('Response from Flask API:', response);
     const data = await response.json();
     if (data.data && data.data.length > 0) {
       const clientsData = data.data.map(item => {
@@ -71,7 +75,7 @@ const [pending, setPending] = useState(true);
     
     } catch (error) {
     console.log('tfkyuh',error);
-      console.error('Une erreurrrrr s\'est produite : ', error);
+     // console.error('Une erreurrrrr s\'est produite : ', error);
      navigate('/auth/login');
     }
   };
