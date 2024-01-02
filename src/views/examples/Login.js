@@ -63,6 +63,9 @@ const storeSurnameInLocalStorage = (surname) => {
 };
 const storeIdInLocalStorage = (id) => {
   localStorage.setItem('id', id);
+};
+const storeRoleInLocalStorage = (role) => {
+  localStorage.setItem('role', role);
 }
     try {
       setLoading(true);
@@ -84,10 +87,20 @@ const storeIdInLocalStorage = (id) => {
   // Récupérer l'access token
   const token = data_logger.access_token;
   const email= data_logger.user.user.email;
+  const name = data_logger.user.employee.first_name;
+  const surname = data_logger.user.employee.last_name;
+  const id = data_logger.user.user.id;
    console.log('email:', email);
+   console.log('name:', name);
+   console.log('surname:', surname);
+   console.log('id:', id);
   storeEmailInLocalStorage(email);
   //console.log('Token:', token);
   storeTokenInLocalStorage(token);
+  storeNameLocalStorage(name);
+  storeSurnameInLocalStorage(surname);
+  storeIdInLocalStorage(id);
+  storeRoleInLocalStorage(role);
   // Rediriger en fonction du rôle
   if (role === 'admin') {
     navigate('/admin/index');
@@ -133,8 +146,8 @@ const storeIdInLocalStorage = (id) => {
       console.error('Error sending data to Flask API:', error.message);
        setAlert({ message: 'Erreur serveur. Reesayer ou contacter le service technique', color: 'danger' });
   setTimeout(() => {
-     
-        window.location.reload();
+     setAlert({ message: '', color: '' });
+       // window.location.reload();
       }, 5000);
       setFormData((prevData) => ({
         email: '',

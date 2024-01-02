@@ -42,6 +42,8 @@ const CreateUserForm = () => {
     // Appel à votre API pour enregistrer l'utilisateur (remplacez cela par votre propre logique)
     const handleSubmit = async (e) => {
       e.preventDefault();
+      const token = localStorage.getItem('accessToken');
+      const id= localStorage.getItem('id');
       if (formData.hashed_password !== formData.confirmPassword) {
         setAlert({ message: 'Les mots de passe ne correspondent pas.', color: 'danger' });
         return;
@@ -49,17 +51,19 @@ const CreateUserForm = () => {
   
       try {
         setLoading(true);
-        console.log('iytkyyhnjnk:',formData);
+       // console.log('iytkyyhnjnk:',formData);
         // modifier le formData pour enlever le mot de passe confirme
 setFormData({
   ...formData,
   confirmPassword: '',
 })
-console.log('modifi:',formData);
+//console.log('modifi:',formData);
         const response = await fetch( prefix_link+'/api/v1/user', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'id': id
           },
           body: JSON.stringify(formData),
         });

@@ -74,6 +74,8 @@ const Sidebar = (props) => {
   };
 const handleLogout = async () => {
   const token = localStorage.getItem('accessToken');
+  const id = localStorage.getItem('id');
+  const email = localStorage.getItem('email');
  // console.log(localStorage.getItem("accessToken"));
   // faire un  appel api fecth pour blcklister le token
   try {
@@ -82,10 +84,13 @@ const handleLogout = async () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'email': email,
+        'id': id
       },
       body: JSON.stringify({
-        'token': token
+        
+        
       }),
     });
     if (!response.ok) {

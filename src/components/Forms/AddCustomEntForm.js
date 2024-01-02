@@ -22,6 +22,8 @@ function MyFormEnt() {
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('accessToken');
+    const id= localStorage.getItem('id');
 
     try {
       setLoading(true);
@@ -29,6 +31,8 @@ function MyFormEnt() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'id': id
         },
         body: JSON.stringify(formData),
       });

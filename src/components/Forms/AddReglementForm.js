@@ -6,7 +6,7 @@ const PaymentModal = ({ isOpen, toggle }) => {
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
     // Ajoutez ici la logique pour enregistrer le paiement
-    console.log('Paiement enregistré !');
+    //console.log('Paiement enregistré !');
     toggle(); // Fermer le modal après enregistrement
   };
 

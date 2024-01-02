@@ -33,15 +33,16 @@ const [pending, setPending] = useState(true);
 
     try {
       const token = localStorage.getItem('accessToken');
-      const email= localStorage.getItem('email');
+      const id= localStorage.getItem('id');
 
      // console.log('Response from Flask API:', email);
       const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-         // 'email': `${email}`,
+          'Authorization': `Bearer ${token}`,
+          'id': id
+       
         },
       });
   
