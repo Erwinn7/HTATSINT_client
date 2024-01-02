@@ -180,7 +180,7 @@ const handleRowClick = (row) => {
         id: row.room.id,
       }, config);      
       setInfoRoom(res.data);
-      console.log("reponse du serveurrrr: ",res.data);
+      console.log("reponse du serveur: ",res.data);
     } catch (error) {
       console.error('Erreur lors de la requête GET', error);
       setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
