@@ -4,10 +4,12 @@ import { Form, Row, Col, FormGroup, Label, Input, Button, Spinner , Alert } from
 import { prefix_link } from "variables/globalesVar";
 //import GetClient from 'components/views/examples/Clients';
 function MyForm() {
+  const token = localStorage.getItem('accessToken');
+  const id= localStorage.getItem('id');
   const [isExistingPhysiqueClient, setIsExistingPhysiqueClient] = useState(false);
   //const [paymentSuccess, setPaymentSuccess] = useState(false);
   //const [clients, setClients] = useState([]);
-  const id= localStorage.getItem('id');
+  
 
     const [formData, setFormData] = useState({
       // Initial state of your form data
@@ -19,8 +21,8 @@ function MyForm() {
       phone_number: '',
       email:'',
       address: '',
-      customer_type_id:'fd26597d-6a0a-4497-81b2-1612e7fa07c4',
-       id_user : `${id}`,
+      customer_type_id:'aa1ed52a-e127-4208-8ad8-be9c294e454e',
+       user_id : `${id}`
       // ...
     });
     const [loading, setLoading] = useState(false);
@@ -28,17 +30,18 @@ function MyForm() {
     
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const token = localStorage.getItem('accessToken');
-      const id= localStorage.getItem('id');
+     /**/
+     
   
       try {
         setLoading(true);
+        console.log('formData:',id);
         const response = await fetch( prefix_link+'/api/v1/client', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'id': id
+            'Authorization': `Bearer ${token}`
+           
           },
           body: JSON.stringify(formData),
         });
@@ -118,14 +121,19 @@ setTimeout(() => {
       try {
        
         const response = await fetch( prefix_link+'/api/v1/client_by_phone/'+value, {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+           
+          }
          
         });
   
         if (response.status ===404) {
           //Aucun client avec ce numero de telephone
-          const data = await response.json();
-          console.log(`Response from flask API: `, data);
+          //const data = await response.json();
+          
           document.getElementById('first_name').value = '';
   document.getElementById('last_name').value = '';
   document.getElementById('gender').value = '';
@@ -176,7 +184,7 @@ setIsExistingPhysiqueClient(true);
         setTimeout(() => {
           setAlert({ message: '', color: '' });
         }, 5000);
-        console.log(`${name}: ${value}`);
+       
         setFormData ({
     
           first_name: '',
