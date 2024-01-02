@@ -5,10 +5,12 @@ import AddOccupForm from "components/Forms/AddOccupForm";
 import { Form, Alert, FormGroup, Label, Input, Col, Row, Container, Button, Spinner, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
-import { prefix_link,status } from "variables/globalesVar";
+import { prefix_link } from "variables/globalesVar";
 
 
 const Occupation = () => {
+  const token = localStorage.getItem('accessToken');
+  const user_id= localStorage.getItem('id');
   const urlGetRoombyDate = prefix_link + "/api/v1/occupation";
   const [room, setRoom] = useState([]);
   const [save, setSave] = useState(true)
@@ -20,6 +22,8 @@ const Occupation = () => {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`,
+
     },
   };
 
@@ -68,7 +72,7 @@ const Occupation = () => {
     },
     headCells: {
       style: {
-        color: "#8898aa",
+        color: "#8898aa", 
         backgroundColor: "#f6f9fc",
         borderColor: "#e9ecef",
         fontWeight: "bold",

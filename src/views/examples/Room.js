@@ -297,7 +297,7 @@ const closeModal = () => {
                       <Collapse isOpen={isStatColOpen}>
                         <Card>
                           <CardBody>
-                          <UpdateRoomStatus roomId={infoRoom.room.id} roomOccupationId={infoRoom.room_occupation.id} updateRS={updateRoomStateInModal} />
+                          <UpdateRoomStatus roomId={infoRoom.room?.id} roomOccupationId={infoRoom.room_occupation?.id} updateRS={updateRoomStateInModal} />
                           </CardBody>
                         </Card>
                       </Collapse>
