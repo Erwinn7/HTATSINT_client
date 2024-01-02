@@ -28,8 +28,7 @@ const Index = () => {
       <div className='row  mx-n4'>
         <div className='col-4 mx-n2'>
           <Card style={{ width: '320px' }}>
-          <CardHeader style={{ fontWeight: 'bold' }} >Informations courantes</CardHeader>
-              <CurrentInfosTable />
+              {/* <CurrentInfosTable /> */}
           </Card>
         </div>
         <div className='col-4 mx-n2'>

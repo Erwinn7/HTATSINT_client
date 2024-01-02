@@ -12,6 +12,16 @@ const CurrentInfosTable = () => {
     const urlGetR = prefix_link + "/api/v1/rooms";
     const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
 
+    const [currentInfo, setCurrentInfo] = useState([
+        {
+            titre : "",
+            room : 0,
+            total: 0,
+            percent: 0,
+        }
+    ]);
+
+
     const cols = [
         {
           name : "",
@@ -36,18 +46,74 @@ const CurrentInfosTable = () => {
       ]
       
 
+useEffect(() => {
+    const fetchRoomAvaillable =  async () => {
+     try {
+       const res = await axios.get(urlGetRA);
+       console.log("Room Available:",res.data);
+       setCurrentInfo((prevInfoRoom) => ({
+        ...prevInfoRoom,
+        room : res.data.data.length
+      }));
+     } catch (error) {   
+       console.error('Erreur lors de la requête GET', error);
+     }
+   };
+   
+//    const fetchEndedRoom =  async () => {
+//      try {
+//        const res = await axios.get(urlGetER);
+//        console.log("Ended Room:",res.data);
+//        setEndedRoom(res.data.data);
+//      } catch (error) {   
+//        console.error('Erreur lors de la requête GET', error);
+//      }
+//    };
+   
+//    const fetchRoomOccupied =  async () => {
+//      try {
+//        const res = await axios.get(urlGetOR);
+//        console.log("Room occupied",res.data);
+//        setRoomOccupied(res.data.data);  
+//      } catch (error) {   
+//        console.error('Erreur lors de la requête GET', error);
+//      }
+//    };
+   
+//    const fetchRoomNumber = async () => {
+//      try {
+//        const res = await axios.get(urlGetR);
+//        setRoomNumber(res.data.data.length);
+//      } catch (error) {
+//        console.error('Erreur lors de la requête GET', error);
+//      }
+//    };
+   
+   
+   
+//    fetchRoomAvaillable();
+//    fetchEndedRoom();
+//    fetchRoomOccupied();
+//    fetchRoomNumber();
+     
+   }, [urlGetRA,urlGetER,urlGetOR,urlGetR] ); 
+
+
+
+
+
+
    
     return (
 
          
     <DataTable
-        // title="Liste des chambres"
-        // columns={cols}
-        // data={room}
-        // keyField="CHAMBRE"
-        // customStyles={customStyles}
-        // highlightOnHover
-        // pagination 
+        title="Informations courantes"
+        columns={cols}
+        data={currentInfo}
+        keyField="Chambres"
+        highlightOnHover
+        pagination 
         >
     </DataTable> 
 
