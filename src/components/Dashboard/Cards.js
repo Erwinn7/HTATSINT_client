@@ -158,7 +158,7 @@ const customStyles = {
   // const chambreDisponible = 58;
   //const arriveeAttendue = 4;
   //const departAttendu = 4;
-  const recetteDuJour = 900000000;
+  const recetteDuJour = 9000000000;
   //const chambreAttribueeAujourdHui = 7;
 
 
