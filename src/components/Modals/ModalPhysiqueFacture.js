@@ -16,6 +16,8 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
 
 
   const handleSolder = async (facture ) => {
+    const token = localStorage.getItem('accessToken');
+    const id = localStorage.getItem('id');
     // use sweetalert2 to Display confirmation dialog
     MySwal.fire({
       title: ' Etes vous sur de vouloir solder cette facture?',
@@ -36,8 +38,9 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
           'payer_phone': client.phone_number,
           'payer_name': client.first_name,
           'customer_id': client.id,
-          'payment_type_id': '4cbe4bda-84c7-489e-97b0-cd6cdd933c76',
+          'payment_type_id': '6e77fc3c-3cfe-4aa9-a2b1-7bb77cb6c83c',
   'invoice_id': facture.id,
+  'user_id': id
         }
         console.log(formData);
     // faire une requette pour ajouter le paiement avec fecth
@@ -46,8 +49,8 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         const response = await fetch(prefix_link +'/api/v1/make_payment', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-
+            'Content-Type': 'application/json',
+             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(formData),
         });

@@ -105,7 +105,7 @@ const fetchRoomOccupied =  async () => {
 const fetchRoomNumber = async () => {
   try {
     const res = await axios.get(urlGetR,config);
-    setRoomNumber(res.data.data.length);
+    setRoomNumber(res.data.data);
   } catch (error) {
     console.error('Erreur lors de la requête GET', error);
   }
@@ -185,13 +185,13 @@ const customStyles = {
             <CardBody >
              
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#2298e7'}}>
-            <div>{roomAvaillable?.length ? roomAvaillable.length : 0}</div>
+            <div>{roomAvaillable ? roomAvaillable.length : 0}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#2298e7' }}>CHAMBRES</div>
             </CardTitle>
              
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'style={{ width: '149px', height: '15px', fontWeight: 'bold'  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {roomNumber ? roomNumber : 0}</span> 
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}> Total:<span style={{  fontSize: '15px', fontWeight: 'bold' }}> {roomNumber ? roomNumber.length : 0}</span> 
              </div>
             </CardFooter>
           </Card>

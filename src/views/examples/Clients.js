@@ -53,7 +53,7 @@ async function GetClient  () {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokenn}`
+        'Authorization': `Bearer ${token}`
       }
     });
 
