@@ -13,6 +13,7 @@ const Cardss = () => {
   const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée   
   const urlGetR = prefix_link + "/api/v1/rooms";
   const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
+  const urlGetEbyU = prefix_link + "/api/v1/earn";// recette de la journée pour l'utilisateur
 
 
   const [modal1, setModal1] = useState(false);
@@ -34,6 +35,7 @@ const Cardss = () => {
   const [roomNumber, setRoomNumber] = useState(); 
   const [endedRoom, setEndedRoom] = useState(); 
   const [roomOccupied, setRoomOccupied] = useState(); 
+  const [userEarning, setUserEarning] = useState(); 
 
 
 
@@ -64,6 +66,8 @@ const cols = [
 
 useEffect(() => {
   const token = localStorage.getItem('accessToken');
+  const user_id= localStorage.getItem('id');
+
 
   const config = {
     headers: {
@@ -75,7 +79,7 @@ useEffect(() => {
  const fetchRoomAvaillable =  async () => {
   try {
     const res = await axios.get(urlGetRA,config);
-    console.log("Room Available:",res.data);
+   // console.log("Room Available:",res.data);
     setRoomAvaillable(res.data.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
@@ -85,7 +89,7 @@ useEffect(() => {
 const fetchEndedRoom =  async () => {
   try {
     const res = await axios.get(urlGetER,config);
-    console.log("Ended Room:",res.data);
+   // console.log("Ended Room:",res.data);
     setEndedRoom(res.data.data);
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
@@ -95,7 +99,7 @@ const fetchEndedRoom =  async () => {
 const fetchRoomOccupied =  async () => {
   try {
     const res = await axios.get(urlGetOR,config);
-    console.log("Room occupied",res.data);
+    //console.log("Room occupied",res.data);
     setRoomOccupied(res.data.data);  
   } catch (error) {   
     console.error('Erreur lors de la requête GET', error);
@@ -111,14 +115,25 @@ const fetchRoomNumber = async () => {
   }
 };
 
+const fetchUserEarning = async () => {
+  try {
+    const res = await axios.get(urlGetEbyU+"/"+user_id, config);
+    console.log("Earning:", res.data.total_amoun);
+    setUserEarning(res.data.total_amoun);
+  } catch (error) {
+    console.error('Erreur lors de la reception de la recette', error);
+  }
+};
+
 
 
 fetchRoomAvaillable();
 fetchEndedRoom();
 fetchRoomOccupied();
 fetchRoomNumber();
+fetchUserEarning();
   
-}, [urlGetRA,urlGetER,urlGetOR,urlGetR] ); 
+}, [urlGetRA,urlGetER,urlGetOR,urlGetR,urlGetEbyU] ); 
 
 
 const roomTable = (room) => {
@@ -168,7 +183,7 @@ const customStyles = {
   // const chambreDisponible = 58;
   //const arriveeAttendue = 4;
   //const departAttendu = 4;
-  const recetteDuJour = 9000000000;
+  //const recetteDuJour = 9000000000;
   //const chambreAttribueeAujourdHui = 7;
 
 
@@ -260,7 +275,7 @@ const customStyles = {
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '35px',  fontWeight: 'bold', color: '#00a65a' }}>
-            <div>{recetteDuJour} </div>
+            <div>{userEarning} </div>
             <div style={{ marginTop: '-10px', fontSize: '12px', fontWeight: 'bold',  }}> fcfa</div>
             </CardTitle>
             </CardBody>

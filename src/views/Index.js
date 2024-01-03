@@ -27,12 +27,17 @@ const Index = () => {
       <br/> 
       <div className='row  mx-n4'>
         <div className='col-4 mx-n2'>
+          <Card className='mb-4' style={{ width: '320px' }}>
+          <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}>Remplissage de l'hôtel</div></CardHeader>
+              <CurrentInfosTable />
+          </Card>
           <Card style={{ width: '320px' }}>
-              {/* <CurrentInfosTable /> */}
+          <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}>Autres informations</div></CardHeader>
+              <CurrentInfosTable />
           </Card>
         </div>
         <div className='col-4 mx-n2'>
-          <Card className="card-stats fluid" style={{ width: '310px' }} >
+          <Card className="card-stats fluid" style={{ width: '320px' }} >
 
           <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}> Statut des chambres</div></CardHeader>
           <RoomStatusChart />
