@@ -52,10 +52,19 @@ const config = {
 
 
 useEffect(() => {
+  const token = localStorage.getItem('accessToken');
 
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
+      'Authorization': `Bearer ${token}`,
+    },
+  };
     const fetchCustomer = async () => {
       try {
-        const response = await axios.get(urlGetCustomer);
+        const response = await axios.get(urlGetCustomer,config);
 
         setCustomers(response.data);
         console.log(response.data) ;

@@ -47,18 +47,18 @@ const CurrentInfosTable = () => {
       
 
 useEffect(() => {
-    const fetchRoomAvaillable =  async () => {
-     try {
-       const res = await axios.get(urlGetRA);
-       console.log("Room Available:",res.data);
-       setCurrentInfo((prevInfoRoom) => ({
-        ...prevInfoRoom,
-        room : res.data.data.length
-      }));
-     } catch (error) {   
-       console.error('Erreur lors de la requête GET', error);
-     }
-   };
+  //   const fetchRoomAvaillable =  async () => {
+  //    try {
+  //      const res = await axios.get(urlGetRA);
+  //      console.log("Room Available:",res.data);
+  //      setCurrentInfo((prevInfoRoom) => ({
+  //       ...prevInfoRoom,
+  //       room : res.data.data.length
+  //     }));
+  //    } catch (error) {   
+  //      console.error('Erreur lors de la requête GET', error);
+  //    }
+  //  };
    
 //    const fetchEndedRoom =  async () => {
 //      try {

@@ -41,8 +41,8 @@ const Index = () => {
         </div>
         <div className='col-4 '>
           <div className='mx-0 mx-n1 container-fluid  '>
-            <Card className='' style={{ width: '315px', height: '350px' }}>
-              {/* <MyCalendar></MyCalendar> */}
+            <Card className='' style={{ width: '325px'}}>
+              <MyCalendar/>
             </Card>
           </div>
         </div>
