@@ -275,7 +275,7 @@ const customStyles = {
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '35px',  fontWeight: 'bold', color: '#00a65a' }}>
-            <div>{userEarning} </div>
+            <div>{userEarning ? userEarning : 0 } </div>
             <div style={{ marginTop: '-10px', fontSize: '12px', fontWeight: 'bold',  }}> fcfa</div>
             </CardTitle>
             </CardBody>
