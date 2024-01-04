@@ -16,14 +16,16 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    marginBottom: 20,
-    marginTop:30
+    //flexWrap: 'wrap',
+    marginBottom: 5,
+    marginTop:10
   },
   logo: {
     width: 60,
     height: 60,
     marginLeft: 0,
-    marginRight:"60%"
+    marginRight:"0",
+   
   },
   infoclient: {
     flexDirection: 'row',
@@ -49,6 +51,14 @@ const styles = StyleSheet.create({
   tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
   totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
   slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
+  separator: {
+    borderBottomWidth: 5,
+    borderBottomColor: 'black',
+    marginVertical: 10, // Ajustez cet espace vertical selon vos besoins
+    borderBottomStyle: 'dotted',
+    marginBottom: 5,
+    marginTop: 0,
+  },
 });
 
 // newInvoiceData = {
@@ -69,15 +79,28 @@ const PrintInvoice = ({myInvoice}) => {
 return(
   <Document>
     <Page size="A4" style={styles.page}>
-      <View style={styles.header}>
+      <View style={styles.header}> 
+     <Image src={logo} style={styles.logo} />
         {/* Logo de l'entreprise */}
-        <Image src={logo} style={styles.logo} />
-        <Text fontweight="bold" >Facture N°:</Text><Text>{myInvoice.invoiceNumber}</Text>
-      </View>
+        <View style={{flexDirection: 'row',flexWrap: 'wrap'}}>
+ 
+       <Text style={{textAlign: "center", width: "100%"}}>CENTRE D'HEBERGEMENT LE PELERIN DE DASSA-ZOUME</Text>
+      
+    <Text style={{textAlign: "center", width: "100%"}}>IFU: 774158522147852 | RCCM: CZ-774158522147852</Text>
+    <Text style={{textAlign: "center", width: "100%"}}>97009328/95887445</Text>
+ 
+        </View>
+       
+       
+        
+      </View> 
+      <View style={styles.separator} />
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
+          <Text fontweight="bold" >Facture N°:{myInvoice.invoiceNumber}</Text> 
           <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.invoiceEmitDate}</Text>
+          
         </View>
         <View>
           {/* Numéro de facture et informations client */}

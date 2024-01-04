@@ -12,6 +12,7 @@ import {Container, Collapse, Button, Card, CardBody ,
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import UpdateRoomStatus from "components/Forms/UpdateRoomStatus";
 import Header from "components/Headers/Header.js";
+import CustomLoader from 'components/CustomLoader/CustomLoader';
 import "assets/css/roomDesign.css";
 import DataTable from "react-data-table-component";
 import { prefix_link } from "variables/globalesVar";
@@ -29,6 +30,7 @@ const Room = () => {
 
   const [modal, setModal] = useState(false);
   const [room, setRoom] = useState([]);
+  const [pending, setPending] = useState(true);
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -153,11 +155,13 @@ const Room = () => {
         const res = await axios.get(urlGetR);
         setRoom(res.data.data);
         setfilterRoom(res.data.data);
+        setPending(false);
         //console.log('rooom : ',res.data.data)
         setAlert({ message: "", color: '' });
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
         setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+        setPending(false);
       }
     };
     
@@ -219,13 +223,13 @@ const closeModal = () => {
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
   
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
-    const year = date.getFullYear();
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+    const year = date.getUTCFullYear();
   
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
   
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   
@@ -272,6 +276,8 @@ const closeModal = () => {
               onRowMouseEnter={handleMouseEnter}
               onRowMouseLeave={handleMouseLeave}
               conditionalRowStyles={conditionalRowStyles}
+              progressPending={pending}
+              progressComponent={<CustomLoader/>}
               highlightOnHover
               pagination >
             </DataTable>  )

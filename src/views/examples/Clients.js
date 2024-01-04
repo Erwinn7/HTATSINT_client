@@ -391,13 +391,13 @@ const customStyles = {
       <AjoutClient 
       id = "ajout"
       butonTitle= "Ajouter nouveau client"
-          >
+      >
 
       </AjoutClient>
       </div>
       <div className="float-right offset-md-5 col-md-3 col-12" style={{ width: '50%', display: 'flex', justifyContent: 'right' }}>
             <Input type="text" placeholder="Recherche..." onChange={(e) => HandleFilter(e)} />
-          </div>
+      </div>
       
       </div> 
 <br>
@@ -435,10 +435,18 @@ const customStyles = {
         </Row>
 
 
-<br></br> <br></br> <br></br>
+<br></br> <br></br>
 
         {/* Dark table */}
+      <div className="row">
+<div className="col">
 
+</div>
+      <div className="float-right offset-md-5 col-md-3 col-12" style={{ width: '50%', display: 'flex', justifyContent: 'right' }}>
+            <Input type="text" placeholder="Recherche..." onChange={(e) => HandleFilter(e)} />
+      </div>
+      </div>
+<br></br>
         <Row>
        
          <div className="col">

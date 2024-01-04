@@ -1,4 +1,5 @@
-const prefix_link = "https://8a1a-137-255-39-197.ngrok-free.app/"; 
+
+const prefix_link = "https://426a-137-255-39-180.ngrok-free.app/"; 
 
 
 const current_table_info = {
@@ -7,6 +8,5 @@ const current_table_info = {
     percent: 0
 }
 
-
-
 export  { prefix_link};  
+

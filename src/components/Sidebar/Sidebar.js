@@ -85,11 +85,11 @@ const handleLogout = async () => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-        'email': email,
-        'id': id
+        
       },
       body: JSON.stringify({
-        
+        'email': email,
+        'user_id': id
         
       }),
     });

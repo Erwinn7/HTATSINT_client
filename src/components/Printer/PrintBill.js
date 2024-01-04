@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginLeft: 0,
-    marginRight:"60%"
+    marginRight:"0%"
   },
   infoclient: {
     flexDirection: 'row',
@@ -49,6 +49,17 @@ const styles = StyleSheet.create({
   tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
   totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
   slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
+  separator: {
+    borderBottomWidth: 5,
+    borderBottomColor: 'black',
+    marginVertical: 10, // Ajustez cet espace vertical selon vos besoins
+    borderBottomStyle: 'dotted',
+    marginBottom: 5,
+    marginTop: 0,
+  },
+
+ 
+
 });
 
 // newInvoiceData = {
@@ -70,25 +81,36 @@ return(
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.header}>
+      <Image src={logo} style={styles.logo} />
         {/* Logo de l'entreprise */}
-        <Image src={logo} style={styles.logo} />
-        <Text fontweight="bold" >Recu N°:</Text><Text>{myInvoice.billNumber}</Text>
+        <View style={{flexDirection: 'row',flexWrap: 'wrap'}}>
+ 
+       <Text style={{textAlign: "center", width: "100%"}}>CENTRE D'HEBERGEMENT LE PELERIN DE DASSA-ZOUME</Text>
+      
+    <Text style={{textAlign: "center", width: "100%"}}>IFU: 774158522147852 | RCCM: CZ-774158522147852</Text>
+    <Text style={{textAlign: "center", width: "100%"}}>97009328/95887445</Text>
+ 
+        </View>
+        
       </View>
+      <View style={styles.separator} />
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
+          <Text fontweight="bold" >Recu N°:{myInvoice.billNumber}</Text>
+         
           <Text style={{marginRight:"40%"}}>Date d'emission de la facture: {myInvoice.bill_emit_date}</Text>
           <Text style={{marginRight:"40%"}}>Date du paiement: {myInvoice.paiement_day}</Text>
         </View>
         <View>
           {/* Numéro de facture et informations client */}
-          <Text>DESTINATAIRE</Text>
-          <Text style={{fontSize:20}} >{myInvoice.payer_name}</Text>
-          <Text style={{fontSize:20}} >{myInvoice.payer_nom} '  '{myInvoice.payer_prenom}</Text>
-          <Text style={{fontSize:20}} >{myInvoice.payer_phone}</Text>
-          <Text style={{fontSize:20}} >{myInvoice.payer_address}</Text>
-          <Text style={{fontSize:20}} >{myInvoice.payer_email}</Text>
-          <Text style={{fontSize:20}} >{myInvoice.payer_ifu}</Text>
+          <Text>CLIENT</Text>
+          <Text style={{fontSize:10}} >{myInvoice.payer_name}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.payer_nom}{myInvoice.payer_prenom}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.payer_phone}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.payer_address}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.payer_email}</Text>
+          <Text style={{fontSize:10}} >{myInvoice.payer_ifu}</Text>
 
         </View>
       </View>

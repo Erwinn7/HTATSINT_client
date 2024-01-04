@@ -53,6 +53,7 @@ const config = {
 
 useEffect(() => {
   const token = localStorage.getItem('accessToken');
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -61,9 +62,12 @@ useEffect(() => {
     },
   };
 
+
+
+  
     const fetchCustomer = async () => {
       try {
-        const response = await axios.get(urlGetCustomer, config);
+        const response = await axios.get(urlGetCustomer,config);
 
         setCustomers(response.data);
         console.log(response.data) ;

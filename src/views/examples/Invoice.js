@@ -11,10 +11,12 @@ import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
 import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
+import CustomLoader from 'components/CustomLoader/CustomLoader';
+
 
 
 const Invoice = () => {
-
+  const token = localStorage.getItem('accessToken');
   const urlGetInvoice = prefix_link+"/api/v1/invoices";  
   const urlGetRoomAndOccup = prefix_link+"/api/v1/room_and_occupation";    
   
@@ -22,11 +24,15 @@ const Invoice = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [filterInvoice, setfilterInvoice] = useState({});
   const [selectedRow, setSelectedRow] = useState();
+  const [pending, setPending] = useState(true);
+
 
   const config = {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*', 
+      'Authorization': `Bearer ${token}`
+
     },
   };
 
@@ -135,13 +141,13 @@ const Invoice = () => {
 const formatDate = (inputDate) => {
   const date = new Date(inputDate);
 
-  const day = date.getDate();
-  const month = date.getMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
-  const year = date.getFullYear();
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const year = date.getUTCFullYear();
 
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
 
   const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
@@ -149,11 +155,22 @@ const formatDate = (inputDate) => {
 };
 
 
+
 useEffect ( () => {
+  const token = localStorage.getItem('accessToken');
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
+      'Authorization': `Bearer ${token}`
+
+    },
+  };
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(urlGetInvoice);
+      const res = await axios.get(urlGetInvoice,config);
       //console.log(res.data)
       const myDatas = res.data;
       var myNewElmts = []
@@ -181,9 +198,13 @@ useEffect ( () => {
 
       });
       setInvoice(myNewElmts);
+      setPending(false);
+
 
     } catch (error) {
       console.error('Erreur lors de la requête GET', error);
+      setPending(false);
+
     }
   };
   
@@ -202,17 +223,17 @@ const closeModal = () => {
 
 
 
-const sampleInvoice = {
-  date_facture: '2023-12-01',
-  numero_facture: '0021/PERL/23',
-  nClient: 'Hotel le pelerin',
-  aClient: 'DASSA',
-  tClient: '0022961656895',
-  designation: 'Chambre 305',
-  nombre_de_jour: 5,
-  prix_journalier: 25000,
-  prix_total: 5 * 25000,
-};
+// const sampleInvoice = {
+//   date_facture: '2023-12-01',
+//   numero_facture: '0021/PERL/23',
+//   nClient: 'Hotel le pelerin',
+//   aClient: 'DASSA',
+//   tClient: '0022961656895',
+//   designation: 'Chambre 305',
+//   nombre_de_jour: 5,
+//   prix_journalier: 25000,
+//   prix_total: 5 * 25000,
+// };
 
 
 
@@ -232,12 +253,14 @@ const sampleInvoice = {
           {
             invoice && (
               <DataTable
-              title="Liste des Factures"
+              title="Liste des factures"
               columns={cols}
               data={invoice}
               keyField="Num"
               // onRowClicked={handleRowClick}
               customStyles={customStyles}
+              progressPending={pending}
+              progressComponent={<CustomLoader/>}
               pagination >
             </DataTable>  )
           }

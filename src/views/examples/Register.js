@@ -11,6 +11,7 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 const Users = () => {
 
 const [users, setUsers] = useState([]);
+const [filterUser, setfilterUser] = useState([]);
 
 const [pending, setPending] = useState(true);
 
@@ -63,6 +64,7 @@ async function fecthUsers  () {
   try {
     const data = await GetUsers();
     setUsers(data);
+    setfilterUser(data);
     setPending(false);
 
     
@@ -146,9 +148,14 @@ useEffect(() => {
   
  
   const handleFilter = (e) => {
-    // Ajoutez le code nécessaire pour gérer la recherche
-    //const newUser = filterUser.filter(row => row.first_name.toLowerCase().includes(e.target.value.toLowerCase()));
-  //setUser(newUser);
+    // Récupérer la valeur de recherche
+  const searchTerm = e.target.value.toLowerCase();
+  // Filtrer les utilisateurs en fonction du terme de recherche
+  const filteredUsers = filterUser.filter(row => 
+    row.role.toLowerCase().includes(searchTerm)
+  );
+  // Mettre à jour uniquement l'état 'users' en fonction des résultats filtrés
+  setUsers(filteredUsers);
   };
 
   return (
