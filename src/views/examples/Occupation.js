@@ -161,12 +161,12 @@ const Occupation = () => {
         }, config);
 
         setRoom(response.data.data);
-        console.log(response.data);
+        console.log("la reponse des row",response.data);
         setAlert({ message: "", color: '' });
         setSave(true);
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
-        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
         setSave(true);
       }
     };
@@ -253,7 +253,7 @@ const Occupation = () => {
           <ModalHeader toggle={(e) => { closeModal(); Submit(e); }} >{selectedRow?.room.room_label.toUpperCase()}</ModalHeader>
           <ModalBody>
             {selectedRow && (
-              <AddOccupForm room_id_occupation={selectedRow?.room.id} dateArrivee={datesRoom.dateArrivee} dateDepart={datesRoom.dateDepart} />
+              <AddOccupForm room_id_occupation={selectedRow?.room.id} dateArrivee={datesRoom.dateArrivee} dateDepart={datesRoom.dateDepart} number_of_place = {selectedRow?.room_category.place_number} />
             )}
 
           </ModalBody>
