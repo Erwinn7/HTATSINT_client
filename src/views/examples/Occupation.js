@@ -10,7 +10,7 @@ import { prefix_link } from "variables/globalesVar";
 
 const Occupation = () => {
   const token = localStorage.getItem('accessToken');
-  const user_id= localStorage.getItem('id');
+  // const user_id= localStorage.getItem('id');
   const urlGetRoombyDate = prefix_link + "/api/v1/occupation";
   const [room, setRoom] = useState([]);
   const [save, setSave] = useState(true)
@@ -161,7 +161,7 @@ const Occupation = () => {
         }, config);
 
         setRoom(response.data.data);
-        //console.log(response.data);
+        console.log(response.data);
         setAlert({ message: "", color: '' });
         setSave(true);
       } catch (error) {

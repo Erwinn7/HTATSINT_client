@@ -261,6 +261,7 @@ const closeModal = () => {
               customStyles={customStyles}
               progressPending={pending}
               progressComponent={<CustomLoader/>}
+              highlightOnHover
               pagination >
             </DataTable>  )
           }
