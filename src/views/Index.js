@@ -27,11 +27,11 @@ const Index = () => {
       <br/> 
       <div className='row  mx-n4'>
         <div className='col-4 mx-n2'>
-          <Card className='mb-4' style={{ width: '320px' }}>
+          <Card className='mb-4' style={{ width: 'auto' }}>
           <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}>Remplissage de l'hôtel</div></CardHeader>
               <CurrentInfosTable />
           </Card>
-          <Card style={{ width: '320px' }}>
+          <Card style={{ width: 'auto' }}>
           <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}>Autres informations</div></CardHeader>
               <CurrentInfosTable />
           </Card>

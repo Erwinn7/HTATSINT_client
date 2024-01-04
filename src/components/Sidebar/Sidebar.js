@@ -4,6 +4,12 @@ import { NavLink as NavLinkRRD, Link,useNavigate, navigate  } from "react-router
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
 import { prefix_link } from "variables/globalesVar";
+// Importez le composant de liste déroulante (DropDown) de votre bibliothèque UI préférée
+
+
+// Importez la liste des éditions
+import { editions } from "variables/globalesVar";
+
 
 // reactstrap components
 import {
@@ -19,6 +25,7 @@ import {
   DropdownToggle,
   FormGroup,
   Form,
+  Dropdown,
   Input,
   InputGroupAddon,
   InputGroupText,
@@ -57,19 +64,86 @@ const Sidebar = (props) => {
   // creates the links that appear in the left menu / Sidebar
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
-      return (
-        <NavItem key={key}>
+      if (prop.path === "/edition") {
+        // Si c'est la route d'édition, renvoyez le composant de liste déroulante
+        return (
+          <NavItem key={key}>
           <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={closeCollapse}
-            className="route-name" 
- >
+            to="#"
+            onClick={toggleCollapse}
+            className="nav-link route-name"
+          >
             <i className={prop.icon} />
             {prop.name}
           </NavLink>
+          <Collapse isOpen={collapseOpen}>
+            <Nav className="nav-subitem">
+              <NavItem>
+                <NavLink
+                  to={prop.layout + prop.path}
+                  tag={NavLinkRRD}
+                  onClick={closeCollapse}
+                >
+                   Clients
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  to={prop.layout + "/editionChambre"}
+                  tag={Link}
+                  onClick={closeCollapse}
+                >
+                  Chambres
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  to={prop.layout + "/autre-option"}
+                  tag={NavLinkRRD}
+                  onClick={closeCollapse}
+                >
+                  Recettes
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  to={prop.layout + "/autre-option"}
+                  tag={NavLinkRRD}
+                  onClick={closeCollapse}
+                >
+                  Factures 
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  to={prop.layout + "/autre-option"}
+                  tag={NavLinkRRD}
+                  onClick={closeCollapse}
+                >
+                  Utilisateurs 
+                </NavLink>
+              </NavItem>
+              {/* Ajoutez d'autres options si nécessaire */}
+            </Nav>
+          </Collapse>
         </NavItem>
-      );
+        );
+      } else {
+        // Sinon, renvoyez simplement le composant de route existant
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to={prop.layout + prop.path}
+              tag={NavLinkRRD}
+              onClick={closeCollapse}
+              className="route-name"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+          </NavItem>
+        );
+      }
     });
   };
 const handleLogout = async () => {

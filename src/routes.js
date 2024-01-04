@@ -7,6 +7,7 @@ import Invoice from "views/examples/Invoice.js";
 import Icons from "views/examples/Icons.js";
 import Occupation from "views/examples/Occupation";
 import Login from "views/examples/Login";
+import Edition from "views/examples/Edition";
 
 export const routes = [
   
@@ -58,6 +59,14 @@ export const routes = [
     icon: "fa fa-bed  text-dark",
     component: <Occupation />,
     layout: "/admin",
+  },
+  {
+    path: "/edition",
+    name: "EDITION",
+    icon: "ni ni-single-02 text-dark",
+    component: <Edition />,
+    layout: "/admin",
+    
   },
 
   {
@@ -131,7 +140,7 @@ export const routesAuth = [
     component: <Login />,
     layout: "/auth",
   }
-]
+];
 
 
 //export {routes , routesRecep} ;  
