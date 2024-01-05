@@ -9,6 +9,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 //import routes from "routes.js";
 import {routes} from "routes.js";
+import {routesEdition} from "routes.js";
 
 
 const Admin = (props) => {
@@ -21,12 +22,22 @@ const Admin = (props) => {
     mainContent.current.scrollTop = 0;
   }, [location]);
 
-  const getRoutes = (routes) => {
+  const getRoutes = (routes,routesEdition) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/admin" && prop.path!=="/edition") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
+      } else if (prop.layout === "/admin" && prop.path==="/edition") {
+            
+        return routesEdition.map((prop, key) => (
+          <Route
+            path={prop.path}
+            element={prop.component}
+            key={key}
+            exact
+          />
+        ));
       } else {
         return null;
       }
@@ -69,7 +80,7 @@ const Admin = (props) => {
           brandText={getBrandText(props?.location?.pathname)}
         />
         <Routes>
-          {getRoutes(routes)}
+          {getRoutes(routes,routesEdition)}
           <Route path="*" element={<Navigate to="/admin/index" replace />} />
         </Routes>
         <Container fluid> 
