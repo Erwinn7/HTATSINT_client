@@ -4,11 +4,12 @@ import { NavLink as NavLinkRRD, Link,useNavigate, navigate  } from "react-router
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
 import { prefix_link } from "variables/globalesVar";
+import CustomLoader from 'components/CustomLoader/CustomLoader';
 // Importez le composant de liste déroulante (DropDown) de votre bibliothèque UI préférée
 
 
 // Importez la liste des éditions
-import { editions } from "variables/globalesVar";
+import {routesEdition}  from "/home/ahouangbenon/Documents/TATS INT/tats hotel pelerin/HTATSINT_client/src/routes.js";
 
 
 // reactstrap components
@@ -48,6 +49,7 @@ var ps;
 
 const Sidebar = (props) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -62,71 +64,39 @@ const Sidebar = (props) => {
     setCollapseOpen(false);
   };
   // creates the links that appear in the left menu / Sidebar
-  const createLinks = (routes) => {
+  const createLinks = (routes, routesEdition) => {
     return routes.map((prop, key) => {
       if (prop.path === "/edition") {
-        // Si c'est la route d'édition, renvoyez le composant de liste déroulante
+        // faire un map sur les elements du tableau 
         return (
           <NavItem key={key}>
-          <NavLink
-            to="#"
-            onClick={toggleCollapse}
-            className="nav-link route-name"
-          >
-            <i className={prop.icon} />
-            {prop.name}
-          </NavLink>
-          <Collapse isOpen={collapseOpen}>
-            <Nav className="nav-subitem">
-              <NavItem>
-                <NavLink
-                  to={prop.layout + prop.path}
-                  tag={NavLinkRRD}
-                  onClick={closeCollapse}
-                >
-                   Clients
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to={prop.layout + "/editionChambre"}
-                  tag={Link}
-                  onClick={closeCollapse}
-                >
-                  Chambres
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to={prop.layout + "/autre-option"}
-                  tag={NavLinkRRD}
-                  onClick={closeCollapse}
-                >
-                  Recettes
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to={prop.layout + "/autre-option"}
-                  tag={NavLinkRRD}
-                  onClick={closeCollapse}
-                >
-                  Factures 
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  to={prop.layout + "/autre-option"}
-                  tag={NavLinkRRD}
-                  onClick={closeCollapse}
-                >
-                  Utilisateurs 
-                </NavLink>
-              </NavItem>
-              {/* Ajoutez d'autres options si nécessaire */}
-            </Nav>
-          </Collapse>
-        </NavItem>
+            <NavLink
+              to="#"
+              onClick={toggleCollapse}
+              className="nav-link route-name"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+  
+            <Collapse isOpen={collapseOpen} className="ml-4">
+              {routesEdition.map((editionprop, editionkey) => (
+                <NavItem key={editionkey}>
+                  <NavLink
+                    to={editionprop.layout + editionprop.path}
+                    tag={NavLinkRRD}
+                    onClick={closeCollapse}
+                    className="route-name"
+                  >
+                    <i className={editionprop.icon} />
+                    {editionprop.name}
+                  </NavLink>
+                </NavItem>
+              ))}
+  
+              {/* Ajoutez ici les autres éléments à afficher dans le Collapse */}
+            </Collapse>
+          </NavItem>
         );
       } else {
         // Sinon, renvoyez simplement le composant de route existant
@@ -153,7 +123,7 @@ const handleLogout = async () => {
  // console.log(localStorage.getItem("accessToken"));
   // faire un  appel api fecth pour blcklister le token
   try {
-     
+    setLoading(true);
     const response = await fetch( prefix_link+'/api/v1/logout', {
       method: 'POST',
       headers: {
@@ -174,6 +144,7 @@ const handleLogout = async () => {
     const data = response.json();
    console.log('Response from Flaskkk API:', data);
    localStorage.clear();
+   
     navigate("/auth/login");
    
    // console.log(localStorage.getItem("accessToken"));
@@ -183,6 +154,8 @@ const handleLogout = async () => {
 
   } catch (error) {
    console.log('tfkyuh',error);
+   
+    navigate("/auth/login");
   }
 
 
@@ -230,10 +203,19 @@ const handleLogout = async () => {
               <span className="ml-2">{props.userRole}</span>
             </DropdownToggle>
              
-              <DropdownMenu right>
-                <DropdownItem className="   " style={{color:"red",textAlign:"center"}} onClick={handleLogout}>
-                  Déconnexion <i className="fas fa-sign-out-alt" style={{marginLeft:"5px"}} />
+              <DropdownMenu right>  
+              
+              {loading ? <CustomLoader /> :
+              
+                <DropdownItem className="   " style={{color:"red",textAlign:"center"}} onClick={handleLogout}> 
+                {/* implementer le loader    */}
+               
+                Déconnexion
+                     
+                  <i className="fas fa-sign-out-alt" style={{marginLeft:"5px"}} />
                 </DropdownItem>
+              }
+                
               </DropdownMenu>
             </UncontrolledDropdown>
                 </nav>
@@ -280,7 +262,8 @@ const handleLogout = async () => {
           {/* Form */}
          
           {/* Navigation */}
-          <Nav navbar>{createLinks(routes)}</Nav>
+          <Nav navbar>{createLinks(routes, routesEdition)}</Nav>
+         
         </Collapse>
       </Container>
     </Navbar>

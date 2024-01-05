@@ -37,7 +37,7 @@ const Index = () => {
           </Card>
         </div>
         <div className='col-4 mx-n2'>
-          <Card className="card-stats fluid" style={{ width: '320px' }} >
+          <Card className="card-stats fluid" style={{ width: 'auto' }} >
 
           <CardHeader><div style={{fontWeight: 'bold', color: 'black', fontSize: '20px'}}> Statut des chambres</div></CardHeader>
           <RoomStatusChart />

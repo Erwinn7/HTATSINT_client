@@ -8,13 +8,17 @@ import Icons from "views/examples/Icons.js";
 import Occupation from "views/examples/Occupation";
 import Login from "views/examples/Login";
 import Edition from "views/examples/Edition";
-
+import EditionOccupant from "views/examples/EditionOccupant";
+import EditionChambre from "views/examples/EditionChambre";
+import EditionFacture from "views/examples/EditionFacture";
+import EditionClient from "views/examples/EditionClient";
+import EditionReglement from "views/examples/EditionReglement";
 export const routes = [
   
   {
     path: "/index",
     name: "TABLEAU DE BORD",
-    icon: "fa fa-tachometer text-dark",
+    icon: "fa fa-home text-dark",
     component: <Index />,
     layout: "/admin",
   },
@@ -26,13 +30,6 @@ export const routes = [
     layout: "/admin",
   },
   {
-    path: "/room",
-    name: "CHAMBRE",
-    icon: " fa fa-home text-dark",
-    component: <Room />,
-    layout: "/admin",
-  },
-  {
     path: "/client",
     name: "CLIENT",
     icon: "ni ni-circle-08 text-dark",
@@ -40,10 +37,10 @@ export const routes = [
     layout: "/admin",
   },
   {
-    path: "/invoice",
-    name: "FACTURE",
-    icon: "fa fa-clipboard text-dark",
-    component: <Invoice />,
+    path: "/occupation",
+    name: "OCCUPATION",
+    icon: "fas fa-key text-dark",
+    component: <Occupation />,
     layout: "/admin",
   },
   {
@@ -54,16 +51,28 @@ export const routes = [
     layout: "/admin"
   },
   {
-    path: "/occupation",
-    name: "OCCUPATION",
-    icon: "fa fa-bed  text-dark",
-    component: <Occupation />,
+    path: "/invoice",
+    name: "FACTURE",
+    icon: "fa fa-clipboard text-dark",
+    component: <Invoice />,
     layout: "/admin",
   },
+
+  {
+    path: "/room",
+    name: "CHAMBRE",
+    icon: " fa fa-bed  text-dark",
+    component: <Room />,
+    layout: "/admin",
+  },
+  
+  
+ 
+  
   {
     path: "/edition",
     name: "EDITION",
-    icon: "ni ni-single-02 text-dark",
+    icon: "fas fa-wrench text-dark",
     component: <Edition />,
     layout: "/admin",
     
@@ -72,11 +81,12 @@ export const routes = [
   {
     path: "/register",
     name: "UTILISATEURS",
-    icon: "ni ni-single-02 text-dark",
+    icon: "fas fa-user text-dark",
     component: <Register />,
     layout: "/admin",
     
-  }
+  },
+ 
   
 ];
 
@@ -142,5 +152,54 @@ export const routesAuth = [
   }
 ];
 
+export const routesEdition = [
+  {
+    path: "/editionreglement",
+    name: "Reglements",
+    icon: "fas fa-book text-dark",
+    component: <EditionReglement />,
+    layout: "/admin",
+    
+    
+  },
+  {
+    path: "/editionOccupant",
+    name: "Occupants",
+    icon: "fas fa-book text-dark",
+    component: <EditionOccupant />,
+    layout: "/admin",
+    
+    
+  },
+  
+  {
+    path: "/editionFActure",
+    name: "Factures",
+    icon: "fas fa-book text-dark",
+    component: <EditionFacture />,
+    layout: "/admin",
+    
+    
+  },
+  {
+    path: "/editionChambre",
+    name: "Chambres",
+    icon: "fas fa-book text-dark",
+    component: <EditionChambre />,
+    layout: "/admin",
+    
+    
+  },
+  {
+    path: "/editionClient",
+    name: "Clients",
+    icon: "fas fa-book text-dark",
+    component: <EditionClient />,
+    layout: "/admin",
+    
+    
+  },
+  
+]
 
 //export {routes , routesRecep} ;  
