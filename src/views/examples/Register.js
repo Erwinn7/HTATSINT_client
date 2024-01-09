@@ -7,6 +7,7 @@ import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 //import {Oval} from "react-loader-spinner";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import { data } from 'jquery';
 
 const Users = () => {
 
@@ -67,7 +68,7 @@ async function fecthUsers  () {
     setfilterUser(data);
     setPending(false);
 
-    
+    console.log('Response from Flask API:', data);
   }
 
   catch (error) {
@@ -185,7 +186,7 @@ useEffect(() => {
              keyField="id" 
              customStyles={customStyles}
              pagination
-             progressPending={pending}
+            // progressPending={pending}
              
              progressComponent={<CustomLoader/>}
              >

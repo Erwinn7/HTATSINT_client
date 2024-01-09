@@ -9,7 +9,7 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 
 // Importez la liste des éditions
-import {routesEdition}  from "/home/ahouangbenon/Documents/TATS INT/tats hotel pelerin/HTATSINT_client/src/routes.js";
+import {routesEdition}  from "routes.js";
 
 
 // reactstrap components
@@ -205,7 +205,7 @@ const handleLogout = async () => {
              
               <DropdownMenu right>  
               
-              {loading ? <CustomLoader /> :
+              {loading ? <CustomLoader /> && console.log({loading} ) :
               
                 <DropdownItem className="   " style={{color:"red",textAlign:"center"}} onClick={handleLogout}> 
                 {/* implementer le loader    */}

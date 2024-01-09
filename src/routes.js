@@ -173,7 +173,7 @@ export const routesEdition = [
   },
   
   {
-    path: "/editionFActure",
+    path: "/editionFacture",
     name: "Factures",
     icon: "fas fa-book text-dark",
     component: <EditionFacture />,

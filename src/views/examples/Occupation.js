@@ -242,7 +242,7 @@ const Occupation = () => {
               keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
-              onRowMouseEnter={handleMouseEnter}
+             onRowMouseEnter={handleMouseEnter}
               onRowMouseLeave={handleMouseLeave}
               conditionalRowStyles={conditionalRowStyles}
               pagination >
