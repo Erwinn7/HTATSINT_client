@@ -19,4 +19,12 @@
     font-weight: bold;
   }
 
-  
+  .centered-container-reglement {
+    margin-left: 0px;
+    container: fluid;
+    margin-right: 0px;
+    background-color: rgba(255, 255, 255, 0.9); /* Blanc légèrement transparent */
+    padding: 10px; /* Ajoutez un espace intérieur au besoin */
+    border-radius: 10px; /* Ajoutez une bordure arrondie au besoin */
+    /* Ajoutez d'autrepace à l'intérieur de la div */
+  }

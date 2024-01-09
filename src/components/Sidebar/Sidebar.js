@@ -205,7 +205,7 @@ const handleLogout = async () => {
              
               <DropdownMenu right>  
               
-              {loading ? <CustomLoader /> :
+              {loading ? <CustomLoader /> && console.log({loading} ) :
               
                 <DropdownItem className="   " style={{color:"red",textAlign:"center"}} onClick={handleLogout}> 
                 {/* implementer le loader    */}
