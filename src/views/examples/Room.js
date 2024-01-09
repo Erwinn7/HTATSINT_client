@@ -19,7 +19,6 @@ import { prefix_link } from "variables/globalesVar";
 import axios from "axios";
 
 
-
 const Room = () => {
   const token = localStorage.getItem('accessToken');
   const urlGetR = prefix_link + "/api/v1/rooms";
@@ -192,8 +191,6 @@ const handleRowClick = (row) => {
   };
   
   fetchRoomData();
-
-
   setSelectedRow(row);
   setModalOpen(true);
 };

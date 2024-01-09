@@ -56,7 +56,7 @@ const Invoice = () => {
       sortable : true
     },
     {
-      name : "PRIX (FCFA)",
+      name : "MONTANT (FCFA)",
       selector : row  => row.invoiceAmount,
       sortable : true
     },
@@ -65,7 +65,7 @@ const Invoice = () => {
       selector : row  => (
         <Badge color="" className="badge-dot mr-4">
           <i className={row.invoiceStatus === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoiceStatus ==="Paid" ? "Payé" : "Non Payé"}
+          {row.invoiceStatus ==="Paid" ? "Payé" : "Impayée"}
         </Badge>),
       sortable : true
     },
@@ -164,7 +164,6 @@ useEffect ( () => {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*', 
       'Authorization': `Bearer ${token}`
-
     },
   };
 
@@ -257,7 +256,6 @@ const closeModal = () => {
               columns={cols}
               data={invoice}
               keyField="Num"
-              // onRowClicked={handleRowClick}
               customStyles={customStyles}
               progressPending={pending}
               progressComponent={<CustomLoader/>}

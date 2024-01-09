@@ -1,19 +1,5 @@
+const prefix_link = "https://7d6a-137-255-36-95.ngrok-free.app"; 
 
-
-const prefix_link = "https://661c-137-255-39-180.ngrok-free.app/"; 
-
-
-export const editions = [
-    {
-      label: "Edition 1",
-      path: "/edition/1",
-    },
-    {
-      label: "Edition 2",
-      path: "/edition/2",
-    },
-  ]
-  
 
 export  { prefix_link};  
 

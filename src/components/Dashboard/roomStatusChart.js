@@ -127,14 +127,14 @@ const OR = RoomOccupieds?.length;
 
    
      const data = {
-      labels: ['Disponible', 'Occuppée', 'Reservation', 'Indisponible'],
+      labels: ['Disponible     ', 'Occuppée', 'Reservation   ', 'Indisponible'],
       datasets: [
        
         {
           label: '# Statut Chambres',
           data: [RA, OR, 0, 5],
           backgroundColor: [
-        'rgb(34, 152, 231)',
+           'rgb(34, 152, 231)',
            // 'rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)',
             //couleur grise fonce
             'rgb(68,68,68)'  ,

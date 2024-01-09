@@ -6,6 +6,8 @@ import { Form, Alert, FormGroup, Label, Input, Col, Row, Container, Button, Spin
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
+import CustomLoader from 'components/CustomLoader/CustomLoader';
+
 
 
 const Occupation = () => {
@@ -16,6 +18,7 @@ const Occupation = () => {
   const [save, setSave] = useState(true)
   const [selectedRow, setSelectedRow] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [pending, setPending] = useState(true);
   const [hoveredRow, setHoveredRow] = useState(null);
   const [alert, setAlert] = useState({ message: '', color: '' });
   const config = {
@@ -107,6 +110,16 @@ const Occupation = () => {
 
 
   useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`,
+  
+      },
+    };
+  
 
     // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
     const today = new Date();
@@ -123,8 +136,31 @@ const Occupation = () => {
       dateDepart: tomorrowFormatted,
     });
 
+    
+    const fetchData = async () => {
+      //console.log(datesRoom)
+      try {
+        const response = await axios.post(urlGetRoombyDate, {
+          start_date: datesRoom.dateArrivee,
+          end_date: datesRoom.dateDepart,
+        }, config);
 
-  }, [thisDay]);
+        setRoom(response.data.data);
+        console.log("la reponse des row",response.data);
+        setAlert({ message: "", color: '' });
+        setPending(false);
+        setSave(true);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+        setPending(false);
+        setSave(true);
+      }
+    };
+
+    fetchData();
+
+  }, [datesRoom.dateArrivee, datesRoom.dateDepart, thisDay, urlGetRoombyDate]);
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -148,6 +184,7 @@ const Occupation = () => {
 
   const Submit = (e) => {
     setSave(false)
+    setPending(true);
     e.preventDefault();
 
     //lancer la requete pour les la récupération des chambres en fonction des dates 
@@ -163,10 +200,12 @@ const Occupation = () => {
         setRoom(response.data.data);
         console.log("la reponse des row",response.data);
         setAlert({ message: "", color: '' });
+        setPending(false);
         setSave(true);
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
         setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+        setPending(false);
         setSave(true);
       }
     };
@@ -245,6 +284,8 @@ const Occupation = () => {
               onRowMouseEnter={handleMouseEnter}
               onRowMouseLeave={handleMouseLeave}
               conditionalRowStyles={conditionalRowStyles}
+              progressPending={pending}
+              progressComponent={<CustomLoader/>}
               pagination >
             </DataTable>)
         }
