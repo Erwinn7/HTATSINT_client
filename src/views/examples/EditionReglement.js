@@ -265,7 +265,8 @@ console.log('Veuillez choisir une date de debut et une date de fin');
   
 
   const renderUserSelect = () => {
-    if (selectedType === 'by_user' && users.length > 0) {
+    if (selectedType === 'by_user' && users?.length > 0) {
+      
       return (
         <Form id="opForm">
           <FormGroup>
@@ -408,7 +409,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
                   min={period.start}
                 />
               </Col>
-              <Col sm={1} style={{ marginTop: '30px'  }}>
+              <Col sm={1} style={{ marginTop: '30px'  }} className='ml-n2'>
                 {loading ? (
                   <Button color="primary" disabled>
                     <Spinner size="sm" /> <span>En cours</span>
@@ -416,7 +417,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
 
                  
                 ) : (
-                  <Button className='' size="lg" color="primary" type="submit"
+                  <Button className='' size="xs" color="primary" type="submit"
                    onClick={(e) => Submit(e)}>
                     Rechercher
                   </Button>
