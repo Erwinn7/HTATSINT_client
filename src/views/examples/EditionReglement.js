@@ -229,6 +229,7 @@ try {
     start_date: '',
     end_date: '',
   });
+  setLoading(false);
   setAlert({ message: 'Cette fonctionnalite est en attente de mise en production. Veuillez choisir un operateur.', color: 'danger' });
   setTimeout(() => {
     setAlert({ message: '', color: '' });
@@ -266,7 +267,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
 
   const renderUserSelect = () => {
     if (selectedType === 'by_user' && users?.length > 0) {
-      
+
       return (
         <Form id="opForm">
           <FormGroup>
@@ -352,23 +353,25 @@ console.log('Veuillez choisir une date de debut et une date de fin');
       <Header menuTitle="EDITION   REGLEMENTS" />
       <Container className="pb-5 my-2" fluid>
           <div className=' centered-container-reglement  '  style={{}}>
+          {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
 <div className='row ' >
  <div className='col-md-3 ml-n2'>
          
 {
  //mettre un input avec select pour rechercher un type
+ 
  <Form id='myForm'>
- {alert.message && <Alert color={alert.color}>{alert.message}</Alert>}
+ 
           <FormGroup>
           
-            <Label for="type">TYPE</Label>
+            <Label for="type">Liste:</Label>
             <Input type="select" name="type" id="type"  onChange={(e) => {setSave(false);
              setFormdata({ user_id: '', start_date: '', end_date: '' });
              //document.getElementById("user_id").reset();
              resetUserSelect();
               setSelectedType(e.target.value)}}>
-            <option value="all">GLOBAL</option>
-            <option value="by_user"> PAR UTILISATEUR</option>
+            <option value="all">Global</option>
+            <option value="by_user"> Par operateur</option>
             </Input>
           </FormGroup>
         </Form>
@@ -385,7 +388,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
           <FormGroup className=" ">
             <Row style={{ margin: 'auto' }}>
               <Col sm={5}>
-                <Label for="start">DEBUT:</Label>
+                <Label for="start">Début:</Label>
                 <Input
                   id="start"
                   name="start_date"
@@ -398,7 +401,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
                 />
               </Col>
               <Col sm={5}>
-                <Label for="end">FIN:</Label>
+                <Label for="end">Fin:</Label>
                 <Input
                   id="end"
                   name="end_date"
