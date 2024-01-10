@@ -123,10 +123,10 @@ return(
               <Text style={styles.tableCell}>NOMBRE DE JOURS</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>PRIX(Journalier)</Text>
+              <Text style={styles.tableCell}>MONTANT(Journalier)</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>Total</Text>
+              <Text style={styles.tableCell}>TOTAL</Text>
             </View>
           </View>
           {/* Ligne pour chaque article */}

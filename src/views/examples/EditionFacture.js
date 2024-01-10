@@ -1,126 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Input } from 'reactstrap';
+import { Form, Badge,FormGroup, Label, Input, Col, Row, Container, Button, Spinner, Modal } from "reactstrap";
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
-import AjoutUser from 'components/Buttons/ButtonAddUser';
 import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
-//import {Oval} from "react-loader-spinner";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import axios from 'axios';
+import PrintInvoicebyCustumer from 'components/Printer/PrintInvoicebyCustumer';
+import { PDFViewer } from '@react-pdf/renderer';
 
-const Users = () => {
 
-const [users, setUsers] = useState([]);
+const EditionFacture = () => {
+
+const urlGetListIbyC = prefix_link + "/api/v1/invoice_customer";
+const urlGetListUIbyC = prefix_link + "/api/v1/unpaid_invoice_customer";
+const urlGetCustomer = prefix_link+"/api/v1/clients";
+
+const token = localStorage.getItem('accessToken');
+const user_id= localStorage.getItem('id');
+const config = {
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*', 
+    'Authorization': `Bearer ${token}`
+  },
+};
+
+
+const [invoice, setInvoice] = useState([]);
 const [filterUser, setfilterUser] = useState([]);
+const [pending, setPending] = useState(false);
+const [queryObj, setQueryObj] = useState({
+  etat: '',
+  start_date: '',
+  end_date: '',
+  customer_id:'',
+  user_id: user_id
+});
+const [etat, setEtat] = useState();
+const [customers, setCustomers] = useState([])
+const [modalOpen, setModalOpen] = useState(false);
 
-const [pending, setPending] = useState(true);
-
-async function GetUsers  () {
-  const token = localStorage.getItem('accessToken');
-  
-
-  try {
-    const response = await fetch(prefix_link + '/api/v1/users', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-'Authorization': `Bearer ${token}`,
-
-
-      }
-    });
-
-    if (!response.ok) {
-      console.log('Response from Flask API:', 'merde');
-    }
-
-    const data = await response.json();
-    //console.log('Response from Flask API:', data);
-    if (data && data.data.length > 0) {
-      const usersData = data.data.map(item => ({
-        id: item.employee.id,
-        first_name: item.employee.first_name,
-        last_name: item.employee.last_name,
-        role: item.role[0].role_name, // 
-        email: item.user.email,
-        last_connexion: item.employee.updated_at, // Adjust this based on your data structure
-      }));
-      
-      
-     // console.log('Response from Flask API:', usersData);
-      //setUsers(usersData);
-     return usersData;
-    } else {
-      console.log('Response from Flask API:', 'no dataaaa');
-    }
-} catch (error) {
-  // emettre une alerte d'erreur
-  console.error('Une erreurrrrraaa s\'est produite : ', error);
-};
-};
-
-async function fecthUsers  () {
-
-  try {
-    const data = await GetUsers();
-    setUsers(data);
-    setfilterUser(data);
-    setPending(false);
-
-    
-  }
-
-  catch (error) {
-    // emettre une alerte d'erreur
-    console.error('Une erreurrrrr s\'est produite : ', error);
-  };  
-};
-
-useEffect(() => {
- 
-  fecthUsers();
-}, [])
-
-
-/*React.useEffect(() => {
-  const timeout = setTimeout(() => {
-    setRows(users);
-    setPending(false);
-  }, 5000);
-  return () => clearTimeout(timeout);
-}, []);  
-
-
-*/
 
 
   const cols = [
     
     {
-      name: 'NOM',
-      selector: (users) => users.first_name,
+      name: "DATE D'EMISSION",
+      selector: row => formatDate(row.created_at),
       sortable: true,
     },
     {
-      name: 'PRENOM',
-      selector: (users) => users.last_name,
+      name: 'N° FACTURE',
+      selector: row => row.invoice_number,
       sortable: true,
     },
     {
-      name: 'TYPE',
-      selector: (users) => users.role,
+      name: 'MONTANT (FCFA)',
+      selector: row => row.invoice_amount,
       sortable: true,
     },
     {
-      name: 'EMAIL ',
-      selector: (users) => users.email,
-      sortable: true,
+      name : "STATUT",
+      selector : row  => (
+        <Badge color="" className="badge-dot mr-4">
+          <i className={row.invoice_status === 'Paid' ? "bg-success" : "bg-danger"} />
+          {row.invoice_status ==="Paid" ? "Payé" : "Impayée"}
+        </Badge>),
+      sortable : true
     },
-    {
-      name: 'DERNIERE CONNEXION',
-      selector: (users) => users.last_connexion,
-      sortable: true,
-    },
+    
   ];
   
   const customStyles = {
@@ -145,58 +94,256 @@ useEffect(() => {
 };
 
 
-  
- 
-  const handleFilter = (e) => {
-    // Récupérer la valeur de recherche
-  const searchTerm = e.target.value.toLowerCase();
-  // Filtrer les utilisateurs en fonction du terme de recherche
-  const filteredUsers = filterUser.filter(row => 
-    row.role.toLowerCase().includes(searchTerm)
-  );
-  // Mettre à jour uniquement l'état 'users' en fonction des résultats filtrés
-  setUsers(filteredUsers);
+useEffect(() => {
+  const token = localStorage.getItem('accessToken');
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
+      'Authorization': `Bearer ${token}`,
+    },
   };
+
+
+
+  
+    const fetchCustomer = async () => {
+      try {
+        const response = await axios.get(urlGetCustomer,config);
+
+        setCustomers(response.data);
+        setSave(true);        
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setSave(true);
+      }
+    };
+
+    fetchCustomer();
+
+
+    }, [urlGetCustomer]); 
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setQueryObj((previews) => ({
+    ...previews,
+    [name]: value,
+  }));
+};
+
+const [thisDay, setThisDay] = useState(new Date());
+const [save, setSave] = useState(true)
+
+
+const formatDate = (inputDate) => {
+  const date = new Date(inputDate);
+
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const year = date.getUTCFullYear();
+
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+
+  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+  return formattedDate;
+};
+
+const Submit = (e) => {
+  setSave(false)
+  setPending(true);
+  e.preventDefault();
+
+
+  const fetchUnpaidByCustomerData = async () => {
+    //console.log("queryObj:", queryObj);
+    try {
+      const response = await axios.post(urlGetListUIbyC, queryObj, config);
+      console.log("les factures impayés: ",response.data);
+      setInvoice(response.data.invoice);
+      console.log('invoice:',response.data.invoice)
+      setPending(false);
+      setSave(true);
+    } catch (error) {
+      console.error('Erreur lors de la requête GET', error);
+      setPending(false);
+      setSave(true);
+    }
+  };
+
+   const fetchPaidByCustomerData = async () => {
+    //console.log("queryObj:", queryObj);
+    try {
+      const response = await axios.post(urlGetListIbyC, queryObj, config);
+      console.log("les factures par clients: ",response.data);
+      setInvoice(response.data);
+      setPending(false);
+      setSave(true);
+    } catch (error) {
+      console.error('Erreur lors de la requête GET', error);
+      setPending(false);
+      setSave(true);
+    }
+  };
+
+  if (queryObj.etat === "1") {
+    fetchPaidByCustomerData();
+  } else if (queryObj.etat === "2") {
+    fetchUnpaidByCustomerData();
+  } 
+
+
+};
+
+const handleButtonClick = async (row) => {
+  setModalOpen(true);
+};
+
+const closeModal = () => {
+  setModalOpen(false);
+};
 
   return (
     <div className="backgroundImgClient">
       <Header menuTitle="UTILISATEURS" />
 
       <Container className="pb-5 my-5" fluid>
-        <div className="row">
-          <div className="float-left col-md-3 col-12">
-            <AjoutUser butonTitle="Ajouter un utilisateur" />
-          </div>
-          <div className="float-right offset-md-5 col-md-4 col-12" style={{ width: '20%', display: 'flex', justifyContent: 'right' }}>
-            <Input type="text" placeholder="Recherche..." onChange={(e) => handleFilter(e)} />
-          </div>
-        </div>
-        <br />
+          <Form onSubmit={(e) => Submit(e)} >
+              <FormGroup className="p-3 centered-container-occup">
+                <Row style={{ margin: "auto" }}>
+                  <Col sm={3}>
+                    <Label for="etat">
+                      LISTE DES FACTURES  
+                    </Label>
+                    <Input
+                      id="etat"
+                      name="etat"
+                      value={queryObj?.etat}
+                      onChange={(e) => handleChange(e)} 
+                      type="select"
+                    >
+                      <option value="" > Sélectionnez</option>
+                      <option value="1" >PAR CLIENT</option>
+                      <option value="2" >IMPAYEES PAR CLIENT</option>
+                      {/* <option value="3" >GLOBALE</option> */}
+                      
+                    </Input>
 
-        {/* Table */}
-        <div>
+
+                    
+                  </Col>
+
+                  <Col sm={3}>
+                    <Label for="customer_id">
+                      Client : 
+                    </Label>
+                    <Input
+                      id="customer_id"
+                      name="customer_id"
+                      value={queryObj?.customer_id}
+                      onChange={(e) => handleChange(e)} 
+                      type="select"
+                    >
+                      <option value="" >Sélectionnez un Client</option>
+                      {                   
+                        customers.data?.map((customer)  => (
+                          <option key={customer.customer.id} value={customer.customer.id}>
+                            {customer.customer.institute_name ? customer.customer.institute_name : customer.customer.last_name + " "+ customer?.customer.first_name }  - {customer.customer.phone_number}
+                          </option>
+                        ))
+                      } 
+                    </Input>
+
+                  </Col>
+                  <Col sm={2}>
+                    <Label for="datedebut">
+                      Début
+                    </Label>
+                    <Input
+                      id="datedebut"
+                      name="start_date"
+                      placeholder="Arrivée"
+                      type="datetime-local"
+                      value={queryObj?.start_date}
+                      onChange={handleChange}
+                      max={thisDay}
+
+                    />
+                  </Col>
+                  <Col sm={2}>
+                    <Label for="datefin">
+                      Fin
+                    </Label>
+                    <Input
+                      id="datefin"
+                      name="end_date"
+                      placeholder="Départ"
+                      type="datetime-local"
+                      value={queryObj?.end_date}
+                      onChange={handleChange}
+                      min={queryObj.start_date}
+
+                    />
+                  </Col>
+                  <Col sm={2} style={{ marginTop: "30px" }}>
+                    {save ?
+                      <Button color="primary" >
+                        Rechercher
+                      </Button>
+                      :
+                      <Button color="primary" disabled >
+                        <Spinner size="sm">
+                          Loading...
+                        </Spinner>
+                        <span>
+                          {' '} En cours
+                        </span>
+                      </Button>
+                    }
+                  </Col>
+                </Row>
+              </FormGroup>
+            </Form>
+            
+          <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
+            <Button color="success" onClick={() => handleButtonClick()} > Imprimer la liste</Button>
+          </div>
           
           <div>
             <DataTable 
             className="" 
-            title="Liste des utilisateurs" 
+            title="Liste des factures impayées" 
             columns={cols}
-             data={users} 
-             keyField="id" 
-             customStyles={customStyles}
-             pagination
-             progressPending={pending}
-             
-             progressComponent={<CustomLoader/>}
+            data={invoice} 
+            keyField="id" 
+            pagination
+            customStyles={customStyles}
+            progressPending={pending}
+            highlightOnHover
+            progressComponent={<CustomLoader/>}
              >
-              
-
             </DataTable>
           </div>
+
+          <div>
+          <Modal isOpen={modalOpen} toggle={closeModal} size="lg" >
+            {
+            invoice && (
+            <PDFViewer width="100%" height="600px" >
+              <PrintInvoicebyCustumer myInvoice={invoice} />
+            </PDFViewer>
+            )
+            }            
+          </Modal>
         </div>
       </Container>
     </div>
   );
+
 };
 
-export default Users;
+export default EditionFacture;

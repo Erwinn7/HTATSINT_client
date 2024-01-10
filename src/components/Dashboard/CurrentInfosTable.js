@@ -52,14 +52,12 @@ useEffect(() => {
       setCurrentInfo([
         {
           titre: "Ce matin",
-          room: roomNumber - (roomAvailableNow + roomOccupied),
-          total: roomNumber,
+          room: `${roomNumber - (roomAvailableNow + roomOccupied)} / ${roomNumber}`,
           percent: ((roomNumber - (roomAvailableNow + roomOccupied)) / roomNumber * 100).toFixed(2) // Arrondir à deux chiffres après la virgule
         },
         {
           titre: "Actuellement",
-          room: roomNumber - roomAvailableNow,
-          total: roomNumber,
+          room:  `${roomNumber - roomAvailableNow} / ${roomNumber}`,
           percent: ((roomNumber - roomAvailableNow) / roomNumber * 100).toFixed(2) // Arrondir à deux chiffres après la virgule
         }
       ]);
@@ -93,11 +91,6 @@ useEffect(() => {
 
     },
     {
-      name : "Total",
-      selector : row  => row.total,
-      sortable : true
-    },
-    {
       name : "%",
       selector : row  => row.percent,
       sortable : true
@@ -111,7 +104,7 @@ useEffect(() => {
     return (
 
          
-    <DataTable
+    <DataTable className='mb-3'
         columns={cols}
         data={currentInfo}
         keyField="Occupés"

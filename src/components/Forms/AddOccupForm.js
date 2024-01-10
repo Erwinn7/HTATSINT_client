@@ -7,17 +7,17 @@ import { prefix_link } from "variables/globalesVar";
 
 
 
-
-const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart}) => {
+const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart,number_of_place}) => {
 
   const token = localStorage.getItem('accessToken');
-  const user_id= localStorage.getItem('id');
+  const user_id= localStorage.getItem('id'); 
 
 const urlGetCustomer = prefix_link+"/api/v1/clients";
 const urlPostOccupant = prefix_link+"/api/v1/occupant";
 const urlPostInvoice = prefix_link+"/api/v1/invoice";
 
 const [save, setSave] = useState(null)
+const [num_occupant, setNum_occupant] = useState(0)
 const [customers, setCustomers] = useState([])
 const [ctrlSoumission, setCtrlSoumission] = useState("")
 const  [thisDay, setThisDay] =  useState(new Date());
@@ -112,11 +112,12 @@ useEffect(() => {
 
   const Submit = (e) => {
     e.preventDefault();
-    if (Ctrl_Soumission()) {
+    if (Ctrl_Soumission() && num_occupant < number_of_place) {
       const newOccupant = [...occupants,unOccupant]
       setOccupants(newOccupant)
       console.log(newOccupant);
       setUnOccupant({...initOccupants})
+      setNum_occupant(num_occupant+1)
     } else{
       return;
     }
@@ -250,7 +251,7 @@ useEffect(() => {
                 </FormGroup>
                 </Col>
                 </Row>
-            <p > Information de l'occupant  </p>
+            <div className="mb-2" color="red" > Information de l'occupant <span> ({num_occupant}/{number_of_place}) </span></div>
             <div  className="p-3 mb-5" style={{border: '1px solid black'}}>
                 <Row>
                     <Col sm={6}>
@@ -406,9 +407,16 @@ useEffect(() => {
                 </Row>
                 { (ctrlSoumission !== "" && save === true) ? <p style={{ color: 'red', fontSize: '12px' }}>{ctrlSoumission}</p> : null }
 
-                <Button color="success" bsSize="sm">
+                {num_occupant === number_of_place ? 
+                
+                <Button color="gray" bsSize="sm"  onClick={(e) => Submit(e)} disabled>
                   Ajouter
                 </Button>
+                : 
+                <Button color="success" bsSize="sm"  onClick={(e) => Submit(e)} >
+                  Ajouter
+                </Button>
+                }                
             </div>
           </Form>
 
