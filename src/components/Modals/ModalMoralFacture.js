@@ -39,7 +39,7 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
         'payer_phone': client.phone_number,
         'payer_name': client.institute_name,
         'customer_id': client.id,
-        'payment_type_id': '6e77fc3c-3cfe-4aa9-a2b1-7bb77cb6c83c',
+        'payment_type_id': '433e2114-3cfc-4a7e-a865-b5d6af907616',
         'invoice_id': facture.id,
         'user_id': id
       };
@@ -62,7 +62,7 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
           }
       
           const data = await response.json();
-          console.log('Response frommmmmmmmmm Flask API:', data);
+          console.log('Response frommmm Flask API:', data);
           
           setShowApercueModal(true);
 

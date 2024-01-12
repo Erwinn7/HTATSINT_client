@@ -45,20 +45,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// newInvoicemyInvoice = {
-//   invoiceEmitDate: row.invoiceEmitDate ,
-//   invoiceNumber: row.invoiceNumber,
-//   invoiceStatus: row.invoiceStatus,
-//   customerFullname: row.costumerFullname,
-//   customerAddress: row.costumerAddress,
-//   costumerEmail: row.costumerEmail,
-//   costumerIfu: row.costumerIfu,  
-//   designation: mymyInvoices.room.room_label,
-//   dayly_price: mymyInvoices.room.room_amount,
-//   number_of_days: mymyInvoices.number_of_day,
-// }
-
-
 const PrintInvoicebyCustumer = ({myInvoice}) => {
 return(
   <Document>

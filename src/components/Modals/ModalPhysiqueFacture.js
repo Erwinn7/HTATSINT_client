@@ -38,7 +38,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
           'payer_phone': client.phone_number,
           'payer_name': client.first_name,
           'customer_id': client.id,
-          'payment_type_id': '6e77fc3c-3cfe-4aa9-a2b1-7bb77cb6c83c',
+          'payment_type_id': '433e2114-3cfc-4a7e-a865-b5d6af907616',
   'invoice_id': facture.id,
   'user_id': id
         }
