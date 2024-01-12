@@ -9,7 +9,8 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 
 // Importez la liste des éditions
-import {routesEdition}  from "routes.js";
+import {routesEdition}  from "routes";
+import { routesReservation } from "routes";
 
 
 // reactstrap components
@@ -51,6 +52,8 @@ const Sidebar = (props) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [collapseOpen, setCollapseOpen] = useState();
+  const [collapseOpenRe, setCollapseOpenRe] = useState();
+
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
@@ -63,8 +66,15 @@ const Sidebar = (props) => {
   const closeCollapse = () => {
     setCollapseOpen(false);
   };
+  const toggleCollapseRe = () => {
+    setCollapseOpenRe((data) => !data);
+  };
+  // closes the collapse
+  const closeCollapseRe = () => {
+    setCollapseOpenRe(false);
+  };
   // creates the links that appear in the left menu / Sidebar
-  const createLinks = (routes, routesEdition) => {
+  const createLinks = (routes, routesEdition,routesReservation) => {
     return routes.map((prop, key) => {
       if (prop.path === "/edition") {
         // faire un map sur les elements du tableau 
@@ -98,7 +108,40 @@ const Sidebar = (props) => {
             </Collapse>
           </NavItem>
         );
-      } else {
+      } else if (prop.path === "/booking") {
+        // faire un map sur les elements du tableau 
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to="#"
+              onClick={toggleCollapseRe}
+              className="nav-link route-name"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+  
+            <Collapse isOpen={collapseOpenRe} className="ml-4">
+              {routesReservation.map((editionprop, editionkey) => (
+                <NavItem key={editionkey}>
+                  <NavLink
+                    to={editionprop.layout + editionprop.path}
+                    tag={NavLinkRRD}
+                    onClick={closeCollapseRe}
+                    className="route-name"
+                  >
+                    <i className={editionprop.icon} />
+                    {editionprop.name}
+                  </NavLink>
+                </NavItem>
+              ))}
+  
+              {/* Ajoutez ici les autres éléments à afficher dans le Collapse */}
+            </Collapse>
+          </NavItem>
+        );
+
+      }  else {
         // Sinon, renvoyez simplement le composant de route existant
         return (
           <NavItem key={key}>
@@ -262,7 +305,7 @@ const handleLogout = async () => {
           {/* Form */}
          
           {/* Navigation */}
-          <Nav navbar>{createLinks(routes, routesEdition)}</Nav>
+          <Nav navbar>{createLinks(routes, routesEdition,routesReservation)}</Nav>
          
         </Collapse>
       </Container>

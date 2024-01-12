@@ -13,6 +13,12 @@ import EditionChambre from "views/examples/EditionChambre";
 import EditionFacture from "views/examples/EditionFacture";
 import EditionClient from "views/examples/EditionClient";
 import EditionReglement from "views/examples/EditionReglement";
+import Booking from "views/examples/Booking";
+import ApprouveBooking from "views/examples/ApprouveBooking";
+
+
+
+
 export const routes = [
   
   {
@@ -23,7 +29,7 @@ export const routes = [
     layout: "/admin",
   },
   {
-    path: "/icons",
+    path: "/booking",
     name: "RESERVATION",
     icon: "fa fa-registered text-dark",
     component: <Icons />,
@@ -99,7 +105,7 @@ export const routesRecep = [
     layout: "/recep",
   },
   {
-    path: "/icons",
+    path: "/booking",
     name: "RESERVATION",
     icon: "fa fa-registered text-blue",
     component: <Icons />,
@@ -201,5 +207,28 @@ export const routesEdition = [
   },
   
 ]
+
+
+export const routesReservation = [
+  {
+    path: "/reservation",
+    name: "Reservation",
+    icon: "fas fa-book text-dark",
+    component: <Booking />,
+    layout: "/admin",
+    
+  },
+  {
+    path: "/confirmerReservation",
+    name: "Confirmation",
+    icon: "fas fa-book text-dark",
+    component: <ApprouveBooking />,
+    layout: "/admin",
+    
+  },
+  
+]
+
+
 
 //export {routes , routesRecep} ;  
