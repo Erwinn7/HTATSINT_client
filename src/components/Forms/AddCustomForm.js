@@ -21,7 +21,7 @@ function MyForm() {
       phone_number: '',
       email:'',
       address: '',
-      customer_type_id:'aa1ed52a-e127-4208-8ad8-be9c294e454e',
+      customer_type_id:'c144bd80-fddd-4372-9836-833fa8f9d0c6',
        user_id : `${id}`
       // ...
     });
@@ -213,7 +213,7 @@ setIsExistingPhysiqueClient(true);
          NUMERO DE TELEPHONE**
         </Label>
         <Input
-        type='numeric'
+        type='number'
          value={FormData.phone_number}
           name="phone_number"
           id="phone_number"

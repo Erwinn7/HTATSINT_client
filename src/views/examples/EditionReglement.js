@@ -15,6 +15,7 @@ import DataTable from 'react-data-table-component';
 import Header from 'components/Headers/Header';
 import { prefix_link } from 'variables/globalesVar';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import PrintSettlementByUser from 'components/Printer/PrintSettlementByUser';
 //import CustomLoader from 'components/CustomLoader/CustomLoader';
 const EditionReglement = () => {
    const [loading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ const EditionReglement = () => {
   const [users, setUsers] = useState([]); 
   const [selectedUser, setSelectedUser] = useState('');
  const [save, setSave] = useState(false); // Vous devez probablement ajuster cela selon votre logique
+ const [modalOpen, setModalOpen] = useState(false);
 
    const [formdata, setFormdata] = useState({
     user_id: '',
@@ -437,7 +439,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
 </div>  <br></br> 
 
           <div className="float-right offset-md-5 col-md-4 col-12" style={{ width: '20%', display: 'flex', justifyContent: 'right' }}>
-            <Button size="xs" className='btn btn-success'>Imprimer la liste</Button>
+            <Button size="xs" className='btn btn-success'>Imprimer</Button>
           </div>
 <br></br> <br></br> 
 
