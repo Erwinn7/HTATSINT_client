@@ -18,7 +18,7 @@ function MyFormEnt() {
     address: '',
     phone_number:'',
     
-    customer_type_id:'4525d856-d4b8-412d-87b7-7b7f3dc59c41',
+    customer_type_id:'f3604013-67cf-45ab-b2e7-ed39c1c59fec',
     user_id : `${id}`
   });
   const [loading, setLoading] = useState(false);
@@ -196,7 +196,7 @@ document.getElementById('address').value = '';
           NUMERO DE TELEPHONE
         </Label>
         <Input
-         type='numeric'
+         type='number'
          value={FormData.phone_number}
           name="phone_number"
           id="phone_number"
