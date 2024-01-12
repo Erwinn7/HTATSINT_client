@@ -15,7 +15,6 @@ import DataTable from 'react-data-table-component';
 import Header from 'components/Headers/Header';
 import { prefix_link } from 'variables/globalesVar';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
-import PrintSettlementByUser from 'components/Printer/PrintSettlementByUser';
 //import CustomLoader from 'components/CustomLoader/CustomLoader';
 const EditionReglement = () => {
    const [loading, setLoading] = useState(false);

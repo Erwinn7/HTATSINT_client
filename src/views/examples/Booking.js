@@ -110,17 +110,7 @@ const Booking = () => {
 
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`,
   
-      },
-    };
-  
-
     // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
     const today = new Date();
     const todayFormatted = `${today.getFullYear()}-${formatNumber(today.getMonth() + 1)}-${formatNumber(today.getDate())}T${formatNumber(today.getHours())}:${formatNumber(today.getMinutes())}:${formatNumber(today.getSeconds())}`;
@@ -136,31 +126,8 @@ const Booking = () => {
       dateDepart: tomorrowFormatted,
     });
 
-    
-    const fetchData = async () => {
-      //console.log(datesRoom)
-      try {
-        const response = await axios.post(urlGetFreeRoom, {
-          start_date: datesRoom.dateArrivee,
-          end_date: datesRoom.dateDepart,
-        }, config);
 
-        setRoom(response.data.data);
-        console.log("la reponse des row",response.data);
-        setAlert({ message: "", color: '' });
-        setPending(false);
-        setSave(true);
-      } catch (error) {
-        console.error('Erreur lors de la requête GET', error);
-        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-        setPending(false);
-        setSave(true);
-      }
-    };
-
-    fetchData();
-
-  }, [datesRoom.dateArrivee, datesRoom.dateDepart, thisDay, urlGetFreeRoom]);
+  }, [ thisDay, urlGetFreeRoom]);
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -303,9 +270,8 @@ const Booking = () => {
               keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
-             onRowMouseEnter={handleMouseEnter}
-              onRowMouseLeave={handleMouseLeave}
               conditionalRowStyles={conditionalRowStyles}
+              highlightOnHover
               progressPending={pending}
               progressComponent={<CustomLoader/>}
               pagination >

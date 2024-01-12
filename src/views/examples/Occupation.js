@@ -19,7 +19,6 @@ const Occupation = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [pending, setPending] = useState(true);
-  const [hoveredRow, setHoveredRow] = useState(null);
   const [alert, setAlert] = useState({ message: '', color: '' });
   const config = {
     headers: {
@@ -88,37 +87,16 @@ const Occupation = () => {
     },
   };
 
-
-  // gestion de coloration au passage de la souris sur la ligne
-  const handleMouseEnter = (row) => {
-    setHoveredRow(row);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredRow(null);
-  };
-
-  // Fonction pour appliquer le style différent à la ligne lorsque la souris passe dessus
-  const conditionalRowStyles = [
-    {
-      when: (row) => row === hoveredRow, // Appliquer le style lorsque la ligne est égale à la ligne survolée
-      style: {
-        backgroundColor: "#f2f2f2", // Changer la couleur de fond de la ligne
-      },
-    },
-  ];
-
-
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`,
+    // const token = localStorage.getItem('accessToken');
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Access-Control-Allow-Origin': '*',
+    //     'Authorization': `Bearer ${token}`,
   
-      },
-    };
+    //   },
+    // };
   
 
     // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
@@ -137,30 +115,30 @@ const Occupation = () => {
     });
 
     
-    const fetchData = async () => {
-      //console.log(datesRoom)
-      try {
-        const response = await axios.post(urlGetRoombyDate, {
-          start_date: datesRoom.dateArrivee,
-          end_date: datesRoom.dateDepart,
-        }, config);
+    // const fetchData = async () => {
+    //   //console.log(datesRoom)
+    //   try {
+    //     const response = await axios.post(urlGetRoombyDate, {
+    //       start_date: datesRoom.dateArrivee,
+    //       end_date: datesRoom.dateDepart,
+    //     }, config);
 
-        setRoom(response.data.data);
-        console.log("la reponse des row",response.data);
-        setAlert({ message: "", color: '' });
-        setPending(false);
-        setSave(true);
-      } catch (error) {
-        console.error('Erreur lors de la requête GET', error);
-        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-        setPending(false);
-        setSave(true);
-      }
-    };
+    //     setRoom(response.data.data);
+    //     console.log("la reponse des row",response.data);
+    //     setAlert({ message: "", color: '' });
+    //     setPending(false);
+    //     setSave(true);
+    //   } catch (error) {
+    //     console.error('Erreur lors de la requête GET', error);
+    //     setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+    //     setPending(false);
+    //     setSave(true);
+    //   }
+    // };
 
-    fetchData();
+    // fetchData();
 
-  }, [datesRoom.dateArrivee, datesRoom.dateDepart, thisDay, urlGetRoombyDate]);
+  }, [thisDay, urlGetRoombyDate]);
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -281,11 +259,9 @@ const Occupation = () => {
               keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
-             onRowMouseEnter={handleMouseEnter}
-              onRowMouseLeave={handleMouseLeave}
-              conditionalRowStyles={conditionalRowStyles}
               progressPending={pending}
               progressComponent={<CustomLoader/>}
+              highlightOnHover
               pagination >
             </DataTable>)
         }
