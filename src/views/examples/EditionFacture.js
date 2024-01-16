@@ -6,7 +6,7 @@ import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import axios from 'axios';
-import PrintInvoicebyCustumer from 'components/Printer/PrintInvoicebyCustumer';
+import PrintInvoicebyCustumer from 'components/Printer/PrintInvoicebyCustomer';
 import { PDFViewer } from '@react-pdf/renderer';
 
 
@@ -28,7 +28,6 @@ const config = {
 
 
 const [invoice, setInvoice] = useState([]);
-const [filterUser, setfilterUser] = useState([]);
 const [pending, setPending] = useState(false);
 const [queryObj, setQueryObj] = useState({
   etat: '',
@@ -199,8 +198,9 @@ const Submit = (e) => {
 
 };
 
-const handleButtonClick = async (row) => {
+const handleButtonClick = async () => {
   setModalOpen(true);
+  console.log("obj send to printer",invoice)
 };
 
 const closeModal = () => {
@@ -209,7 +209,7 @@ const closeModal = () => {
 
   return (
     <div className="backgroundImgClient">
-      <Header menuTitle="UTILISATEURS" />
+      <Header menuTitle="EDITION DES FACTURES" />
 
       <Container className="pb-5 my-5" fluid>
           <Form onSubmit={(e) => Submit(e)} >
@@ -217,7 +217,7 @@ const closeModal = () => {
                 <Row style={{ margin: "auto" }}>
                   <Col sm={3}>
                     <Label for="etat">
-                      LISTE DES FACTURES  
+                      Liste: 
                     </Label>
                     <Input
                       id="etat"
@@ -261,7 +261,7 @@ const closeModal = () => {
                   </Col>
                   <Col sm={2}>
                     <Label for="datedebut">
-                      Début
+                      Début :
                     </Label>
                     <Input
                       id="datedebut"
@@ -276,7 +276,7 @@ const closeModal = () => {
                   </Col>
                   <Col sm={2}>
                     <Label for="datefin">
-                      Fin
+                      Fin :
                     </Label>
                     <Input
                       id="datefin"
@@ -316,7 +316,7 @@ const closeModal = () => {
           <div>
             <DataTable 
             className="" 
-            title="Liste des factures impayées" 
+            title="Liste des factures "
             columns={cols}
             data={invoice} 
             keyField="id" 

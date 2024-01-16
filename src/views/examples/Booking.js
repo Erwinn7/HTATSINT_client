@@ -10,15 +10,16 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 
 
-const Occupation = () => {
+const Booking = () => {
   const token = localStorage.getItem('accessToken');
   // const user_id= localStorage.getItem('id');
-  const urlGetRoombyDate = prefix_link + "/api/v1/occupation";
+  const urlGetFreeRoom = prefix_link + "/api/v1/booking";
   const [room, setRoom] = useState([]);
   const [save, setSave] = useState(true)
   const [selectedRow, setSelectedRow] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [pending, setPending] = useState(true);
+  const [hoveredRow, setHoveredRow] = useState(null);
   const [alert, setAlert] = useState({ message: '', color: '' });
   const config = {
     headers: {
@@ -87,18 +88,29 @@ const Occupation = () => {
     },
   };
 
-  useEffect(() => {
-    // const token = localStorage.getItem('accessToken');
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //     'Authorization': `Bearer ${token}`,
-  
-    //   },
-    // };
-  
 
+  // gestion de coloration au passage de la souris sur la ligne
+  const handleMouseEnter = (row) => {
+    setHoveredRow(row);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredRow(null);
+  };
+
+  // Fonction pour appliquer le style différent à la ligne lorsque la souris passe dessus
+  const conditionalRowStyles = [
+    {
+      when: (row) => row === hoveredRow, // Appliquer le style lorsque la ligne est égale à la ligne survolée
+      style: {
+        backgroundColor: "#f2f2f2", // Changer la couleur de fond de la ligne
+      },
+    },
+  ];
+
+
+  useEffect(() => {
+  
     // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
     const today = new Date();
     const todayFormatted = `${today.getFullYear()}-${formatNumber(today.getMonth() + 1)}-${formatNumber(today.getDate())}T${formatNumber(today.getHours())}:${formatNumber(today.getMinutes())}:${formatNumber(today.getSeconds())}`;
@@ -114,31 +126,8 @@ const Occupation = () => {
       dateDepart: tomorrowFormatted,
     });
 
-    
-    // const fetchData = async () => {
-    //   //console.log(datesRoom)
-    //   try {
-    //     const response = await axios.post(urlGetRoombyDate, {
-    //       start_date: datesRoom.dateArrivee,
-    //       end_date: datesRoom.dateDepart,
-    //     }, config);
 
-    //     setRoom(response.data.data);
-    //     console.log("la reponse des row",response.data);
-    //     setAlert({ message: "", color: '' });
-    //     setPending(false);
-    //     setSave(true);
-    //   } catch (error) {
-    //     console.error('Erreur lors de la requête GET', error);
-    //     setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-    //     setPending(false);
-    //     setSave(true);
-    //   }
-    // };
-
-    // fetchData();
-
-  }, [thisDay, urlGetRoombyDate]);
+  }, [ thisDay, urlGetFreeRoom]);
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -170,7 +159,7 @@ const Occupation = () => {
     const fetchData = async () => {
       //console.log(datesRoom)
       try {
-        const response = await axios.post(urlGetRoombyDate, {
+        const response = await axios.post(urlGetFreeRoom, {
           start_date: datesRoom.dateArrivee,
           end_date: datesRoom.dateDepart,
         }, config);
@@ -195,13 +184,13 @@ const Occupation = () => {
 
   return (
     <div className="backgroundImgChambre">
-      <Header menuTitle="OCCUPATION" />
+      <Header menuTitle="RESERVATION" />
       {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
       <Container className="pb-5" fluid>
         <Form onSubmit={(e) => Submit(e)} >
           <FormGroup className="p-3 centered-container-occup">
             <Row style={{ margin: "auto" }}>
-              <Col sm={5}>
+              <Col sm={3}>
                 <Label for="dateArrivee">
                   Arrivée
                 </Label>
@@ -216,7 +205,7 @@ const Occupation = () => {
 
                 />
               </Col>
-              <Col sm={5}>
+              <Col sm={3}>
                 <Label for="dateDepart">
                   Départ
                 </Label>
@@ -230,6 +219,28 @@ const Occupation = () => {
                   min={datesRoom.dateArrivee}
                 />
               </Col>
+              <Col sm={3}>
+                <Label for="customer_id">
+                    Client : 
+                </Label>
+                <Input
+                    id="customer_id"
+                    name="customer_id"
+                    // value={queryObj?.customer_id}
+                    // onChange={(e) => handleChange(e)} 
+                    type="select"
+                >
+                    <option value="" >Sélectionnez un Client</option>
+                    {/* {                   
+                    customers.data?.map((customer)  => (
+                        <option key={customer.customer.id} value={customer.customer.id}>
+                        {customer.customer.institute_name ? customer.customer.institute_name : customer.customer.last_name + " "+ customer?.customer.first_name }  - {customer.customer.phone_number}
+                        </option>
+                    ))
+                    }  */}
+                </Input>
+
+                  </Col>
               <Col sm={2} style={{ marginTop: "30px" }}>
                 {save ?
                   <Button color="primary" >
@@ -259,9 +270,10 @@ const Occupation = () => {
               keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
+              conditionalRowStyles={conditionalRowStyles}
+              highlightOnHover
               progressPending={pending}
               progressComponent={<CustomLoader/>}
-              highlightOnHover
               pagination >
             </DataTable>)
         }
@@ -285,4 +297,4 @@ const Occupation = () => {
   );
 };
 
-export default Occupation;
+export default Booking;
