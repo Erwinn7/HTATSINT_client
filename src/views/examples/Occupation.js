@@ -12,13 +12,13 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Occupation = () => {
   const token = localStorage.getItem('accessToken');
-  // const user_id= localStorage.getItem('id');
+  const user_id= localStorage.getItem('id');
   const urlGetRoombyDate = prefix_link + "/api/v1/occupation";
   const [room, setRoom] = useState([]);
   const [save, setSave] = useState(true)
   const [selectedRow, setSelectedRow] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [pending, setPending] = useState(true);
+  const [pending, setPending] = useState(false);
   const [alert, setAlert] = useState({ message: '', color: '' });
   const config = {
     headers: {
@@ -173,6 +173,7 @@ const Occupation = () => {
         const response = await axios.post(urlGetRoombyDate, {
           start_date: datesRoom.dateArrivee,
           end_date: datesRoom.dateDepart,
+          user_id : user_id
         }, config);
 
         setRoom(response.data.data);
@@ -262,7 +263,7 @@ const Occupation = () => {
               progressPending={pending}
               progressComponent={<CustomLoader/>}
               highlightOnHover
-              pagination >
+              pagination>
             </DataTable>)
         }
 

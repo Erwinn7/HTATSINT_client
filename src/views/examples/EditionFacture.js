@@ -36,7 +36,8 @@ const [queryObj, setQueryObj] = useState({
   customer_id:'',
   user_id: user_id
 });
-const [etat, setEtat] = useState();
+const [totalAmount, setTotalAmount] = useState(0);
+const [currentCustomer, setCurrentCustomer] = useState({});
 const [customers, setCustomers] = useState([])
 const [modalOpen, setModalOpen] = useState(false);
 
@@ -64,7 +65,7 @@ const [modalOpen, setModalOpen] = useState(false);
       selector : row  => (
         <Badge color="" className="badge-dot mr-4">
           <i className={row.invoice_status === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoice_status ==="Paid" ? "Payé" : "Impayée"}
+          {row.invoice_status ==="Paid" ? "Payé" : "Impayé"}
         </Badge>),
       sortable : true
     },
@@ -164,7 +165,8 @@ const Submit = (e) => {
       const response = await axios.post(urlGetListUIbyC, queryObj, config);
       console.log("les factures impayés: ",response.data);
       setInvoice(response.data.invoice);
-      console.log('invoice:',response.data.invoice)
+      setTotalAmount(response.data.invoice_amount);
+      setCurrentCustomer(response.data.customer);
       setPending(false);
       setSave(true);
     } catch (error) {
@@ -183,7 +185,7 @@ const Submit = (e) => {
       setPending(false);
       setSave(true);
     } catch (error) {
-      console.error('Erreur lors de la requête GET', error);
+      console.error('Erreur lors de la requête post', error);
       setPending(false);
       setSave(true);
     }
@@ -334,7 +336,7 @@ const closeModal = () => {
             {
             invoice && (
             <PDFViewer width="100%" height="600px" >
-              <PrintInvoicebyCustumer myInvoice={invoice} />
+              <PrintInvoicebyCustumer myInvoice={invoice}  totalImpayes = {totalAmount} destinataire = {currentCustomer} />
             </PDFViewer>
             )
             }            

@@ -3,7 +3,7 @@ import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/render
 import logo from "assets/img/brand/logo.png";
 
 // Fonction pour formater les nombres avec des virgules pour la lisibilité
-//const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+// const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 // Styles pour le document
 const styles = StyleSheet.create({
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
 });
 
 
-const PrintInvoicebyCustomer= ({myInvoice}) => {
+const PrintInvoicebyCustomer= ({myInvoice, totalImpayes, destinataire}) => {
 return(
   <Document>
     <Page size="A4" style={styles.page}>
@@ -85,21 +85,24 @@ return(
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
-          <Text fontweight="bold" >Facture N°:{myInvoice.invoiceNumber}</Text> 
+          {/* <Text fontweight="bold" >Facture N°:{myInvoice.invoiceNumber}</Text>  */}
           <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.created_at}</Text>
           
         </View>
         <View>
           {/* Numéro de facture et informations client */}
           <Text>DESTINATAIRE</Text>
-          {/* <Text style={{fontSize:10}} >{myInvoice.customerFullname}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.customerAddress}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.costumerEmail}</Text>
-          <Text style={{fontSize:10}} >{myInvoice.costumerIfu}</Text> */}
+          <Text style={{fontSize:10}} >Nom:  {destinataire.institute_name ? destinataire.institute_name : destinataire.last_name+" "+destinataire.first_name}</Text>
+          <Text style={{fontSize:10}} >Addresse:  {destinataire.address}</Text>
+          <Text style={{fontSize:10}} >Tel:  {destinataire.phone_number}</Text> 
+          <Text style={{fontSize:10}} >Email:  {destinataire.email}</Text>
+          <Text style={{fontSize:10}} >{destinataire.ifu ? "IFU:  "+destinataire.ifu : ""}</Text>
 
         </View>
       </View>
       <View style={styles.section}>
+      <Text style={{marginRight:"40%", marginBottom:5,fontSize:12}}>LISTE DES FACTURES </Text>
+
         {/* Tableau avec les détails de la facture */}
         <View style={styles.table}>
           <View style={styles.tableRow}>
@@ -132,7 +135,7 @@ return(
                   <Text style={styles.tableCellArticle}>{item.invoice_amount}</Text>
                 </View>
                 <View style={styles.tableCol}>
-                  <Text style={styles.tableCellArticle}>{item.invoice_status}</Text>
+                  <Text style={styles.tableCellArticle}>{item.invoice_status ==="Paid" ? "Payé" : "Impayée"}</Text>
                 </View>
               </View>     
             ))
@@ -143,9 +146,7 @@ return(
       </View>
       {/* Lignes pour le total, la TVA et le total TTC */}
       <View style={styles.totals}>
-        <Text style={{marginBottom: 5}} >Total: FCFA</Text>
-        <Text style={{marginBottom: 5}} >TVA: FCFA</Text>
-        <Text style={{marginBottom: 5}} >Total TTC: FCFA</Text>
+        <Text style={{marginBottom: 5}} >Total impayé: {totalImpayes} FCFA</Text>
       </View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
