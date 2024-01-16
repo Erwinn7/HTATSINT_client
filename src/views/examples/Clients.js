@@ -71,7 +71,7 @@ async function GetClient  () {
     }
 
     const data = await response.json();
-//console.log('Response from Flask API:', data.data);
+console.log('Response from Flask API:', data.data);
     const clientsData = Object.values(data.data).map(item => {
       if (item && item.customer) {
 
@@ -122,6 +122,7 @@ console.log('Response from Flask API:', error.type);
       const moraux = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Morale");
 //console.log('uhrtbdrhdytnphyy:', physiques);
 setClientsPhysique(physiques);
+console.log('uhrtbdrhdytnphyy:', physiques);
         setClientsMoral(moraux);
         setPending(false);
 //transformer la liste des clients en tableau

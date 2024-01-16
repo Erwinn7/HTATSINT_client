@@ -9,8 +9,14 @@ import {
   Row,
   Col,
   Spinner,
-  Alert
+  Alert,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
 } from 'reactstrap';
+import { PDFViewer } from '@react-pdf/renderer';
+import PrintSettlementByUser from 'components/Printer/PrintSettlementByUser';
 import DataTable from 'react-data-table-component';
 import Header from 'components/Headers/Header';
 import { prefix_link } from 'variables/globalesVar';
@@ -25,11 +31,18 @@ const EditionReglement = () => {
     end_date: '',
   });
   const [users, setUsers] = useState([]); 
-  const [selectedUser, setSelectedUser] = useState('');
+  const [userInfo, setUserInfo] = useState({});
+  const [selectedUserId, setSelectedUserId] = useState('');
  const [save, setSave] = useState(false); // Vous devez probablement ajuster cela selon votre logique
  const [modalOpen, setModalOpen] = useState(false);
+ const toggleModal = () => setModalOpen(!modalOpen);
 
    const [formdata, setFormdata] = useState({
+    user_id: '',
+    start_date: '',
+    end_date: '',
+   });
+   const [fcopieormdata, setCopieFormdata] = useState({
     user_id: '',
     start_date: '',
     end_date: '',
@@ -90,7 +103,8 @@ const EditionReglement = () => {
   try {
     const data = await GetUsers();
     setUsers(data);
- 
+   // localStorage.setItem('operateur_pr', data.first_name); 
+    /*localStorage.setItem('operateur_ps', data.last_name);*/
   }
 
   catch (error) {
@@ -107,8 +121,17 @@ useEffect(() => {
 const handleUserSelect = async (e) => {
   // Ajoutez ici votre logique pour la sélection d'un utilisateur
 
- setSelectedUser(e.target.value);
+ setSelectedUserId(e.target.value);
  await  setSave(true);
+ const users = await GetUsers();
+ // recuperer les information du user seletionner et le mettre dans le local storage
+ const selectedUserInfo = users.find(user => user.id === e.target.value);
+ console.log('util',selectedUserInfo);
+setUserInfo(selectedUserInfo);
+ // Mettre les informations dans le local storage
+ /*;*/
+//console.log('util',localStorage.getItem('selectedUser'));
+ 
  
   setFormdata({
     ...formdata,
@@ -131,6 +154,7 @@ console.log(formdata);
  
 
    const Submit = async (e)=> {
+    setCopieFormdata(formdata);
     setLoading(true);
     e.preventDefault();
     
@@ -152,7 +176,7 @@ try {
     // Vérifier si la réponse est au format JSON
     
     const data = await response.json();
-    console.log('Reponse de la requête POSTtt:', data);
+    console.log('Reponse de la requête POST:', data);
     if (data.settlements && data.settlements.length > 0 && data.customers && data.customers.length > 0) {
       // Créez un tableau pour stocker les données à afficher
       const paymentsTable = [];
@@ -165,11 +189,13 @@ try {
         // Si le client est trouvé
         if (associatedCustomer) {
           // Ajoutez une entrée au tableau avec les détails requis
+          const totalAmount = parseFloat(data.amount); 
           paymentsTable.push({
             Nom: associatedCustomer.customer.last_name,
             Prenom: associatedCustomer.customer.first_name,
             Institut: associatedCustomer.customer.institute_name,
             Montant: settlement.settlement_amount,
+            Total: totalAmount,
             Date: settlement.created_at,
           });
         }
@@ -178,17 +204,19 @@ try {
       // Affichez le tableau résultant
       console.table("Tableau de paiements:", paymentsTable);
 
-     setFormdata({
+     /*setFormdata({
    
       user_id: '',
       start_date: '',
       end_date: '',
-    });
+    });*/
     document.getElementById("myForm").reset();
     resetUserSelect();
     setSave(false);
     setLoading(false);
     setPaymentsTable(paymentsTable);
+    //localStorage.setItem('selectedUser', JSON.stringify(userInfo));
+
    
 
 
@@ -248,7 +276,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
 
   
   const resetUserSelect = () => {
-    setSelectedUser('');
+    setSelectedUserId('');
     setFormdata({
       ...formdata,
       user_id: '',
@@ -277,7 +305,7 @@ console.log('Veuillez choisir une date de debut et une date de fin');
             type="select" 
             name="user_id" 
             id="user_id"
-            value={selectedUser}
+            value={selectedUserId}
             onChange={handleUserSelect}
             >
             <option> Selectionnez un operateur</option>
@@ -422,7 +450,9 @@ console.log('Veuillez choisir une date de debut et une date de fin');
                  
                 ) : (
                   <Button className='' size="xs" color="primary" type="submit"
-                   onClick={(e) => Submit(e)}>
+                   onClick={(e) => Submit(e)}
+                   disabled={formdata.user_id === '' || formdata.start_date === '' || formdata.end_date === ''}
+                   >
                     Rechercher
                   </Button>
                 )}
@@ -438,7 +468,11 @@ console.log('Veuillez choisir une date de debut et une date de fin');
 </div>  <br></br> 
 
           <div className="float-right offset-md-5 col-md-4 col-12" style={{ width: '20%', display: 'flex', justifyContent: 'right' }}>
-            <Button size="xs" className='btn btn-success'>Imprimer</Button>
+            <Button size="xs" className='btn btn-success'
+           // toggle={toggle}
+            onClick={toggleModal}
+            disabled={paymentsTable.length === 0}
+            >Imprimer</Button>
           </div>
 <br></br> <br></br> 
 
@@ -461,6 +495,25 @@ console.log('Veuillez choisir une date de debut et une date de fin');
             </DataTable>
 
          </div>
+
+         <Modal isOpen={modalOpen} toggle={toggleModal} size="xl"> {/* Utilisez "xl" ou "lg" pour la taille */}
+        <ModalHeader toggle={toggleModal}>Liste à imprimer</ModalHeader>
+       <ModalBody>
+       {
+            paymentsTable && userInfo && formdata && (
+            <PDFViewer width="100%" height="600px" >
+              <PrintSettlementByUser mypaymentsTable={paymentsTable} myuserInfo={userInfo} myformdata={formdata}/>
+            </PDFViewer>
+            )
+            }      
+       </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={toggleModal}>
+            Fermer
+          </Button>
+          {/* Ajoutez un bouton d'impression ici, ou utilisez une bibliothèque d'impression */}
+        </ModalFooter>
+      </Modal>
           
 
       </Container>
