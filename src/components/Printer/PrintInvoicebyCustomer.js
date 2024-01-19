@@ -4,6 +4,21 @@ import logo from "assets/img/brand/logo.png";
 
 // Fonction pour formater les nombres avec des virgules pour la lisibilité
 // const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const formatDate = (inputDate) => {
+  const date = new Date(inputDate);
+
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const year = date.getUTCFullYear();
+
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+
+  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+  return formattedDate;
+};
 
 // Styles pour le document
 const styles = StyleSheet.create({
@@ -126,7 +141,7 @@ return(
             myInvoice.map((item, index) => (
               <View style={styles.tableRow} key={index}>
                 <View style={styles.tableCol}>
-                  <Text style={styles.tableCellArticle}>{item.created_at}</Text>
+                  <Text style={styles.tableCellArticle}>{formatDate(item.created_at)}</Text>
                 </View>
                 <View style={styles.tableCol}>
                   <Text style={styles.tableCellArticle}>{item.invoice_number}</Text>

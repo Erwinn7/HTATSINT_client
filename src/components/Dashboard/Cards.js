@@ -118,8 +118,8 @@ const fetchRoomNumber = async () => {
 const fetchUserEarning = async () => {
   try {
     const res = await axios.get(urlGetEbyU+"/"+user_id, config);
-    console.log("Earning:", res.data.total_amoun);
-    setUserEarning(res.data.total_amoun);
+    console.log("Earning:", res.data.total_amount);
+    setUserEarning(res.data.total_amount);
   } catch (error) {
     console.error('Erreur lors de la reception de la recette', error);
   }
@@ -280,7 +280,7 @@ const customStyles = {
             </CardTitle>
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'  style={{ width: '313px', height: '15px', fontWeight: 'bold', fontSize: '12px' ,  }}>
-            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}>  AUJOUD'HUI</div>
+            <div  className='text-center'  style={{marginTop: '-10px', fontSize: '12px', fontWeight: 'bold', }}>  AUJOURD'HUI</div>
             </CardFooter>
           </Card>
         </Col>

@@ -1,6 +1,6 @@
 import  {React,useState,useEffect} from "react";
 
-import {Container, Collapse, Button, Card, CardBody ,
+import {Container, Collapse, Button, Card, CardBody,  
   Modal, ModalBody, ModalFooter,
   Badge,
   Alert,
@@ -26,6 +26,8 @@ const Room = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isStatColOpen, setIsStatColOpen] = useState(false);
+  const urlDeleteBooking = prefix_link + "/api/v1/canceled_booking";
+
 
   const [modal, setModal] = useState(false);
   const [room, setRoom] = useState([]);
@@ -89,6 +91,12 @@ const Room = () => {
         }else if(row.room.room_status === "Available_and_dirty"){
           leStatus = "Indisponible";
           leStyle = "bg-dark";
+        }else if(row.room.room_status === "Reserved"){
+          leStatus = "Réservée";
+          leStyle = "bg-danger";
+        }else if(row.room.room_status === "Reserved_and_confirmed"){
+          leStatus = "Reservé et Confirmé";
+          leStyle = "bg-danger";
         }
       
         return (
@@ -181,9 +189,10 @@ const handleRowClick = (row) => {
       //console.log("id:",row.room.id)
       const res = await axios.post(urlPostOneRoom, {
         id: row.room.id,
+        room_status: row.room.room_status
       }, config);      
       setInfoRoom(res.data);
-      console.log("reponse du serveur: ",res.data);
+      console.log("inforoom: ",res.data);
     } catch (error) {
       console.error('Erreur lors de la requête GET', error);
       setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
@@ -194,6 +203,28 @@ const handleRowClick = (row) => {
   setSelectedRow(row);
   setModalOpen(true);
 };
+
+
+const handleDeleteBooking = (e) => {
+  e.preventDefault();
+  console.log("BOOKING ID",infoRoom.booking.id)
+
+  const deleteBooking = async () => {
+    try {
+      const response = await axios.put(urlDeleteBooking, {booking_id: infoRoom.booking.id},config);
+      console.log("la reponse",response.data);
+      setAlert({ message: "", color: '' });
+      setPending(false);
+    } catch (error) {
+      console.error('Erreur lors de la requête put', error);
+      setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+      setPending(false);    }
+  };
+
+  deleteBooking();
+
+  }
+
 
 const closeModal = () => {
   setModalOpen(false);
@@ -293,6 +324,12 @@ const closeModal = () => {
                 <div >
                   <p><span style={{fontWeight:"bold"}}>Type de chambre : </span>{selectedRow.room_category.room_category_label}</p>
                   <p><span style={{fontWeight:"bold"}}>Nombre de place : </span>{selectedRow.room_category.place_number} personnes</p>
+                 
+
+                 {
+                  (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Reserved_and_confirmed")? 
+                  <div></div> 
+                  :
                   <p style={{textAlign:"justify"}}>
                     <Row className="ml-0">
                       <span className="mr-2"  style={{fontWeight:"bold"}}>Statut : </span>{returnStatut(infoRoom.room.room_status) }
@@ -306,13 +343,15 @@ const closeModal = () => {
                       </Collapse>
                     </Row>
                   </p>
+                 }
+                 
                   <p><span style={{fontWeight:"bold"}}>Accessoires : </span>{selectedRow.room_item.map((item) => <span>{item.room_item_label}, </span> )}</p>
                 </div>
                 
               {
-                  (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Occupied")? 
+                  (selectedRow.room.room_status === "Occupied")? 
                   <div>
-                  <p><span style={{fontWeight:"bold"}}>Réservé par : </span>{infoRoom.customer.institute_name !== null ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
+                  <p><span style={{fontWeight:"bold"}}>Non client : </span>{infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
                   <p><span style={{fontWeight:"bold"}}>Occupée par : </span>{infoRoom.room_occupants.map((item) => <span>{item.last_name+" "+item.first_name}, </span> )}</p>
                   <p><span style={{fontWeight:"bold"}}>Date entrée : </span>{formatDate(infoRoom.room_occupation.start_date)} </p>
                   <p><span style={{fontWeight:"bold"}}>Date Sortie : </span>{formatDate(infoRoom.room_occupation.end_date)}</p>
@@ -320,13 +359,28 @@ const closeModal = () => {
                   :
                   <div></div>
                 }
+                {
+                  (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Reserved_and_confirmed")? 
+                  <div>
+                  <p><span style={{fontWeight:"bold"}}>Réservé par : </span>{ infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
+                  <p><span style={{fontWeight:"bold"}}>Du: </span>{formatDate(infoRoom.booking.start_date)} </p>
+                  <p><span style={{fontWeight:"bold"}}>Au: </span>{formatDate(infoRoom.booking.end_date)}</p>
+
+                  </div>
+                  :
+                  <div></div>
+                }
+                
                 
                 
               </div>
             )}
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" onClick={closeModal}>
+            <Button color="danger" className=" mr-9" onClick={(e) => { closeModal(); handleDeleteBooking(e) }} size="sm">
+                  ANNULER LA RESERVATION 
+            </Button>
+            <Button color="dark" onClick={closeModal}>
               Fermer
             </Button>
           </ModalFooter>
