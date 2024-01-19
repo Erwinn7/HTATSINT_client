@@ -1,6 +1,7 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import logo from "assets/img/brand/logo.png";
+//const numberToWords = require('number-to-words');
 
 // Fonction pour formater les nombres avec des virgules pour la lisibilité
 const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   },
   tableRow: { margin: 'auto', flexDirection: 'row' },
   tableCol: {
-    width: '25%',
+    width: '35%',
     borderStyle: 'solid',
     borderWidth: 1,
     borderLeftWidth: 0,
@@ -49,6 +50,8 @@ const styles = StyleSheet.create({
   tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
   totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
   slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
+  souTable1: {textAlign: 'right', marginTop: 30 , fontStyle: 'italic'},
+  souTable2: {textAlign: 'left', marginTop: 30 , fontStyle: 'italic'},
   separator: {
     borderBottomWidth: 5,
     borderBottomColor: 'black',
@@ -77,6 +80,79 @@ const styles = StyleSheet.create({
 
 
 const PrintBill = ({myInvoice}) => {
+
+
+
+
+
+
+
+
+  function convertirEnLettres(nombre) {
+    const unites = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
+    const dizaines = ['', 'dix', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix'];
+
+    function convertirNombre(n) {
+        if (n === 0) {
+            return '';
+        } else if (n < 10) {
+            return unites[n];
+        } else if (n < 20) {
+            return 'dix-' + unites[n - 10];
+        } else {
+            const unite = n % 10;
+            const dizaine = Math.floor(n / 10);
+            return dizaines[dizaine] + (unite !== 0 ? '-' + unites[unite] : '');
+        }
+    }
+
+    if (nombre === 0) {
+        return 'zéro';
+    } else {
+        const milliards = Math.floor(nombre / 1000000000);
+        const millions = Math.floor((nombre % 1000000000) / 1000000);
+        const milliers = Math.floor((nombre % 1000000) / 1000);
+        const unite = nombre % 1000;
+
+        let result = '';
+
+        if (milliards > 0) {
+            result += convertirNombre(milliards) + ' milliard' + (milliards > 1 ? 's' : '') + ' ';
+        }
+
+        if (millions > 0) {
+            result += convertirNombre(millions) + ' million' + (millions > 1 ? 's' : '') + ' ';
+        }
+
+        if (milliers > 0) {
+            result += convertirNombre(milliers) + ' mille ';
+        }
+
+        if (unite > 0) {
+            result += convertirNombre(unite);
+        }
+
+        return result.trim();
+    }
+}
+
+// Exemple d'utilisation :
+const montantEnLettres = convertirEnLettres(123456789);
+console.log(montantEnLettres);  // Output: "cent vingt-trois millions quatre cent cinquante-six mille sept cent quatre-vingt-neuf"
+
+
+const total = convertirEnLettres(myInvoice.total);
+
+
+
+
+
+
+
+
+
+
+
 return(
   <Document>
     <Page size="A4" style={styles.page}>
@@ -101,6 +177,7 @@ return(
          
           <Text style={{marginRight:"40%"}}>Date d'emission de la facture: {myInvoice.bill_emit_date}</Text>
           <Text style={{marginRight:"40%"}}>Date du paiement: {myInvoice.paiement_day}</Text>
+         
         </View>
         <View>
           {/* Numéro de facture et informations client */}
@@ -114,7 +191,49 @@ return(
 
         </View>
       </View>
-      <Text style={styles.slogan}> Total du paiement:{formatNumber(myInvoice.total) }</Text>
+
+
+      <View style={styles.section}>
+        {/* Tableau avec les détails de la facture */}
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>MODE</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>REFERENCES </Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>MONTANT</Text>
+            </View>
+          
+          </View>
+          {/* Ligne pour chaque article */}
+          <View style={styles.tableRow}>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCellArticle}>ESPECE</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCellArticle}>SEJOUR A L'HOTEL</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.total)}</Text>
+            </View>
+            
+          </View>
+        </View>
+      </View>
+
+
+
+
+
+
+
+
+      <Text style={styles.souTable1}> Montant versé:{formatNumber(myInvoice.total) }</Text>
+
+      <View> <Text style={styles.souTable2}> Arreter la presente quitance a la somme de:{total}({formatNumber(myInvoice.total) })</Text></View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
     </Page>
