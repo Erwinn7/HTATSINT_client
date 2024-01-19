@@ -14,6 +14,8 @@ const Booking = () => {
 
   const urlGetFreeRoom = prefix_link + "/api/v1/booking";
   const urlGetCustomer = prefix_link+"/api/v1/clients";
+  const urlMakeBooking = prefix_link + "/api/v1/reserved";
+
 
   
   const [customers, setCustomers] = useState([])
@@ -168,6 +170,9 @@ const Booking = () => {
       ...previews,
       [name]: value,
     }));
+
+    setAlert({ message: "", color: '' });
+
   };
 
 
@@ -207,7 +212,48 @@ const Booking = () => {
 // booking_key = {"booking_status", "booking_price", "room_id", "start_date", "end_date", "invoice_id",
 //                    "user_id","created_at","updated_at","is_deleted"}
   const handleReservedRoom = (e) => {
-    console.log(datesRoom , currentCustomer, selectedRow.room)
+    e.preventDefault();
+
+    if (!currentCustomer.customer_id) {
+      setAlert({ message: "Veuillez choisir un client", color: 'danger' });
+      return;
+    }
+
+    if (selectedRow.room.room_status === 'Occupied') {
+      setAlert({ message: "Cette chambre est en dépassement. Veuillez la libérer", color: 'danger' });
+      return;
+    }else{
+
+      const makeBooking = async () => {
+        try {
+          const response = await axios.post(urlMakeBooking, {
+            start_date: datesRoom.dateArrivee,
+            end_date: datesRoom.dateDepart,
+            user_id : user_id,
+            room_id : selectedRow.room.id,
+            customer_id: currentCustomer.customer_id
+          }, config);
+  
+          console.log("la reponse",response.data);
+          setAlert({ message: "", color: '' });
+          setPending(false);
+          setSave(true);
+        } catch (error) {
+          console.error('Erreur lors de la requête post', error);
+          setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+          setPending(false);
+          setSave(true);
+        }
+      };
+  
+      makeBooking(); 
+
+    }
+
+
+    console.log(datesRoom )
+    console.log(selectedRow.room.id)
+    console.log(currentCustomer.customer_id) 
   }
 
 
@@ -307,21 +353,25 @@ const Booking = () => {
             </DataTable>)
         }
 
-        <Modal isOpen={modalOpen} toggle={closeModal} size="lg">
+        <Modal isOpen={modalOpen} toggle={closeModal} >
           <ModalHeader toggle={(e) => { closeModal()}} >{selectedRow?.room.room_label.toUpperCase()}</ModalHeader>
           <ModalBody>
             {selectedRow && (
-              <div>
-                <p>Voulez vous reserver cette chambre pour le client {currentCustomer.institute_name ? currentCustomer.institute_name : currentCustomer.last_name + " "+ currentCustomer.first_name }  - {currentCustomer.phone_number} ?
-                </p>
+              <div >
+                <div className="text-center mb-5">Voulez vous reserver cette chambre ?
+                  {/* {customers.customer.institute_name ? customers.customer.institute_name : customers.customer.last_name + " "+ customers?.customer.first_name }  - {customers.customer.phone_number} ? */}
+                </div>
 
-                <Button color="success" onClick={(e) => { closeModal(); handleReservedRoom(e) }}>
+                <div className="text-center">
+                  <Button color="success" className=" mr-9" onClick={(e) => { closeModal(); handleReservedRoom(e) }}>
                   Oui
                 </Button>
                 <Button color="danger" onClick={(e) => { closeModal() }}>
                   Non
                 </Button>
                           
+                </div>
+                
               </div>
                 )}
 

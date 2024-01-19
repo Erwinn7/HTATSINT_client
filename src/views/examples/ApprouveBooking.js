@@ -1,117 +1,127 @@
 import  {React,useState,useEffect} from "react";
-import {
-  Input,
-  Container,
+
+import {Container, Button, 
+  Modal, ModalBody, Col, Row,
   Badge,
-  Button,Modal,
+  Alert,
+  Input
 } from "reactstrap";
+
+//  components
 import Header from "components/Headers/Header.js";
-import DataTable from "react-data-table-component";
-import axios from "axios";
-import { prefix_link } from "variables/globalesVar";
-import PrintInvoice from "components/Printer/PrintInvoice";
-import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import "assets/css/roomDesign.css";
+import DataTable from "react-data-table-component";
+import { prefix_link } from "variables/globalesVar";
+import axios from "axios";
 
 
-
-const Invoice = () => {
+const ApprouveBooking = () => {
   const token = localStorage.getItem('accessToken');
-  const urlGetInvoice = prefix_link+"/api/v1/invoices";  
-  const urlGetRoomAndOccup = prefix_link+"/api/v1/room_and_occupation";    
-  
-  const [invoice, setInvoice] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [filterInvoice, setfilterInvoice] = useState({});
-  const [selectedRow, setSelectedRow] = useState();
+  const user_id= localStorage.getItem('id');
+
+  const urlGetRoomBooked = prefix_link + "/api/v1/room_booked";
+  const urlConfirmBooking = prefix_link + "/api/v1/confirmed";
+  const urlDeleteBooking = prefix_link + "/api/v1/canceled_booking";
+
+  const [room, setRoom] = useState([]);
+  const [bookingObj, setBookingObj] = useState({
+    booking_id: '',
+    percentage: '25',
+    booking_amount: '0',
+  });
   const [pending, setPending] = useState(true);
-
-
   const config = {
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', 
+      'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${token}`
-
     },
   };
 
-
+  const [filterRoom, setfilterRoom] = useState({});
+  const [alert, setAlert] = useState({ message: '', color: '' });
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [modalOpenSup, setModalOpenSup] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const cols = [
     {
-      name : "DATE D'EMISSION",
-      selector : row  => formatDate(row.invoiceEmitDate), 
-      sortable : true
-
-    },
-    {
-      name : "CLIENT",
-      selector : row  => row.costumerFullname,
+      name : "CHAMBRE",
+      selector : row  => row.room.room_label,
       sortable : true
     },
     {
-      name : "N° FACTURE",
-      selector : row  => row.invoiceNumber,
+      name : "PERIODE DE RESERVATION",
+      selector : row  => (<div>
+        <div className="text-center mt-3" >Du {formatDate(row.booking.start_date)}</div> 
+        <div className="text-center" >au</div>
+        <div className="text-center mb-3" >{formatDate(row.booking.end_date)}</div>
+      </div> ),
+      sortable : true
+    },
+    // {
+    //   name : "NOMBRE DE PLACE",
+    //   selector : row  => row.room_category.place_number,
+    //   sortable : true 
+    // },
+    {
+      name : "TYPE DE CHAMBRE",
+      selector : row  => row.room_category.room_category_label,
       sortable : true
     },
     {
-      name : "MONTANT (FCFA)",
-      selector : row  => row.invoiceAmount,
+      name : "PRIX JOURNALIER (FCFA)", 
+      selector : row  => row.room.room_amount,
       sortable : true
     },
     {
       name : "STATUT",
-      selector : row  => (
-        <Badge color="" className="badge-dot mr-4">
-          <i className={row.invoiceStatus === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoiceStatus ==="Paid" ? "Payé" : "Impayée"}
-        </Badge>),
+      selector : (row)  => {
+        let leStatus = "";
+        let leStyle = "";
+      
+        if (row.room.room_status === "Available_and_clean") {
+          leStatus = "Disponible";
+          leStyle = "bg-success";
+        }else if (row.room.room_status === "Occupied"){
+          leStatus = "Occupée";
+          leStyle = "bg-danger";
+        }else if (row.room.room_status === "Out_of_order"){
+          leStatus = "Réservée";
+          leStyle = "bg-primary";
+        }else if(row.room.room_status === "Available_and_dirty"){
+          leStatus = "Indisponible";
+          leStyle = "bg-dark";
+        }else if(row.room.room_status === "Reserved"){
+          leStatus = "Réservée";
+          leStyle = "bg-danger";
+        }
+      
+        return (
+          <Badge color="dark" className="badge-dot mr-4" >
+            <i className={leStyle} />
+            {leStatus}
+          </Badge>
+        );
+      },
       sortable : true
     },
     {
-      name: 'APERCU',
+      name: 'ACTIONS',
       cell: (row) => (
-        <Button color="success"  onClick={() => handleButtonClick(row)}>Voir</Button>
+        <Button color="danger"  onClick={() => handleButtonClick(row)}>Annuler</Button>
       ),
       allowOverflow: true,
       button: true,
     },
   ]
 
+
   const handleButtonClick = async (row) => {
-   
-    const fetchInvoiceData = async () => {
-      try {
-        const response = await axios.post(urlGetRoomAndOccup, {invoice_id: row.invoiceId },config);
-        //console.log("Reponse du serveur: ",response.data) ;
-        const myDatas = response.data;
+    setModalOpenSup(true);
+    setSelectedRow(row);
 
-        const newInvoiceData = {
-          invoiceEmitDate: formatDate(row.invoiceEmitDate) ,
-          invoiceNumber: row.invoiceNumber,
-          invoiceStatus: row.invoiceStatus,
-          customerFullname: row.costumerFullname,
-          customerAddress: row.costumerAddress,
-          costumerEmail: row.costumerEmail,
-          costumerIfu: row.costumerIfu,  
-          designation: myDatas.room.room_label,
-          dayly_price: myDatas.room.room_amount,
-          number_of_days: myDatas.number_of_day,
-        }
-
-        setSelectedRow(newInvoiceData);
-        //console.log(newInvoiceData);
-
-
-      } catch (error) {
-        console.error('Erreur lors de la requête GET', error);
-      }
-    };
-
-    fetchInvoiceData();
-    setModalOpen(true);
-    
   };
 
 
@@ -137,125 +147,165 @@ const Invoice = () => {
 };
 
 
+  useEffect ( () => {
 
-const formatDate = (inputDate) => {
-  const date = new Date(inputDate);
+    const token = localStorage.getItem('accessToken');
 
-  const day = date.getUTCDate();
-  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
-  const year = date.getUTCFullYear();
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      },
+    };
 
-  const hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const seconds = date.getUTCSeconds();
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(urlGetRoomBooked, config);
+        setRoom(res.data.data);
+        setfilterRoom(res.data.data);
+        setPending(false);
+        console.log('rooom : ',res.data.data)
+        setAlert({ message: "", color: '' });
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+        setPending(false);
+      }
+    };
+    
+    fetchData();
 
-  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-
-  return formattedDate;
-};
-
-
-
-useEffect ( () => {
-  const token = localStorage.getItem('accessToken');
-
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', 
-      'Authorization': `Bearer ${token}`
-    },
-  };
-
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(urlGetInvoice,config);
-      //console.log(res.data)
-      const myDatas = res.data;
-      var myNewElmts = []
-      myDatas.data?.forEach(element => {
-       
-        element.invoice.forEach(item => {
-          
-          const newInvoice ={
-
-            invoiceId: item.id,
-            invoiceNumber: item.invoice_number,
-            invoiceAmount: item.invoice_amount,
-            invoiceEmitDate: item.created_at,
-            invoicePaymentDate: item.updated_at,
-            invoiceStatus: item.invoice_status,
-            costumerFullname: element.customer.institute_name ? element.customer.institute_name : element.customer.last_name+" "+element.customer.first_name,
-            costumerAddress: element.customer.address,
-            costumerEmail: element.customer.email,
-            costumerIfu: element.customer.ifu,  
-          }
-
-         //console.log(newInvoice);
-         myNewElmts = [...myNewElmts, newInvoice];
-        })
-
-      });
-      setInvoice(myNewElmts);
-      setPending(false);
-
-
-    } catch (error) {
-      console.error('Erreur lors de la requête GET', error);
-      setPending(false);
-
-    }
-  };
-  
-  fetchData();
-
-}, [urlGetInvoice]);
+  }, [urlGetRoomBooked,modalOpen]);
 
 const handleFilter = (e) => {
-  const newInvoice = filterInvoice.filter(row => row.invoiceNumber.toLowerCase().includes(e.target.value.toLowerCase()));
-  setInvoice(newInvoice);
+  const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
+  setRoom(newRoom);
 }
+
+
+const handleRowClick = (row) => {
+  setSelectedRow(row);
+  setModalOpen(true);
+};
 
 const closeModal = () => {
   setModalOpen(false);
 };
 
+const closeModalSup = () => {
+  setModalOpenSup(false);
+};
+
+const handleConfirmBooking = (e) => {
+  e.preventDefault();
 
 
-// const sampleInvoice = {
-//   date_facture: '2023-12-01',
-//   numero_facture: '0021/PERL/23',
-//   nClient: 'Hotel le pelerin',
-//   aClient: 'DASSA',
-//   tClient: '0022961656895',
-//   designation: 'Chambre 305',
-//   nombre_de_jour: 5,
-//   prix_journalier: 25000,
-//   prix_total: 5 * 25000,
-// };
+    const confirmBooking = async () => {
+      try {
+        const response = await axios.put(urlConfirmBooking, {
+          booking_id: selectedRow.booking.id,
+          user_id : user_id,
+          percentage: bookingObj.percentage
+        }, config);
+
+        console.log("la reponse",response.data);
+        setAlert({ message: "", color: '' });
+        setPending(false);
+      } catch (error) {
+        console.error('Erreur lors de la requête put', error);
+        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+        setPending(false);
+      }
+    };
+
+    confirmBooking(); 
+  console.log(selectedRow.booking.id)
+  console.log(bookingObj.percentage)
+
+  }
+
+
+
+const handleDeleteBooking = (e) => {
+  e.preventDefault();
+
+  const deleteBooking = async () => {
+    try {
+      const response = await axios.put(urlDeleteBooking, {booking_id: selectedRow.booking.id},config);
+      console.log("la reponse",response.data);
+      setAlert({ message: "", color: '' });
+      setPending(false);
+    } catch (error) {
+      console.error('Erreur lors de la requête put', error);
+      setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+      setPending(false);    }
+  };
+
+  deleteBooking();
+  console.log(selectedRow.booking.id)
+
+  }
+
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+  
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+    const year = date.getUTCFullYear();
+  
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+  
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  
+    return formattedDate;
+  };
+
+
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  setBookingObj((previews) => ({
+    ...previews,
+    [name]: value,
+  }));
+
+  setBookingObj((previews) => ({
+    ...previews,
+    booking_amount: (room?.room_amount*bookingObj?.percentage)/ 100,
+  }))
+
+  setAlert({ message: "", color: '' });
+
+};
 
 
 
 
-  return (
-    <div  className="backgroundImgChambre">
-      < Header menuTitle= 'FACTURE' />
+return (
+      <div  className="backgroundImgChambre">
+      <Header menuTitle = "CHAMBRE" />
+      {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
+
       {/* Page content */}
-      <Container fluid className="pt-4 pb-5">
-
-        
-    
-        <div className="float-right col-md-12 col-12 pb-2  " style={{width:"20%",display:"flex",justifyContent:"left",right:"0"}}>
-            <Input type="text" placeholder="Recherche..." onChange={(e)=> handleFilter(e)} />
-        </div>
-        <div>
+      <Container fluid className="pt-4">
+        {/* liste des chambres  */}
+        {/* table dynamique  */}
+          <div className="float-right col-md-12 col-12 pb-2  " style={{width:"22%",display:"flex",justifyContent:"left",right:"0"}}>
+              <Input type="text" placeholder="Recherchez une chambre..." onChange={(e)=> handleFilter(e)} />
+          </div>
+          <div>
           {
-            invoice && (
+            room && (
               <DataTable
-              title="Liste des factures"
+              title="Liste des chambres"
               columns={cols}
-              data={invoice}
-              keyField="Num"
+              data={room}
+              keyField="CHAMBRE"
+              onRowClicked={handleRowClick}
               customStyles={customStyles}
               progressPending={pending}
               progressComponent={<CustomLoader/>}
@@ -263,21 +313,69 @@ const closeModal = () => {
               pagination >
             </DataTable>  )
           }
-        </div>
-        <div>
-          <Modal isOpen={modalOpen} toggle={closeModal} size="lg" >
-            {
-            selectedRow &&
-            <PDFViewer width="100%" height="600px" >
-              <PrintInvoice myInvoice={selectedRow} />
-            </PDFViewer>
-            }            
-          </Modal>
-        </div>
 
+          </div>
+
+        <Modal isOpen={modalOpen} toggle={closeModal} >
+         <ModalBody >
+            <div className="text-center mb-5 " fontWeight="bold" >CONFIRMER  LA RESERVATION </div>
+            <div>
+              <p>CHAMBRE : {room?.room_label} </p>
+              <p>PRIX : {room?.room_amount} </p>
+              <Row>
+                <Col sm={4}>
+                  <p>TAUX :
+                     <Input
+                      id="percentage"
+                      name="percentage"
+                      value={bookingObj?.percentage}
+                      onChange={(e) => handleChange(e)} 
+                      type="select"
+                    >
+                    <option value="25" >25%</option>
+                    <option value="50" >50%</option>
+                    <option value="75" >75%</option>
+                  </Input> 
+                </p>
+                </Col>
+              </Row>
+             
+              <p>MONTANT : {room?.room_label} </p>
+
+              Vous devez payer <strong>{bookingObj?.booking_amount} FCFA</strong> pour confirmer cette réservation
+            </div>
+            <div className="text-center">
+                  <Button color="success" className=" mr-9" onClick={(e) => { closeModal(); handleConfirmBooking(e) }}>
+                  CONFIRMER
+                </Button>
+                <Button color="danger" onClick={(e) => { closeModal() }}>
+                  ANNULER
+                </Button>
+            </div>
+         </ModalBody>
+        </Modal>
+
+
+        <Modal isOpen={modalOpenSup} toggle={closeModalSup} >
+         <ModalBody >
+            <div className="text-center mb-5 " fontWeight="bold" >Voulez vous <strong color="danger" >SUPPRIMER</strong> cette réservation ?</div>
+            <div className="text-center">
+                <Button color="success" className=" mr-9" onClick={(e) => { closeModalSup(); handleDeleteBooking(e) }}>
+                  OUI
+                </Button>
+                <Button color="danger" onClick={(e) => { closeModalSup() }}>
+                  NON
+                </Button>
+            </div>
+         </ModalBody>
+        </Modal>
+        <p className="pb-5" > </p>
       </Container>
     </div>
   );
-};
 
-export default Invoice;
+}
+
+
+
+export default ApprouveBooking;
