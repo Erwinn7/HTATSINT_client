@@ -46,6 +46,16 @@ const ApprouveBooking = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const cols = [
+
+    {
+      name : "CLIENT",
+      selector : row  => ( <div  className="text-center"  >
+                          row.customer.institute_name? row.customer.institute_name + " - " + row.customer.phone_number  : row.customer.first_name +" "+ row.customer.last_name +" - "+ row.customer.phone_number
+
+                     </div>
+        )  ,
+      sortable : true 
+    },
     {
       name : "CHAMBRE",
       selector : row  => row.room.room_label,
@@ -60,11 +70,6 @@ const ApprouveBooking = () => {
       </div> ),
       sortable : true
     },
-    // {
-    //   name : "NOMBRE DE PLACE",
-    //   selector : row  => row.room_category.place_number,
-    //   sortable : true 
-    // },
     {
       name : "TYPE DE CHAMBRE",
       selector : row  => row.room_category.room_category_label,
@@ -76,41 +81,9 @@ const ApprouveBooking = () => {
       sortable : true
     },
     {
-      name : "STATUT",
-      selector : (row)  => {
-        let leStatus = "";
-        let leStyle = "";
-      
-        if (row.room.room_status === "Available_and_clean") {
-          leStatus = "Disponible";
-          leStyle = "bg-success";
-        }else if (row.room.room_status === "Occupied"){
-          leStatus = "Occupée";
-          leStyle = "bg-danger";
-        }else if (row.room.room_status === "Out_of_order"){
-          leStatus = "Réservée";
-          leStyle = "bg-primary";
-        }else if(row.room.room_status === "Available_and_dirty"){
-          leStatus = "Indisponible";
-          leStyle = "bg-dark";
-        }else if(row.room.room_status === "Reserved"){
-          leStatus = "Réservée";
-          leStyle = "bg-danger";
-        }
-      
-        return (
-          <Badge color="dark" className="badge-dot mr-4" >
-            <i className={leStyle} />
-            {leStatus}
-          </Badge>
-        );
-      },
-      sortable : true
-    },
-    {
       name: 'ACTIONS',
       cell: (row) => (
-        <Button color="danger"  onClick={() => handleButtonClick(row)}>Annuler</Button>
+        <Button color="danger" bsSize="sm"  onClick={() => handleButtonClick(row)}>Supprimer</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -301,7 +274,7 @@ return (
           {
             room && (
               <DataTable
-              title="Liste des chambres"
+              title="Liste des chambres réservés"
               columns={cols}
               data={room}
               keyField="CHAMBRE"
@@ -318,38 +291,37 @@ return (
 
         <Modal isOpen={modalOpen} toggle={closeModal} >
          <ModalBody >
-            <div className="text-center mb-5 " fontWeight="bold" >CONFIRMER  LA RESERVATION </div>
-            <div>
-              <p>CHAMBRE : {room?.room_label} </p>
-              <p>PRIX : {room?.room_amount} </p>
+            <div className="text-center mb-3 " > <strong>CONFIRMER  LA RESERVATION</strong></div>
+            <div className="mb-6">
+              <p><strong>CHAMBRE</strong> : {selectedRow?.room.room_label} </p>
+              <p><strong>PRIX</strong> : {selectedRow?.room.room_amount} FCFA</p>
               <Row>
-                <Col sm={4}>
-                  <p>TAUX :
+                <Col sm={4}> <p>TAUX : </p></Col>
+                <Col sm={4} >
                      <Input
                       id="percentage"
                       name="percentage"
                       value={bookingObj?.percentage}
                       onChange={(e) => handleChange(e)} 
                       type="select"
+                      bsSize="sm"
                     >
                     <option value="25" >25%</option>
                     <option value="50" >50%</option>
                     <option value="75" >75%</option>
                   </Input> 
-                </p>
                 </Col>
               </Row>
              
-              <p>MONTANT : {room?.room_label} </p>
+              <p>MONTANT A PAYER: <span color="success">{(selectedRow?.room.room_amount * bookingObj?.percentage )/100 } FCFA</span></p>
 
-              Vous devez payer <strong>{bookingObj?.booking_amount} FCFA</strong> pour confirmer cette réservation
             </div>
             <div className="text-center">
                   <Button color="success" className=" mr-9" onClick={(e) => { closeModal(); handleConfirmBooking(e) }}>
                   CONFIRMER
                 </Button>
-                <Button color="danger" onClick={(e) => { closeModal() }}>
-                  ANNULER
+                <Button color="dark" onClick={(e) => { closeModal() }}>
+                  FERMER
                 </Button>
             </div>
          </ModalBody>

@@ -88,16 +88,6 @@ const Occupation = () => {
   };
 
   useEffect(() => {
-    // const token = localStorage.getItem('accessToken');
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //     'Authorization': `Bearer ${token}`,
-  
-    //   },
-    // };
-  
 
     // Obtenir la date d'aujourd'hui au format 'YYYY-MM-DDTHH:mm:ss'
     const today = new Date();
@@ -114,29 +104,6 @@ const Occupation = () => {
       dateDepart: tomorrowFormatted,
     });
 
-    
-    // const fetchData = async () => {
-    //   //console.log(datesRoom)
-    //   try {
-    //     const response = await axios.post(urlGetRoombyDate, {
-    //       start_date: datesRoom.dateArrivee,
-    //       end_date: datesRoom.dateDepart,
-    //     }, config);
-
-    //     setRoom(response.data.data);
-    //     console.log("la reponse des row",response.data);
-    //     setAlert({ message: "", color: '' });
-    //     setPending(false);
-    //     setSave(true);
-    //   } catch (error) {
-    //     console.error('Erreur lors de la requête GET', error);
-    //     setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-    //     setPending(false);
-    //     setSave(true);
-    //   }
-    // };
-
-    // fetchData();
 
   }, [thisDay, urlGetRoombyDate]);
 
