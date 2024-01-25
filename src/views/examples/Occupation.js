@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import "assets/css/roomDesign.css";
 import Header from "components/Headers/Header";
 import AddOccupForm from "components/Forms/AddOccupForm";
-import { Form, Alert, FormGroup, Label, Input, Col, Row, Container, Button, Spinner, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
+import { Badge, Form, Alert, FormGroup, Label, Input, Col, Row, Container, Button, Spinner, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
@@ -56,7 +56,37 @@ const Occupation = () => {
     },
     {
       name: "STATUT",
-      selector: row => row.room.room_status,
+      selector : (row)  => {
+        let leStatus = "";
+        let leStyle = "";
+      
+        if (row.room.room_status === "Available_and_clean") {
+          leStatus = "Disponible";
+          leStyle = "bg-success";
+        }else if (row.room.room_status === "Occupied"){
+          leStatus = "Occupée";
+          leStyle = "bg-danger";
+        }else if (row.room.room_status === "Out_of_order"){
+          leStatus = "Réservée";
+          leStyle = "bg-primary";
+        }else if(row.room.room_status === "Available_and_dirty"){
+          leStatus = "Indisponible";
+          leStyle = "bg-dark";
+        }else if(row.room.room_status === "Reserved"){
+          leStatus = "Réservée";
+          leStyle = "bg-danger";
+        }else if(row.room.room_status === "Reserved_and_confirmed" ){
+          leStatus = "Reservé et Confirmé";
+          leStyle = "bg-danger";
+        }
+      
+        return (
+          <Badge color="dark" className="badge-dot mr-4" >
+            <i className={leStyle} />
+            {leStatus}
+          </Badge>
+        );
+      }, 
       sortable: true
     }
   ]
