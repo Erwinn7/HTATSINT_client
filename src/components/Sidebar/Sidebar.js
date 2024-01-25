@@ -167,7 +167,7 @@ const handleLogout = async () => {
   // faire un  appel api fecth pour blcklister le token
   try {
     setLoading(true);
-    const response = await fetch( prefix_link+'/api/v1/logout', {
+    const response = await fetch( prefix_link+'/logout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

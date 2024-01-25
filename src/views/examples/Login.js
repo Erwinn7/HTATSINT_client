@@ -69,7 +69,7 @@ const storeRoleInLocalStorage = (role) => {
 }
     try {
       setLoading(true);
-      const response = await fetch( prefix_link+'/login', {
+      const response = await fetch( prefix_link+' /login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
