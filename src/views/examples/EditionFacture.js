@@ -12,15 +12,9 @@ import { PDFViewer } from '@react-pdf/renderer';
 
 const EditionFacture = () => {
 
-<<<<<<< HEAD
-const urlGetListIbyC = prefix_link + "/invoice_customer";
-const urlGetListUIbyC = prefix_link + "/unpaid_invoice_customer";
-const urlGetCustomer = prefix_link+"/clients";
-=======
 const urlGetListIbyC = prefix_link + " /invoice_customer";
 const urlGetListUIbyC = prefix_link + " /unpaid_invoice_customer";
 const urlGetCustomer = prefix_link+" /clients";
->>>>>>> 53a8cb9d02f8735504bca4d2ff12059bb59dafea
 
 const token = localStorage.getItem('accessToken');
 const user_id= localStorage.getItem('id');
