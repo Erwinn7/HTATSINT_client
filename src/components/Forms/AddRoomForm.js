@@ -10,8 +10,8 @@ const AddRoomForm = () => {
   const user_id= localStorage.getItem('id');
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
-  const urlAddR = prefix_link+"/api/v1/room_item";
-  const urlGetRT = prefix_link+"/api/v1/room_categories/?page=1";
+  const urlAddR = prefix_link+"/room_item";
+  const urlGetRT = prefix_link+"/room_categories/?page=1";
   
   const config = {
     headers: {

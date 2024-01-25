@@ -2,7 +2,6 @@ import  {React,useState,useEffect} from "react";
 
 import {Container, Button, 
   Modal, ModalBody, Col, Row,
-  Badge,
   Alert,
   Input
 } from "reactstrap";
@@ -20,9 +19,9 @@ const ApprouveBooking = () => {
   const token = localStorage.getItem('accessToken');
   const user_id= localStorage.getItem('id');
 
-  const urlGetRoomBooked = prefix_link + "/api/v1/room_booked";
-  const urlConfirmBooking = prefix_link + "/api/v1/confirmed";
-  const urlDeleteBooking = prefix_link + "/api/v1/canceled_booking";
+  const urlGetRoomBooked = prefix_link + "/room_booked";
+  const urlConfirmBooking = prefix_link + "/confirmed";
+  const urlDeleteBooking = prefix_link + "/canceled_booking";
 
   const [room, setRoom] = useState([]);
   const [bookingObj, setBookingObj] = useState({
@@ -49,10 +48,11 @@ const ApprouveBooking = () => {
 
     {
       name : "CLIENT",
-      selector : row  => ( <div  className="text-center"  >
-                          row.customer.institute_name? row.customer.institute_name + " - " + row.customer.phone_number  : row.customer.first_name +" "+ row.customer.last_name +" - "+ row.customer.phone_number
+      selector : row  => ( 
+          <div  className="text-center"  >
+            { row.customer.institute_name ? row.customer.institute_name + " - " + row.customer.phone_number  : row.customer.first_name +" "+ row.customer.last_name +" - "+ row.customer.phone_number}
 
-                     </div>
+          </div>
         )  ,
       sortable : true 
     },
@@ -64,8 +64,8 @@ const ApprouveBooking = () => {
     {
       name : "PERIODE DE RESERVATION",
       selector : row  => (<div>
-        <div className="text-center mt-3" >Du {formatDate(row.booking.start_date)}</div> 
-        <div className="text-center" >au</div>
+        <div className="text-center mt-3" >{formatDate(row.booking.start_date)}</div> 
+        <div className="text-center" ><strong>-</strong></div>
         <div className="text-center mb-3" >{formatDate(row.booking.end_date)}</div>
       </div> ),
       sortable : true
@@ -76,14 +76,14 @@ const ApprouveBooking = () => {
       sortable : true
     },
     {
-      name : "PRIX JOURNALIER (FCFA)", 
+      name : "PRIX (FCFA)", 
       selector : row  => row.room.room_amount,
       sortable : true
     },
     {
       name: 'ACTIONS',
       cell: (row) => (
-        <Button color="danger" bsSize="sm"  onClick={() => handleButtonClick(row)}>Supprimer</Button>
+        <Button color="danger" size="sm"  onClick={() => handleButtonClick(row)}>Supprimer</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -119,6 +119,24 @@ const ApprouveBooking = () => {
     },
 };
 
+const reloadData = async () => {
+  setPending(true);
+  setRoom([]);
+  console.log("vider room",room);
+  try {
+    const res = await axios.get(urlGetRoomBooked, config);
+    setRoom(res.data.data);
+    setfilterRoom(res.data.data);
+    setPending(false);
+    console.log('rooom : ',res.data.data)
+    setAlert({ message: "", color: '' });
+  } catch (error) {
+    console.error('Erreur lors de la requête GET', error);
+    setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+    setPending(false);
+  }
+}
+
 
   useEffect ( () => {
 
@@ -133,6 +151,8 @@ const ApprouveBooking = () => {
     };
 
     const fetchData = async () => {
+      setPending(true);
+
       try {
         const res = await axios.get(urlGetRoomBooked, config);
         setRoom(res.data.data);
@@ -149,7 +169,7 @@ const ApprouveBooking = () => {
     
     fetchData();
 
-  }, [urlGetRoomBooked,modalOpen]);
+  }, [urlGetRoomBooked,modalOpen,modalOpenSup]);
 
 const handleFilter = (e) => {
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
@@ -179,7 +199,8 @@ const handleConfirmBooking = (e) => {
         const response = await axios.put(urlConfirmBooking, {
           booking_id: selectedRow.booking.id,
           user_id : user_id,
-          percentage: bookingObj.percentage
+          percentage: bookingObj.percentage,
+          payment_type_id: '433e2114-3cfc-4a7e-a865-b5d6af907616',
         }, config);
 
         console.log("la reponse",response.data);
@@ -317,7 +338,14 @@ return (
 
             </div>
             <div className="text-center">
-                  <Button color="success" className=" mr-9" onClick={(e) => { closeModal(); handleConfirmBooking(e) }}>
+                  <Button 
+                  color="success" 
+                  className=" mr-9" 
+                  onClick={(e) => { 
+                    closeModal(); 
+                    handleConfirmBooking(e)
+                    setTimeout(reloadData() , 1000); // Ajoutez un délai d'une seconde (1000 millisecondes)
+                  }}>
                   CONFIRMER
                 </Button>
                 <Button color="dark" onClick={(e) => { closeModal() }}>
@@ -332,9 +360,17 @@ return (
          <ModalBody >
             <div className="text-center mb-5 " fontWeight="bold" >Voulez vous <strong color="danger" >SUPPRIMER</strong> cette réservation ?</div>
             <div className="text-center">
-                <Button color="success" className=" mr-9" onClick={(e) => { closeModalSup(); handleDeleteBooking(e) }}>
-                  OUI
-                </Button>
+            <Button
+              color="success"
+              className="mr-9"
+              onClick={(e) => {
+                closeModalSup();
+                handleDeleteBooking(e);
+              }}
+              >
+              OUI
+            </Button>
+
                 <Button color="danger" onClick={(e) => { closeModalSup() }}>
                   NON
                 </Button>

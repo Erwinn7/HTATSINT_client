@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import "assets/css/roomDesign.css";
 import Header from "components/Headers/Header";
-import { Form, Alert, FormGroup,Badge, Label, Input, Col, Row, Container, Button, Spinner, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
+import { Form, Alert, FormGroup,Badge, Label, Input, Col, Row, Container, Button, Spinner, Modal, ModalBody, ModalHeader } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
@@ -12,9 +12,9 @@ const Booking = () => {
   const token = localStorage.getItem('accessToken');
   const user_id= localStorage.getItem('id');
 
-  const urlGetFreeRoom = prefix_link + "/api/v1/booking";
-  const urlGetCustomer = prefix_link+"/api/v1/clients";
-  const urlMakeBooking = prefix_link + "/api/v1/reserved";
+  const urlGetFreeRoom = prefix_link + "/booking";
+  const urlGetCustomer = prefix_link+"/clients";
+  const urlMakeBooking = prefix_link + "/reserved";
 
 
   
@@ -83,7 +83,7 @@ const Booking = () => {
         }else if(row.room.room_status === "Reserved"){
           leStatus = "Réservée";
           leStyle = "bg-danger";
-        }else if(row.room.room_status === "Reserved_and_confirmed"){
+        }else if(row.room.room_status === "Reserved_and_confirmed" ){
           leStatus = "Reservé et Confirmé";
           leStyle = "bg-danger";
         }
@@ -172,7 +172,7 @@ const Booking = () => {
     fetchCustomer();
 
 
-  }, [thisDay, urlGetFreeRoom,urlGetCustomer]);
+  }, [thisDay, urlGetFreeRoom,urlGetCustomer,modalOpen]);
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -213,7 +213,6 @@ const Booking = () => {
     //lancer la requete pour les la récupération des chambres en fonction des dates 
 
     const fetchData = async () => {
-      console.log(datesRoom)
       try {
         const response = await axios.post(urlGetFreeRoom, {
           start_date: datesRoom.dateArrivee,
@@ -392,7 +391,7 @@ const Booking = () => {
                 </div>
 
                 <div className="text-center">
-                  <Button color="success" className=" mr-9" onClick={(e) => { closeModal(); handleReservedRoom(e) }}>
+                  <Button color="success" className=" mr-9" onClick={(e) => {handleReservedRoom(e);  closeModal(); Submit(e); }}>
                   Oui
                 </Button>
                 <Button color="danger" onClick={(e) => { closeModal() }}>

@@ -9,10 +9,10 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 const CurrentInfosTable = () => {
   const [pending, setPending] = useState(true);
 
-    const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
-    const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée   
-    const urlGetR = prefix_link + "/api/v1/rooms";
-    const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
+    const urlGetRA = prefix_link + "/room_availlable"; // toutes les chambres disponibles 
+    const urlGetER = prefix_link + "/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée   
+    const urlGetR = prefix_link + "/rooms";
+    const urlGetOR = prefix_link + "/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
 
     const [currentInfo, setCurrentInfo] = useState([]);
       

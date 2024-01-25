@@ -13,7 +13,7 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 const Occupation = () => {
   const token = localStorage.getItem('accessToken');
   const user_id= localStorage.getItem('id');
-  const urlGetRoombyDate = prefix_link + "/api/v1/occupation";
+  const urlGetRoombyDate = prefix_link + "/occupation";
   const [room, setRoom] = useState([]);
   const [save, setSave] = useState(true)
   const [selectedRow, setSelectedRow] = useState(null);

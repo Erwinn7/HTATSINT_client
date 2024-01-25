@@ -17,8 +17,8 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 const Invoice = () => {
   const token = localStorage.getItem('accessToken');
-  const urlGetInvoice = prefix_link+"/api/v1/invoices";  
-  const urlGetRoomAndOccup = prefix_link+"/api/v1/room_and_occupation";    
+  const urlGetInvoice = prefix_link+"/invoices";  
+  const urlGetRoomAndOccup = prefix_link+"/room_and_occupation";    
   
   const [invoice, setInvoice] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);

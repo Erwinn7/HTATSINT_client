@@ -9,7 +9,7 @@ import { prefix_link } from "variables/globalesVar";
 const  UpdateRoomStatus = ({roomId, roomOccupationId,updateRS })  => {
     const token = localStorage.getItem('accessToken');
     const user_id= localStorage.getItem('id');
-    const urlUpdateRS = prefix_link+"/api/v1/update_room";
+    const urlUpdateRS = prefix_link+"/update_room";
     const [save, setSave] = useState(true)
     const [dataRS, setdataRS] = useState(
         {

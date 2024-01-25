@@ -10,9 +10,9 @@ const RoomStatusChart = () => {
 
   const [RoomAvailables, setRoomAvailables] = useState([]); // Assurez-vous de déclarer l'état pour la variable
   const [RoomOccupieds, setRoomOccupieds] = useState([]); // Assurez-vous de déclarer l'état pour la variable
-  const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
-  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
-  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui
+  const urlGetRA = prefix_link + "/room_availlable"; // toutes les chambres disponibles 
+  const urlGetER = prefix_link + "/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée current_occupied_room
+  const urlGetOR = prefix_link + "/current_occupied_room"; //toutes les chambres qui
   //recuperation de data
   
   const RoomAvailable = async () => {

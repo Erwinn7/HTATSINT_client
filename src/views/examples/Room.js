@@ -21,12 +21,12 @@ import axios from "axios";
 
 const Room = () => {
   const token = localStorage.getItem('accessToken');
-  const urlGetR = prefix_link + "/api/v1/rooms";
-  const urlPostOneRoom = prefix_link + "/api/v1/room_and_occupants";
+  const urlGetR = prefix_link + "/rooms";
+  const urlPostOneRoom = prefix_link + "/room_and_occupants";
 
   const [isOpen, setIsOpen] = useState(false);
   const [isStatColOpen, setIsStatColOpen] = useState(false);
-  const urlDeleteBooking = prefix_link + "/api/v1/canceled_booking";
+  const urlDeleteBooking = prefix_link + "/canceled_booking";
 
 
   const [modal, setModal] = useState(false);
@@ -351,10 +351,10 @@ const closeModal = () => {
               {
                   (selectedRow.room.room_status === "Occupied")? 
                   <div>
-                  <p><span style={{fontWeight:"bold"}}>Non client : </span>{infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
-                  <p><span style={{fontWeight:"bold"}}>Occupée par : </span>{infoRoom.room_occupants.map((item) => <span>{item.last_name+" "+item.first_name}, </span> )}</p>
-                  <p><span style={{fontWeight:"bold"}}>Date entrée : </span>{formatDate(infoRoom.room_occupation.start_date)} </p>
-                  <p><span style={{fontWeight:"bold"}}>Date Sortie : </span>{formatDate(infoRoom.room_occupation.end_date)}</p>
+                    <p><span style={{fontWeight:"bold"}}>Non client : </span>{infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
+                    <p><span style={{fontWeight:"bold"}}>Occupée par : </span>{infoRoom.room_occupants.map((item) => <span>{item.last_name+" "+item.first_name}, </span> )}</p>
+                    <p><span style={{fontWeight:"bold"}}>Date entrée : </span>{formatDate(infoRoom.room_occupation.start_date)} </p>
+                    <p><span style={{fontWeight:"bold"}}>Date Sortie : </span>{formatDate(infoRoom.room_occupation.end_date)}</p>
                   </div>
                   :
                   <div></div>
@@ -362,10 +362,9 @@ const closeModal = () => {
                 {
                   (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Reserved_and_confirmed")? 
                   <div>
-                  <p><span style={{fontWeight:"bold"}}>Réservé par : </span>{ infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
-                  <p><span style={{fontWeight:"bold"}}>Du: </span>{formatDate(infoRoom.booking.start_date)} </p>
-                  <p><span style={{fontWeight:"bold"}}>Au: </span>{formatDate(infoRoom.booking.end_date)}</p>
-
+                    <p><span style={{fontWeight:"bold"}}>Réservé par : </span>{ infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
+                    <p><span style={{fontWeight:"bold"}}>Du: </span>{formatDate(infoRoom.booking.start_date)} </p>
+                    <p><span style={{fontWeight:"bold"}}>Au: </span>{formatDate(infoRoom.booking.end_date)}</p>
                   </div>
                   :
                   <div></div>
@@ -378,7 +377,7 @@ const closeModal = () => {
           </ModalBody>
           <ModalFooter>
             <Button color="danger" className=" mr-9" onClick={(e) => { closeModal(); handleDeleteBooking(e) }} size="sm">
-                  ANNULER LA RESERVATION 
+              ANNULER LA RESERVATION 
             </Button>
             <Button color="dark" onClick={closeModal}>
               Fermer

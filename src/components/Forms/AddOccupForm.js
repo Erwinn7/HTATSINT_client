@@ -12,9 +12,9 @@ const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart,number_of_plac
   const token = localStorage.getItem('accessToken');
   const user_id= localStorage.getItem('id'); 
 
-const urlGetCustomer = prefix_link+"/api/v1/clients";
-const urlPostOccupant = prefix_link+"/api/v1/occupant";
-const urlPostInvoice = prefix_link+"/api/v1/invoice";
+const urlGetCustomer = prefix_link+"/clients";
+const urlPostOccupant = prefix_link+"/occupant";
+const urlPostInvoice = prefix_link+"/invoice";
 
 const [save, setSave] = useState(null)
 const [num_occupant, setNum_occupant] = useState(0)

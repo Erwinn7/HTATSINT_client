@@ -10,7 +10,7 @@ const  AddTypeRoomForm = ()  => {
 
     const token = localStorage.getItem('accessToken');
     const user_id= localStorage.getItem('id');
-    const urlAddRT = prefix_link+"/api/v1/room_category";
+    const urlAddRT = prefix_link+"/room_category";
     const [ctrlSoumission, setCtrlSoumission] = useState("")
     const [save, setSave] = useState(true)
     const initdataRT = {room_category_label:"",place_number:"",user_id:user_id}

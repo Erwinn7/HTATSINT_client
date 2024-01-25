@@ -9,11 +9,12 @@ import axios from 'axios';
 
 
 const Cardss = () => {
-  const urlGetRA = prefix_link + "/api/v1/room_availlable"; // toutes les chambres disponibles 
-  const urlGetER = prefix_link + "/api/v1/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée   
-  const urlGetR = prefix_link + "/api/v1/rooms";
-  const urlGetOR = prefix_link + "/api/v1/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
-  const urlGetEbyU = prefix_link + "/api/v1/earn";// recette de la journée pour l'utilisateur
+  const urlGetRA = prefix_link + "/room_availlable"; // toutes les chambres disponibles 
+  const urlGetER = prefix_link + "/current_ended_room"; //toutes les chambres qui doivent etre libéréer dans la journée   
+  const urlGetR = prefix_link + "/rooms";
+  const urlGetOR = prefix_link + "/current_occupied_room"; //toutes les chambres qui sont occupées aujourd'hui
+  const urlGetEbyU = prefix_link + "/earn";// recette de la journée pour l'utilisateur  
+  const urlGetRR = prefix_link + "/confirmed_booking"; //toutes les chambres qui doivent etre libéréer dans la journée   
 
 
   const [modal1, setModal1] = useState(false);
@@ -35,6 +36,7 @@ const Cardss = () => {
   const [roomNumber, setRoomNumber] = useState(); 
   const [endedRoom, setEndedRoom] = useState(); 
   const [roomOccupied, setRoomOccupied] = useState(); 
+  const [roomReserved ,setRoomReserved] = useState(); 
   const [userEarning, setUserEarning] = useState(); 
 
 
@@ -125,6 +127,15 @@ const fetchUserEarning = async () => {
   }
 };
 
+const fetchRoomReserved = async () => {
+  try {
+    const res = await axios.get(urlGetRR, config);
+    setRoomReserved(res.data.data);
+    console.log("reservation",res.data.data)
+  } catch (error) {
+    console.error('Erreur lors de la reception de la GET', error);
+  }
+};
 
 
 fetchRoomAvaillable();
@@ -132,8 +143,9 @@ fetchEndedRoom();
 fetchRoomOccupied();
 fetchRoomNumber();
 fetchUserEarning();
+fetchRoomReserved()
   
-}, [urlGetRA,urlGetER,urlGetOR,urlGetR,urlGetEbyU] ); 
+}, [urlGetRA,urlGetER,urlGetOR,urlGetR,urlGetEbyU,urlGetRR] ); 
 
 
 const roomTable = (room) => {
@@ -200,7 +212,7 @@ const customStyles = {
             <CardBody >
              
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: '#2298e7'}}>
-            <div>{roomAvaillable ? roomAvaillable.length : 0}</div>
+            <div>{roomAvaillable?.length ? roomAvaillable.length : 0}</div>
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: '#2298e7' }}>CHAMBRES</div>
             </CardTitle>
              
@@ -215,12 +227,12 @@ const customStyles = {
         {/* Carte 2 : Arrivées Attendues */}
         <Col md={2}>
           <Card className='arrivees-attendues'  style={{ width: '150px', height: '200px'}} 
-          // onClick={toggleModal2}
+          onClick={toggleModal2}
           >
           <CardHeader className='text-center' style={{ width: '149px',marginTop: '0', height: '15px',fontWeight: 'bold' }}>ARRIVEE</CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '50px',  fontWeight: 'bold', color: 'red'}}>
-            <div>0</div> 
+            <div> {roomReserved?.length ? roomReserved.length : 0} </div> 
             <div style={{ marginTop: '-19px', fontSize: '15px', fontWeight: 'bold', color: 'red' }}>ATTENDUES</div>
             </CardTitle>
             </CardBody>
@@ -296,9 +308,7 @@ const customStyles = {
 
       <Modal isOpen={modal2} toggle={toggleModal2} size='lg'>
         <ModalBody>
-          {/* Contenu du modal 2 */}
-          <h5>Aucune réservation pour le moment</h5>
-          {/* Ajoutez ici les détails spécifiques à afficher dans le modal 2 */}
+        {roomReserved &&(roomTable(roomReserved))}
         </ModalBody>
       </Modal>
 
@@ -316,9 +326,7 @@ const customStyles = {
 
       <Modal isOpen={modal5} toggle={toggleModal5}>
         <ModalBody>
-          {/* Contenu du modal 2 */}
           <h5>Bientôt disponible</h5>
-          {/* Ajoutez ici les détails spécifiqxues à afficher dans le modal 2 */}
         </ModalBody>
       </Modal>
      
