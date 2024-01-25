@@ -36,7 +36,7 @@ const [pending, setPending] = useState(true);
      
 
      // console.log('Response from Flask API:', email);
-      const response = await fetch(prefix_link + '/api/v1/invoice_with_customer', {
+      const response = await fetch(prefix_link + ' /invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

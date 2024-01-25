@@ -46,7 +46,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
     // faire une requette pour ajouter le paiement avec fecth
     
       try {
-        const response = await fetch(prefix_link +'/api/v1/make_payment', {
+        const response = await fetch(prefix_link +'/make_payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

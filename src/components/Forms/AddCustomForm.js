@@ -36,7 +36,7 @@ function MyForm() {
       try {
         setLoading(true);
         console.log('formData:',id);
-        const response = await fetch( prefix_link+'/api/v1/client', {
+        const response = await fetch( prefix_link+'/client', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ setTimeout(() => {
   
       try {
        
-        const response = await fetch( prefix_link+'/api/v1/client_by_phone/'+value, {
+        const response = await fetch( prefix_link+'/client_by_phone/'+value, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -46,7 +46,7 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
       // faire une requette pour ajouter le paiement avec fecth
       console.log(formData);
         try {
-          const response = await fetch(prefix_link +'/api/v1/make_payment', {
+          const response = await fetch(prefix_link +'/make_payment', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
