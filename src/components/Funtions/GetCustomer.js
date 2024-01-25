@@ -5,7 +5,7 @@ async function GetClient() {
 
     try {
       
-      const response = await fetch( prefix_link+'/api/v1/clients', {
+      const response = await fetch( prefix_link+'/clients', {
         method: 'GET'
       });
 

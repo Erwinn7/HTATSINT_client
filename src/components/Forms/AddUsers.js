@@ -60,7 +60,7 @@ setFormData({
   confirmPassword: '',
 })
 //console.log('modifi:',formData);
-        const response = await fetch( prefix_link+'/api/v1/user', {
+        const response = await fetch( prefix_link+'/user', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
