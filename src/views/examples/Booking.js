@@ -205,41 +205,69 @@ const Booking = () => {
   };
 
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
+
+  
+  const fetchData = async () => {
+
+   // Convertir les dates actuelles en objets Date
+    const startDate = new Date(datesRoom.dateArrivee);
+    const endDate = new Date(datesRoom.dateDepart);
+
+    // Ajouter un jour à la date départ 
+    startDate.setDate(startDate.getDate() - 1);
+
+    // Retrancher un jour à la date de d'arrivée
+    endDate.setDate(endDate.getDate() + 1);
+
+    // Formater les dates modifiées au format souhaité
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
+
+console.log(formattedStartDate)
+console.log(formattedEndDate)
+
+
+    try {
+      const response = await axios.post(urlGetFreeRoom, {
+        start_date: formattedStartDate,
+        end_date: formattedEndDate,
+        user_id : user_id
+      }, config);
+
+      setRoom(response.data.data);
+      console.log("la reponse",response.data);
+      setAlert({ message: "", color: '' });
+      setPending(false);
+      setSave(true);
+    } catch (error) {
+      console.error('Erreur lors de la requête post', error);
+      setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+      setPending(false);
+      setSave(true);
+    }
+  };
+
   const Submit = (e) => {
     setSave(false)
     setPending(true);
     e.preventDefault();
 
     //lancer la requete pour les la récupération des chambres en fonction des dates 
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(urlGetFreeRoom, {
-          start_date: datesRoom.dateArrivee,
-          end_date: datesRoom.dateDepart,
-          user_id : user_id
-        }, config);
-
-        setRoom(response.data.data);
-        console.log("la reponse",response.data);
-        setAlert({ message: "", color: '' });
-        setPending(false);
-        setSave(true);
-      } catch (error) {
-        console.error('Erreur lors de la requête post', error);
-        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-        setPending(false);
-        setSave(true);
-      }
-    };
-
     fetchData();  
   }
 
 
-// booking_key = {"booking_status", "booking_price", "room_id", "start_date", "end_date", "invoice_id",
-//                    "user_id","created_at","updated_at","is_deleted"}
-  const handleReservedRoom = (e) => {
+  const handleReservedRoom = async (e) => {
     e.preventDefault();
 
     if (!currentCustomer.customer_id) {
@@ -252,36 +280,36 @@ const Booking = () => {
       return;
     }else{
 
-      const makeBooking = async () => {
-        try {
-          const response = await axios.post(urlMakeBooking, {
-            start_date: datesRoom.dateArrivee,
-            end_date: datesRoom.dateDepart,
-            user_id : user_id,
-            room_id : selectedRow.room.id,
-            customer_id: currentCustomer.customer_id
-          }, config);
-  
-          console.log("la reponse",response.data);
-          setAlert({ message: "", color: '' });
-          setPending(false);
-          setSave(true);
-        } catch (error) {
-          console.error('Erreur lors de la requête post', error);
-          setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-          setPending(false);
-          setSave(true);
-        }
-      };
-  
-      makeBooking(); 
+      try {
 
+        const response = await axios.post(urlMakeBooking, {
+          start_date: datesRoom.dateArrivee,
+          end_date: datesRoom.dateDepart,
+          user_id: user_id,
+          room_id: selectedRow.room.id,
+          customer_id: currentCustomer.customer_id
+        }, config);
+  
+        console.log("la reponse", response.data);
+        setAlert({ message: "", color: '' });
+        setPending(false);
+        setSave(true);
+      } catch (error) {
+        console.error('Erreur lors de la requête post', error);
+        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+        setPending(false);
+        setSave(true);
+      }
+        // Fermer le modal après avoir effectué les actions nécessaires
+        closeModal();
+        // Relancer l'effet pour mettre à jour le tableau
+        fetchData();
     }
 
 
-    console.log(datesRoom )
-    console.log(selectedRow.room.id)
-    console.log(currentCustomer.customer_id) 
+    // console.log(datesRoom )
+    // console.log(selectedRow.room.id)
+    // console.log(currentCustomer.customer_id) 
   }
 
 
@@ -391,7 +419,7 @@ const Booking = () => {
                 </div>
 
                 <div className="text-center">
-                  <Button color="success" className=" mr-9" onClick={(e) => {handleReservedRoom(e);  closeModal(); Submit(e); }}>
+                  <Button color="success" className=" mr-9" onClick={(e) => {handleReservedRoom(e);closeModal()}}>
                   Oui
                 </Button>
                 <Button color="danger" onClick={(e) => { closeModal() }}>

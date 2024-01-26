@@ -119,23 +119,22 @@ const ApprouveBooking = () => {
     },
 };
 
-const reloadData = async () => {
-  setPending(true);
-  setRoom([]);
-  console.log("vider room",room);
-  try {
-    const res = await axios.get(urlGetRoomBooked, config);
-    setRoom(res.data.data);
-    setfilterRoom(res.data.data);
-    setPending(false);
-    console.log('rooom : ',res.data.data)
-    setAlert({ message: "", color: '' });
-  } catch (error) {
-    console.error('Erreur lors de la requête GET', error);
-    setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
-    setPending(false);
-  }
-}
+const fetchData = async () => {
+      setPending(true);
+
+      try {
+        const res = await axios.get(urlGetRoomBooked, config);
+        setRoom(res.data.data);
+        setfilterRoom(res.data.data);
+        setPending(false);
+        console.log('rooom : ',res.data.data)
+        setAlert({ message: "", color: '' });
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+        setPending(false);
+      }
+    };
 
 
   useEffect ( () => {
@@ -149,7 +148,6 @@ const reloadData = async () => {
         'Authorization': `Bearer ${token}`
       },
     };
-
     const fetchData = async () => {
       setPending(true);
 
@@ -166,10 +164,10 @@ const reloadData = async () => {
         setPending(false);
       }
     };
-    
+
     fetchData();
 
-  }, [urlGetRoomBooked,modalOpen,modalOpenSup]);
+  }, [urlGetRoomBooked]);
 
 const handleFilter = (e) => {
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
@@ -177,7 +175,7 @@ const handleFilter = (e) => {
 }
 
 
-const handleRowClick = (row) => {
+const handleRowClick = async (row) => {
   setSelectedRow(row);
   setModalOpen(true);
 };
@@ -190,30 +188,31 @@ const closeModalSup = () => {
   setModalOpenSup(false);
 };
 
-const handleConfirmBooking = (e) => {
+const handleConfirmBooking = async (e) => {
   e.preventDefault();
 
 
-    const confirmBooking = async () => {
-      try {
-        const response = await axios.put(urlConfirmBooking, {
-          booking_id: selectedRow.booking.id,
-          user_id : user_id,
-          percentage: bookingObj.percentage,
-          payment_type_id: '433e2114-3cfc-4a7e-a865-b5d6af907616',
-        }, config);
+     try {
+      const response = await axios.put(urlConfirmBooking, {
+        booking_id: selectedRow.booking.id,
+        user_id: user_id,
+        percentage: bookingObj.percentage,
+        payment_type_id: '433e2114-3cfc-4a7e-a865-b5d6af907616',
+      }, config);
 
-        console.log("la reponse",response.data);
-        setAlert({ message: "", color: '' });
-        setPending(false);
-      } catch (error) {
-        console.error('Erreur lors de la requête put', error);
-        setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-        setPending(false);
-      }
-    };
+      console.log("la reponse", response.data);
+      setAlert({ message: "", color: '' });
+      setPending(false);
 
-    confirmBooking(); 
+      // Mettre à jour le tableau après confirmation de la réservation
+      fetchData();
+    } catch (error) {
+      console.error('Erreur lors de la requête put', error);
+      setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
+      setPending(false);
+    }
+
+    closeModal();
   console.log(selectedRow.booking.id)
   console.log(bookingObj.percentage)
 
@@ -221,23 +220,23 @@ const handleConfirmBooking = (e) => {
 
 
 
-const handleDeleteBooking = (e) => {
+const handleDeleteBooking = async (e) => {
   e.preventDefault();
 
-  const deleteBooking = async () => {
     try {
       const response = await axios.put(urlDeleteBooking, {booking_id: selectedRow.booking.id},config);
       console.log("la reponse",response.data);
       setAlert({ message: "", color: '' });
       setPending(false);
+      fetchData();
     } catch (error) {
       console.error('Erreur lors de la requête put', error);
       setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
-      setPending(false);    }
-  };
+      setPending(false);    
+    }
 
-  deleteBooking();
-  console.log(selectedRow.booking.id)
+    closeModalSup();
+  // console.log(selectedRow.booking.id)
 
   }
 
@@ -317,7 +316,7 @@ return (
               <p><strong>CHAMBRE</strong> : {selectedRow?.room.room_label} </p>
               <p><strong>PRIX</strong> : {selectedRow?.room.room_amount} FCFA</p>
               <Row>
-                <Col sm={4}> <p>TAUX : </p></Col>
+                <Col sm={2}> <p> <strong>TAUX</strong> : </p></Col>
                 <Col sm={4} >
                      <Input
                       id="percentage"
@@ -334,7 +333,7 @@ return (
                 </Col>
               </Row>
              
-              <p>MONTANT A PAYER: <span color="success">{(selectedRow?.room.room_amount * bookingObj?.percentage )/100 } FCFA</span></p>
+              <p> <strong>MONTANT A PAYER</strong> : <span className="text-success font-weight-bold" >{(selectedRow?.room.room_amount * bookingObj?.percentage )/100 } FCFA</span></p>
 
             </div>
             <div className="text-center">
@@ -342,9 +341,8 @@ return (
                   color="success" 
                   className=" mr-9" 
                   onClick={(e) => { 
+                    handleConfirmBooking(e);
                     closeModal(); 
-                    handleConfirmBooking(e)
-                    setTimeout(reloadData() , 1000); // Ajoutez un délai d'une seconde (1000 millisecondes)
                   }}>
                   CONFIRMER
                 </Button>
@@ -360,20 +358,21 @@ return (
          <ModalBody >
             <div className="text-center mb-5 " fontWeight="bold" >Voulez vous <strong color="danger" >SUPPRIMER</strong> cette réservation ?</div>
             <div className="text-center">
-            <Button
-              color="success"
-              className="mr-9"
-              onClick={(e) => {
-                closeModalSup();
-                handleDeleteBooking(e);
-              }}
-              >
-              OUI
-            </Button>
+              <Button
+                color="success"
+                className="mr-9"
+                onClick={(e) => {
+                  handleDeleteBooking(e); 
+                  closeModalSup();
 
-                <Button color="danger" onClick={(e) => { closeModalSup() }}>
-                  NON
-                </Button>
+                }}
+                >
+                OUI
+              </Button>
+
+              <Button color="danger" onClick={(e) => { closeModalSup() }}>
+                NON
+              </Button>
             </div>
          </ModalBody>
         </Modal>
