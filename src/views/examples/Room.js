@@ -41,7 +41,6 @@ const Room = () => {
   };
 
   const [filterRoom, setfilterRoom] = useState({});
-  const [hoveredRow, setHoveredRow] = useState(null);
   const [alert, setAlert] = useState({ message: '', color: '' });
 
 
@@ -163,7 +162,7 @@ const Room = () => {
         setRoom(res.data.data);
         setfilterRoom(res.data.data);
         setPending(false);
-        //console.log('rooom : ',res.data.data)
+        console.log('rooom : ',res.data.data)
         setAlert({ message: "", color: '' });
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
@@ -230,23 +229,8 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
-  // gestion de coloration au passage de la souris sur la ligne
-  const handleMouseEnter = (row) => {
-    setHoveredRow(row);
-  };
 
-  const handleMouseLeave = () => {
-    setHoveredRow(null);
-  };
-  // Fonction pour appliquer le style différent à la ligne lorsque la souris passe dessus
-  const conditionalRowStyles = [
-    {
-      when: (row) => row === hoveredRow, // Appliquer le style lorsque la ligne est égale à la ligne survolée
-      style: {
-        backgroundColor: "#f2f2f2", // Changer la couleur de fond de la ligne
-      },
-    },
-  ];
+
 
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
@@ -301,9 +285,6 @@ const closeModal = () => {
               keyField="CHAMBRE"
               onRowClicked={handleRowClick}
               customStyles={customStyles}
-              onRowMouseEnter={handleMouseEnter}
-              onRowMouseLeave={handleMouseLeave}
-              conditionalRowStyles={conditionalRowStyles}
               progressPending={pending}
               progressComponent={<CustomLoader/>}
               highlightOnHover
@@ -368,17 +349,22 @@ const closeModal = () => {
                   </div>
                   :
                   <div></div>
-                }
-                
-                
+                }               
                 
               </div>
             )}
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" className=" mr-9" onClick={(e) => { closeModal(); handleDeleteBooking(e) }} size="sm">
-              ANNULER LA RESERVATION 
-            </Button>
+            {
+              infoRoom && (
+                (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Reserved_and_confirmed")? 
+              <Button color="danger" className=" mr-9" onClick={(e) => { closeModal(); handleDeleteBooking(e) }} size="sm">
+                 ANNULER LA RESERVATION 
+              </Button>
+              :
+              <div></div>
+              )
+            }
             <Button color="dark" onClick={closeModal}>
               Fermer
             </Button>
