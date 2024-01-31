@@ -24,6 +24,7 @@ const [pending, setPending] = useState(true);
 
  const handlePaymentSuccess = () => {
   // Cette fonction sera appelée lorsque le paiement est réussi
+  
   // Elle mettra à jour l'état pour déclencher l'effet useEffect
   
 };

@@ -75,9 +75,6 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
 //console.log('Response frommmmm Flask API:', showApercueModal);
 
 
-       
-
-
 
       } catch (error) {
         console.log('Errorrrrrrra:', error);
