@@ -165,7 +165,7 @@ const Room = () => {
         console.log('rooom : ',res.data.data)
         setAlert({ message: "", color: '' });
       } catch (error) {
-        console.error('Erreur lors de la requête GET', error);
+        console.log('Erreur lors de la requête GET', error);
         setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
         setPending(false);
       }
@@ -232,21 +232,23 @@ const closeModal = () => {
 
 
 
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-  
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
-    const year = date.getUTCFullYear();
-  
-    const hours = date.getUTCHours();
-    const minutes = date.getUTCMinutes();
-    const seconds = date.getUTCSeconds();
-  
-    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-  
-    return formattedDate;
-  };
+const formatDate = (inputDate) => {
+  const date = new Date(inputDate);
+  // Ajouter 1 heure pour passer au fuseau horaire GMT+1
+  date.setHours(date.getHours() + 1);
+
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const year = date.getUTCFullYear();
+
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+
+  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+  return formattedDate;
+};    
 
 
 
@@ -332,7 +334,7 @@ const closeModal = () => {
               {
                   (selectedRow.room.room_status === "Occupied")? 
                   <div>
-                    <p><span style={{fontWeight:"bold"}}>Non client : </span>{infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
+                    <p><span style={{fontWeight:"bold"}}>Nom client : </span>{infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
                     <p><span style={{fontWeight:"bold"}}>Occupée par : </span>{infoRoom.room_occupants.map((item) => <span>{item.last_name+" "+item.first_name}, </span> )}</p>
                     <p><span style={{fontWeight:"bold"}}>Date entrée : </span>{formatDate(infoRoom.room_occupation.start_date)} </p>
                     <p><span style={{fontWeight:"bold"}}>Date Sortie : </span>{formatDate(infoRoom.room_occupation.end_date)}</p>

@@ -15,9 +15,11 @@ const AddOccupForm = ({room_id_occupation,dateArrivee, dateDepart,number_of_plac
 const urlGetCustomer = prefix_link+"/clients";
 const urlPostOccupant = prefix_link+"/occupant";
 const urlPostInvoice = prefix_link+"/invoice";
+const urlGetBookingByRoom = prefix_link + "/booking_by_room";
 
 const [save, setSave] = useState(null)
 const [num_occupant, setNum_occupant] = useState(0)
+const [roomBookings, setRoomBookings] = useState({})
 const [customers, setCustomers] = useState([])
 const [ctrlSoumission, setCtrlSoumission] = useState("")
 const  [thisDay, setThisDay] =  useState(new Date());
@@ -36,6 +38,7 @@ const initOccupants = {
         type_of_document : "",
         document_number : "",
         motif : "",
+        booking_id : "",
         user_id : user_id
       }
 
@@ -51,6 +54,25 @@ const config = {
   };
 
 
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+    // Ajouter 1 heure pour passer au fuseau horaire GMT+1
+    date.setHours(date.getHours() + 1);
+  
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+    const year = date.getUTCFullYear();
+  
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+  
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  
+    return formattedDate;
+  };
+
+
 useEffect(() => {
   const token = localStorage.getItem('accessToken');
 
@@ -61,16 +83,18 @@ useEffect(() => {
       'Authorization': `Bearer ${token}`,
     },
   };
-
-
-
+  const queryObj ={
+    room_id: room_id_occupation,
+    start_date: dateArrivee,
+    end_date: dateDepart
+  }
   
     const fetchCustomer = async () => {
       try {
         const response = await axios.get(urlGetCustomer,config);
 
         setCustomers(response.data);
-        console.log(response.data) ;
+       //  console.log(response.data) ;
         setSave(true);        
       } catch (error) {
         console.error('Erreur lors de la requête GET', error);
@@ -78,10 +102,32 @@ useEffect(() => {
       }
     };
 
+    const fetchBookingByRoom = async () => {
+
+      try {
+        const response = await axios.post(urlGetBookingByRoom,queryObj , config);
+        setRoomBookings(response.data);  
+        setUnOccupant(
+          {...unOccupant, 
+          booking_id : response.data[0].booking?.id,
+          customer_id : response.data[0].customer?.id,
+        }
+        )
+            
+        console.log("les reservation de la room",response.data);
+        setSave(true);
+      } catch (error) {
+        console.error('Erreur lors de la requête GET', error);
+        setSave(true);
+      }
+    }
+
+
     fetchCustomer();
+    fetchBookingByRoom();
 
 
-    }, [urlGetCustomer]); 
+    }, []); 
 
 
 
@@ -90,6 +136,7 @@ useEffect(() => {
     newdata[e.target.id] =  e.target.value;
     setUnOccupant(newdata)
     console.log(newdata)
+
   };
 
   const columns = [                                                      
@@ -111,12 +158,30 @@ useEffect(() => {
   ]
 
   const Submit = (e) => {
-    e.preventDefault();
+        e.preventDefault();
+           
+
     if (Ctrl_Soumission() && num_occupant < number_of_place) {
+      setUnOccupant({...unOccupant,
+        start_date : roomBookings.booking?.start_date,
+        end_date : roomBookings.booking?.end_date
+      })
       const newOccupant = [...occupants,unOccupant]
       setOccupants(newOccupant)
       console.log(newOccupant);
-      setUnOccupant({...initOccupants})
+      setUnOccupant({
+        ...unOccupant,
+        occupation_id: "",
+        first_name : "",
+        last_name : "",
+        phone_number : "",
+        address : "",
+        date_of_birth : "",
+        profession : "",
+        type_of_document : "",
+        document_number : "",
+        motif : "",
+      })
       setNum_occupant(num_occupant+1)
     } else{
       return;
@@ -137,7 +202,9 @@ useEffect(() => {
 
     const createInvoiceAndOccupants = async () => {
       try {
-        // Envoie d'un occupant vers la base pour créer une facture
+
+         // Envoie d'un occupant vers la base pour créer une facture
+         console.log('objet envoyé pour invoice',occupants);
         const invoiceResponse = await axios.post(urlPostInvoice, occupants[0], config);
         console.log('Facture créée', invoiceResponse.data);
         
@@ -147,15 +214,15 @@ useEffect(() => {
         // Mise à jour de occupation_id dans tous les occupants
         occupants.forEach((itemToSend) => {
           itemToSend.occupation_id = occupation_id_from_dtb;
-        });
+         });
 
         // Envoi de tous les occupants vers la base de données
         await Promise.all(occupants.map(async (itemToSend) => {
           try {
             console.log("itemToSend:", itemToSend);
             const res = await axios.post(urlPostOccupant, itemToSend, config);
-            console.log("oject qddtendu:", itemToSend);
-            console.log("Occupant ajouté :", res.data);
+            console.log("oject attendu:", itemToSend);
+            console.log("réponse occupant ajouté :", res.data);
           } catch (error) {
             console.error('Erreur lors de la requête POST', error);
           }
@@ -181,76 +248,149 @@ useEffect(() => {
 
 
   const Ctrl_Soumission = () =>  {
-    if ( !unOccupant.room_id || !unOccupant.customer_id || !unOccupant.start_date || !unOccupant.end_date || !unOccupant.first_name || !unOccupant.last_name || !unOccupant.phone_number || !unOccupant.address || !unOccupant.date_of_birth || !unOccupant.profession || !unOccupant.type_of_document || !unOccupant.document_number || !unOccupant.motif   ){
+
+    if(roomBookings.length === 0){
+      if ( !unOccupant.room_id || !unOccupant.customer_id || !unOccupant.start_date || !unOccupant.end_date || !unOccupant.first_name || !unOccupant.last_name || !unOccupant.phone_number || !unOccupant.address || !unOccupant.date_of_birth || !unOccupant.profession || !unOccupant.type_of_document || !unOccupant.document_number || !unOccupant.motif   ){
         setCtrlSoumission("Veuiller remplir le tout les champs");
         return false;
     } else {
         setCtrlSoumission("");
         return true;
     }
+    }else{
+      if ( !unOccupant.room_id || !unOccupant.start_date || !unOccupant.end_date || !unOccupant.first_name || !unOccupant.last_name || !unOccupant.phone_number || !unOccupant.address || !unOccupant.date_of_birth || !unOccupant.profession || !unOccupant.type_of_document || !unOccupant.document_number || !unOccupant.motif   ){
+        setCtrlSoumission("Veuiller remplir le tout les champs");
+        return false;
+    } else {
+        setCtrlSoumission("");
+        return true;
+    }
+    }
+    
+    
   }
 
-  return (
-      <>
+       return ( 
+        <>
         {/* Page content */}
         <Container className="mt-1 " fluid>
           <Form onSubmit={(e)=> Submit(e)}  >
             <Row>
             <Col sm={12}>
-                <FormGroup >
-                  <Label for="customer_id">
-                    Client : 
-                  </Label>
-                  <Input
-                    id="customer_id"
-                    name="customer_id"
-                    value={unOccupant?.customer_id}
-                    onChange={(e) => handleChange(e)} 
-                    type="select"
-                  >
-                    <option value="" >Sélectionnez un Client</option>
-                    {                   
-                      customers.data?.map((customer)  => (
-                        <option key={customer.customer.id} value={customer.customer.id}>
-                          {customer.customer.institute_name ? customer.customer.institute_name : customer.customer.last_name + " "+ customer?.customer.first_name }  - {customer.customer.phone_number}
-                        </option>
+                {
+                  
+                    roomBookings?.length > 0 ?
+                      roomBookings.map((booking) => (
+                        <FormGroup key={booking.booking_id} className="text-center" >
+                          <Label for="booking_id">
+                            RESERVATION  : 
+                          </Label>
+                          <div style={{color:"green", fontWeight:"bold"}} >
+                          {
+                            booking.customer?.institute_name ?
+                            `${booking.customer?.institute_name.toUpperCase()} (${booking.customer?.phone_number}) Du ${formatDate(booking.booking?.start_date)} au ${formatDate(booking.booking?.end_date)}`
+                            :
+                            `${booking.customer?.last_name.toUpperCase()} ${booking.customer?.first_name.toUpperCase()} (${booking.customer?.phone_number}) Du ${formatDate(booking.booking?.start_date)} au ${formatDate(booking.booking?.end_date)}`
+                          }
+                          </div>
+                        </FormGroup>
                       ))
-                    } 
-                  </Input>
-                </FormGroup> 
+                    :
+                      <FormGroup>
+                        <Label for="customer_id">
+                          Client : 
+                        </Label>
+                        <Input
+                          id="customer_id"
+                          name="customer_id"
+                          value={unOccupant?.customer_id}
+                          onChange={(e) => handleChange(e)} 
+                          type="select"
+                        >
+                          <option value="" >Sélectionnez un Client</option>
+                          {                   
+                            customers.data?.map((customer) => (
+                              <option key={customer.customer.id} value={customer.customer.id}>
+                                {customer.customer.institute_name ? customer.customer.institute_name : `${customer.customer.last_name} ${customer.customer.first_name}`} - {customer.customer.phone_number}
+                              </option>
+                            ))
+                          } 
+                        </Input>
+                      </FormGroup>
+                }
+
+                 
             </Col>
             </Row>
             <Row>
-                <Col sm={6}>
-                    <FormGroup >
-                    <Label for="start_date" bsSize="sm" >
-                        Arrivée : 
-                    </Label>
-                    <Input bsSize="sm" 
-                        id="start_date"
-                        name="start_date"
-                        type="datetime-local"
-                        value={unOccupant?.start_date}
-                        onChange={(e) => handleChange(e)} 
-                        disabled/>
-                    </FormGroup>
-                </Col>
 
-                <Col sm={6}>
-                <FormGroup >
-                <Label for="end_date" bsSize="sm" >
-                     Départ :
-                </Label>
-                <Input bsSize="sm" 
-                    id="end_date"
-                    name="end_date"
-                    type="datetime-local"
-                    value={unOccupant?.end_date}
-                    onChange={(e) => handleChange(e)} 
-                    disabled/>
-                </FormGroup>
-                </Col>
-                </Row>
+              {
+                roomBookings?.length > 0 ?
+                roomBookings.map((booking) => (
+                    <>
+                      <Col sm={6}>
+                      <FormGroup >
+                      <Label for="start_date" bsSize="sm" >
+                          Arrivée : 
+                      </Label>
+                      <Input bsSize="sm" 
+                          id="start_date"
+                          name="start_date"
+                          type="datetime-local"
+                          value={booking?.booking.start_date}
+                          disabled/>
+                      </FormGroup>
+                  </Col>
+                  <Col sm={6}>
+                  <FormGroup >
+                  <Label for="end_date" bsSize="sm" >
+                      Départ :
+                  </Label>
+                  <Input bsSize="sm" 
+                      id="end_date"
+                      name="end_date"
+                      type="datetime-local"
+                      value={booking?.booking.end_date}
+                      disabled/>
+                  </FormGroup>
+                  </Col>
+                
+                    </>         
+                 ))
+
+                  :
+                 <>
+                  <Col sm={6}>
+                      <FormGroup >
+                      <Label for="start_date" bsSize="sm" >
+                          Arrivée : 
+                      </Label>
+                      <Input bsSize="sm" 
+                          id="start_date"
+                          name="start_date"
+                          type="datetime-local"
+                          value={unOccupant?.start_date}
+                          disabled/>
+                      </FormGroup>
+                  </Col>
+
+                  <Col sm={6}>
+                  <FormGroup >
+                  <Label for="end_date" bsSize="sm" >
+                      Départ :
+                  </Label>
+                  <Input bsSize="sm" 
+                      id="end_date"
+                      name="end_date"
+                      type="datetime-local"
+                      value={unOccupant?.end_date}
+                      disabled/>
+                  </FormGroup>
+                  </Col>
+                 </>
+              }
+                
+              </Row>
             <div className="mb-2" color="red" > Information de l'occupant <span> ({num_occupant}/{number_of_place}) </span></div>
             <div  className="p-3 mb-5" style={{border: '1px solid black'}}>
                 <Row>
@@ -452,7 +592,9 @@ useEffect(() => {
         }
         </Container>
       </>
+
     );
+
   };
   
   export default AddOccupForm;

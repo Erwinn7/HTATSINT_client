@@ -172,7 +172,7 @@ const Booking = () => {
     fetchCustomer();
 
 
-  }, [thisDay, urlGetFreeRoom,urlGetCustomer,modalOpen]);
+  }, [thisDay, urlGetFreeRoom,urlGetCustomer]);
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -233,8 +233,8 @@ const Booking = () => {
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
 
-console.log(formattedStartDate)
-console.log(formattedEndDate)
+    // console.log(formattedStartDate)
+    // console.log(formattedEndDate)
 
 
     try {

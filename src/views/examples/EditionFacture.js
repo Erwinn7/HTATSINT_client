@@ -12,9 +12,9 @@ import { PDFViewer } from '@react-pdf/renderer';
 
 const EditionFacture = () => {
 
-const urlGetListIbyC = prefix_link + " /invoice_customer";
-const urlGetListUIbyC = prefix_link + " /unpaid_invoice_customer";
-const urlGetCustomer = prefix_link+" /clients";
+const urlGetListIbyC = prefix_link + "/invoice_customer";
+const urlGetListUIbyC = prefix_link + "/unpaid_invoice_customer";
+const urlGetCustomer = prefix_link+ "/clients";
 
 const token = localStorage.getItem('accessToken');
 const user_id= localStorage.getItem('id');
@@ -25,7 +25,7 @@ const config = {
     'Authorization': `Bearer ${token}`
   },
 };
-
+ 
 
 const [invoice, setInvoice] = useState([]);
 const [pending, setPending] = useState(false);

@@ -89,7 +89,7 @@ const Occupation = () => {
       }, 
       sortable: true
     }
-  ]
+  ] 
 
   const [datesRoom, setDatesRoom] = useState({
     dateArrivee: '',
@@ -182,7 +182,7 @@ const Occupation = () => {
         console.error('Erreur lors de la requête GET', error);
         setAlert({ message: "Impossible de joindre le serveur. Contactez l'administrateur", color: 'danger' });
         setPending(false);
-        setSave(true);
+        setSave(true)   
       }
     };
 
@@ -194,7 +194,7 @@ const Occupation = () => {
   return (
     <div className="backgroundImgChambre">
       <Header menuTitle="OCCUPATION" />
-      {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
+      {alert.message &&  <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
       <Container className="pb-5" fluid>
         <Form onSubmit={(e) => Submit(e)} >
           <FormGroup className="p-3 centered-container-occup">
@@ -273,7 +273,7 @@ const Occupation = () => {
 
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" onClick={(e) => { closeModal(); Submit(e); }}>
+            <Button color="dark" onClick={(e) => { closeModal(); Submit(e); }}>
               Fermer
             </Button>
           </ModalFooter>

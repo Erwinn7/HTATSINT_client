@@ -242,6 +242,8 @@ const handleDeleteBooking = async (e) => {
 
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
+    // Ajouter 1 heure pour passer au fuseau horaire GMT+1
+    date.setHours(date.getHours() + 1);
   
     const day = date.getUTCDate();
     const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
