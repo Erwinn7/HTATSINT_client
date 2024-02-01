@@ -59,7 +59,7 @@ const EditionReglement = () => {
     
   
     try {
-      const response = await fetch(prefix_link + '/users', {
+      const response = await fetch(prefix_link+'/users', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ if (save) {
 // mettre a jour formdata avec id_user, la periode
 console.log('formdata:', formdata);
 try {
-  const response =  await fetch(prefix_link + '/sttlement_by_user', {
+  const response =  await fetch(prefix_link+'/sttlement_by_user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -20,7 +20,7 @@ async function GetUsers  () {
   
 
   try {
-    const response = await fetch(prefix_link + '/users', {
+    const response = await fetch(prefix_link+'/users', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

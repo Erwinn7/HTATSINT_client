@@ -24,6 +24,7 @@ const [pending, setPending] = useState(true);
 
  const handlePaymentSuccess = () => {
   // Cette fonction sera appelée lorsque le paiement est réussi
+  
   // Elle mettra à jour l'état pour déclencher l'effet useEffect
   
 };
@@ -36,7 +37,7 @@ const [pending, setPending] = useState(true);
      
 
      // console.log('Response from Flask API:', email);
-      const response = await fetch(prefix_link + '/invoice_with_customer', {
+      const response = await fetch(prefix_link+'/invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

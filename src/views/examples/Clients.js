@@ -1,9 +1,4 @@
-/*!
 
-
-jjjjj
-*/
-// reactstrap components
 import {
   //Button,
   //ButtonDropdown,
@@ -26,30 +21,31 @@ import AjoutClient from "components/Buttons/Button";
 import "assets/css/customerDesign.css";
 import { prefix_link } from "variables/globalesVar";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import ModalUpdateCustomer from 'components/Modals/ModalUpdateCustomer';
+import ModalUpdateCustomerEnt from 'components/Modals/ModalUpdateCustomerEnt';
 
 const Tables = () => {
   const token = localStorage.getItem('accessToken');
-  const tokenn ='1235478952';
+ 
  // const id= localStorage.getItem('id');
  // const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
   const [clientsMoral, setClientsMoral] = useState([]);
   const [pending, setPending] = useState(true);
- 
+ // const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedClientPhysique, setSelectedClientPhysique] = useState(null);
+  const [selectedClientMoral, setSelectedClientMoral] = useState(null);
+  const [modalPhysiqueOuvert, setModalPhysiqueOuvert] = useState(false);
+  const [modalMoralOuvert, setModalMoralOuvert] = useState(false);
 
 //const client = GetClient();
-const handleButtonDelete = (id) => {
-  
-};
-const handleButtonUpdate = (id) => {
-  
-};
 
-async function GetClient  () {
+
+async function GetClientPhysique  () {
 
   try {
     
-    const response = await fetch( prefix_link+'/clients', {
+    const response = await fetch( prefix_link+'/clients_physique', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -71,38 +67,108 @@ async function GetClient  () {
     }
 
     const data = await response.json();
-console.log('Response from Flask API:', data.data);
-    const clientsData = Object.values(data.data).map(item => {
-      if (item && item.customer) {
+console.log('Response from Flask API physss:', data);
 
-        const clientData= [{           
-         customer:{               
-           email: item.customer.email || null,
-          firstName: item.customer.first_name || null,
-          lastName: item.customer.last_name || null,
-          phoneNumber: item.customer.phone_number || null,
-          gender: item.customer.gender || null,
+const clientPhysiqueData = Object.values(data.data).map(item => {
+  if (item && item.customer) {
+    return {           
+      customer: { 
+        id: item.customer.id || null,              
+        email: item.customer.email || null,
+        firstName: item.customer.first_name || null,
+        lastName: item.customer.last_name || null,
+        phoneNumber: item.customer.phone_number || null,
+        gender: item.customer.gender || null,
+        ifu: item.customer.ifu || null,
+        //instituteName: item.customer.institute_name || null,
+        dateOfBirth: item.customer.date_of_birth || null,
+        address: item.customer.address || null,
+        typeCustomer: item.type_customer ? item.type_customer.type_custormer : null,
+      }
+    };
+  } else {
+    // Retourne null si aucune donnée client n'est disponible
+    return null;
+  }
+});
+
+//console.log('Response from Flask API:', clientData);
+
+
+  //  console.log('Response frommmmmmaa Flask API:', clientData);
+    return clientPhysiqueData;
+
+
+   
+    
+
+//  return clientsData;  */
+} catch (error) {
+console.error('Une erreur s\'est produite : ', error);
+console.log('Response from Flask API:', error.type);
+}
+};
+
+// les clients moraux
+async function GetClientMoral  () {
+
+  try {
+    
+    const response = await fetch( prefix_link+'/clients_morale', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      //throw new Error('Network response was not ok');
+      console.log('Response from Flask API:', response);
+      if (response.status === 401) {
+        // Gérer le statut 401 ici (par exemple, rediriger vers la page de connexion)
+        //navigate('/auth/login');
+        console.log('Redirection vers la page de connexion');
+      } else {
+        // Gérer les autres erreurs
+        console.log('Erreur inattendue:', response.status);
+      }
+    }
+
+    const data = await response.json();
+console.log('Response from Flask API:', data);
+const clientMoralData = Object.values(data.data).map(item => {
+  if (item && item.customer) {
+    return {           
+      customer: { 
+        id: item.customer.id || null,              
+        email: item.customer.email || null,
+        //firstName: item.customer.first_name || null,
+       // lastName: item.customer.last_name || null,
+        phoneNumber: item.customer.phone_number || null,
+        //gender: item.customer.gender || null,
         ifu: item.customer.ifu || null,
         instituteName: item.customer.institute_name || null,
         dateOfBirth: item.customer.date_of_birth || null,
         address: item.customer.address || null,
         typeCustomer: item.type_customer ? item.type_customer.type_custormer : null,
-        }, }]
-
-    
-        
-      //  console.log('Response frommmmmmaa Flask API:', clientData);
-        return clientData;
-        
-      } else {
-        //console.log('Response frommmmmm Flask API:', /*data*/);
-        return null; // ou toute autre valeur par défaut que vous préférez
       }
-    });
+    };
+  } else {
+    // Retourne null si aucune donnée client n'est disponible
+    return null;
+  }
+});
+
+//console.log('Response from Flask API:', clientData);
 
 
 
-  return clientsData;
+
+   
+
+
+  return clientMoralData;
 } catch (error) {
 console.error('Une erreur s\'est produite : ', error);
 console.log('Response from Flask API:', error.type);
@@ -111,19 +177,25 @@ console.log('Response from Flask API:', error.type);
 
 
 
-
 //useEffect(() => {
   // Utilisation de useEffect pour exécuter GetClient une seule fois au chargement initial
-  async function fetchData() {
+ 
+
+  useEffect(() => {
+   // fetchData(); // Exécute GetClient au chargement initial
+    
+
+   async function fetchData( ) {
     try {
-      const clientsData = await GetClient();
+      const clientsDataPhysique = await GetClientPhysique();
+      const clientsDataMoral = await GetClientMoral();
       //console.log('uhrtbdrhdytn:', clientsData);
-      const physiques = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Physique");
-      const moraux = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Morale");
+     /* const physiques = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Physique");
+      const moraux = clientsData.flatMap(arr => arr).filter(item => item.customer.typeCustomer === "Morale");*/
 //console.log('uhrtbdrhdytnphyy:', physiques);
-setClientsPhysique(physiques);
-console.log('uhrtbdrhdytnphyy:', physiques);
-        setClientsMoral(moraux);
+setClientsPhysique(clientsDataPhysique);
+//console.log('uhrtbdrhdytnphyy:', clientsDataPhysique);
+        setClientsMoral(clientsDataMoral);
         setPending(false);
 //transformer la liste des clients en tableau
 //const clientsDataArray = Object.value(clientsData)
@@ -133,12 +205,36 @@ console.log('uhrtbdrhdytnphyy:', physiques);
     } finally {
       setPending(false);
     }
-  }
+  };
+  fetchData();
 
-  useEffect(() => {
-    fetchData(); // Exécute GetClient au chargement initial
+
+
+
+
+    
   
   }, []); // Le tableau de dépendances vide [] signifie que cela ne dépend d'aucune variable, donc cela s'exécutera une seule fois
+
+const handleButtonUpdate1 = (row) => {
+    // Ouvrez le modal de client physique
+    console.log("tyjgvkh:",row);
+    if (row.customer.typeCustomer === "Physique"  ) {
+      setModalPhysiqueOuvert(true);
+
+    setSelectedClientPhysique(row);
+    } else {
+      setModalMoralOuvert(true);
+      setSelectedClientMoral(row);
+    }
+    
+  
+
+};
+
+
+
+// Fonction pour mettre à jour le tableau de clients moraux après la modification
 
 
 
@@ -231,7 +327,7 @@ const cols = [
     {
       name: 'MODIFIER',
       cell: (row) => (
-        <Button color="primary" onClick={() => handleButtonUpdate(row)}>Mod</Button>
+        <Button color="primary" onClick={() => handleButtonUpdate1(row)}>Mod</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -241,7 +337,7 @@ const cols = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="danger" onClick={() => handleButtonDelete(row)}>Sup</Button>
+        <Button color="danger" onClick={() => ()=>{}}>Sup</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -323,7 +419,7 @@ const cols2 = [
     {
       name: 'MODIFIER',
       cell: (row) => (
-        <Button color="primary" onClick={() => handleButtonUpdate(row)}>Mod</Button>
+        <Button color="primary" onClick={() => handleButtonUpdate1(row)}>Mod</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -333,7 +429,7 @@ const cols2 = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="danger" onClick={() => handleButtonDelete(row)}>Sup</Button>
+        <Button color="danger" onClick={() => ()=>{}}>Sup</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -381,12 +477,32 @@ const customStyles = {
 
   return (
     <div className="backgroundImgClient"> 
+    
     <>
       <Header menuTitle= 'CLIENTS'/> 
          {/* Page content */}
 
          
       <Container className="pb-5 my-5" fluid>
+     
+            <ModalUpdateCustomer
+selectedClient={selectedClientPhysique}
+        ouvert={modalPhysiqueOuvert}
+        toggle={() => {
+          GetClientPhysique();
+        setModalPhysiqueOuvert(!modalPhysiqueOuvert)}}
+        
+      />
+            <ModalUpdateCustomerEnt
+selectedClient={selectedClientMoral}
+        ouvert={modalMoralOuvert}
+        toggle={() => {
+          GetClientMoral();
+        setModalMoralOuvert(!modalMoralOuvert)}}
+        
+        
+      />
+    
       <div className="row">
       <div className="col">
       <AjoutClient 
