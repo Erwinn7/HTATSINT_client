@@ -5,12 +5,11 @@ import { prefix_link } from "variables/globalesVar";
 const ModalForm = ({ ouvert, toggle, selectedClient }) => {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ message: '', color: '' });
-  console.log('selectedClient', selectedClient);
+  console.log('selectedClientex', selectedClient);
   // Créer un état local pour les champs du formulaire
   const [formData, setFormData] = useState({
     phone_number: selectedClient?.customer.phoneNumber || '',
    institute_name:selectedClient?.customer.instituteName || '',
-    
     ifu: selectedClient?.customer.ifu || '',
     email: selectedClient?.customer.email || '',
     date_of_birth: selectedClient?.customer.dateOfBirth || '',
@@ -122,7 +121,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
         </Label>
         <Input
          type='number'
-         value={FormData.phone_number}
+         value={formData.phone_number}
           name="phone_number"
           id="phone_number"
           placeholder=""
@@ -142,7 +141,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
             <Input
               
               type='text'
-         value={FormData.institute_name}
+         value={formData.institute_name}
           name="institute_name"
           id="institute_name"
           placeholder=""
@@ -160,7 +159,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
             <Input
               
               type='numeric'
-         value={FormData.ifu}
+         value={formData.ifu}
           name="ifu"
           id="ifu"
           placeholder=""
@@ -179,7 +178,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
         </Label>
         <Input
         type='email'
-        value={FormData.email}
+        value={formData.email}
           name="email"
           id="email"
           placeholder=""
@@ -193,7 +192,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
         </Label>
         <Input
         type='text'
-        value={FormData.address}
+        value={formData.address}
           name="address"
           id="address"
           placeholder=""
