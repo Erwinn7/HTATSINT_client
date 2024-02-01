@@ -5,7 +5,7 @@ import { prefix_link } from "variables/globalesVar";
 const ModalForm = ({ ouvert, toggle, selectedClient }) => {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ message: '', color: '' });
-  console.log('selectedClient', selectedClient);
+ // console.log('selectedClient', selectedClient);
   // Créer un état local pour les champs du formulaire
   const [formData, setFormData] = useState({
     phone_number: selectedClient?.customer.phoneNumber || '',
