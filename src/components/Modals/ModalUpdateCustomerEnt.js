@@ -122,7 +122,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
         </Label>
         <Input
          type='number'
-         value={FormData.phone_number}
+         value={formData.phone_number}
           name="phone_number"
           id="phone_number"
           placeholder=""
@@ -142,7 +142,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
             <Input
               
               type='text'
-         value={FormData.institute_name}
+         value={formData.institute_name}
           name="institute_name"
           id="institute_name"
           placeholder=""
@@ -160,7 +160,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
             <Input
               
               type='numeric'
-         value={FormData.ifu}
+         value={formData.ifu}
           name="ifu"
           id="ifu"
           placeholder=""
@@ -179,7 +179,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
         </Label>
         <Input
         type='email'
-        value={FormData.email}
+        value={formData.email}
           name="email"
           id="email"
           placeholder=""
@@ -193,7 +193,7 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
         </Label>
         <Input
         type='text'
-        value={FormData.address}
+        value={formData.address}
           name="address"
           id="address"
           placeholder=""
