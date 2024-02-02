@@ -282,7 +282,7 @@ const handleChange = (e) => {
 
 return (
       <div  className="backgroundImgChambre">
-      <Header menuTitle = "CHAMBRE" />
+      <Header menuTitle = "CONFIRMER RESERVATION" />
       {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
 
       {/* Page content */}
