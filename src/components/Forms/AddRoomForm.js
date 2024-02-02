@@ -50,8 +50,9 @@ const AddRoomForm = () => {
         setRoomType(res.data);
         console.log(res.data);
       }).catch( err => {
-          console.log(err)           
+          console.log("erreur attendue",err)           
     });
+
   }, [urlGetRT, modal]);
 
   const handle = (e) =>  {
