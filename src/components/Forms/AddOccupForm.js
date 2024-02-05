@@ -221,7 +221,6 @@ useEffect(() => {
           try {
             console.log("itemToSend:", itemToSend);
             const res = await axios.post(urlPostOccupant, itemToSend, config);
-            console.log("oject attendu:", itemToSend);
             console.log("réponse occupant ajouté :", res.data);
           } catch (error) {
             console.error('Erreur lors de la requête POST', error);
@@ -391,7 +390,7 @@ useEffect(() => {
               }
                 
               </Row>
-            <div className="mb-2" color="red" > Information de l'occupant <span> ({num_occupant}/{number_of_place}) </span></div>
+            <div className="mb-2" color="red" > Information de l'occupant <strong className={num_occupant === number_of_place ? "text-danger" : "text-success"}> ({num_occupant}/{number_of_place}) </strong></div>
             <div  className="p-3 mb-5" style={{border: '1px solid black'}}>
                 <Row>
                     <Col sm={6}>

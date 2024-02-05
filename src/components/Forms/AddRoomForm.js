@@ -50,8 +50,9 @@ const AddRoomForm = () => {
         setRoomType(res.data);
         console.log(res.data);
       }).catch( err => {
-          console.log(err)           
+          console.log("erreur attendue",err)           
     });
+
   }, [urlGetRT, modal]);
 
   const handle = (e) =>  {
@@ -67,31 +68,61 @@ const AddRoomForm = () => {
     e.preventDefault();
 
     if (Ctrl_Soumission()) {
-      
-      // Découpez la chaîne room_item_label en utilisant la virgule comme séparateur
-      const items = dataR.room_item_label.split(',').map((item) => item.trim());
+     
 
-      // Pour chaque élément, créez un nouvel objet avec les propriétés d'origine
-      const dataToSend = items.map((item) => ({...dataR, room_item_label: item.toLowerCase().charAt(0).toUpperCase() + item.slice(1).toLowerCase() }));
+      const fetchCreateRoom = async () => {
+        
+        try {
 
-      // Pour chaque nouvel objet, envoyez une requête POST avec Axios
-      dataToSend.forEach((itemToSend) => {
+           
+          // Découpez la chaîne room_item_label en utilisant la virgule comme séparateur
+          const items = dataR.room_item_label.split(',').map((item) => item.trim());
 
-        console.log("itemToSend:",itemToSend)
-        Axios.post(urlAddR,itemToSend,config)
-        .then( res => {
-          console.log(res.data)
+          // Pour chaque élément, créez un nouvel objet avec les propriétés d'origine
+          const dataToSend = items.map((item) => ({...dataR, room_item_label: item.toLowerCase().charAt(0).toUpperCase() + item.slice(1).toLowerCase() }));
+
+
+            // Envoi de tous les objets vers la base de données
+          
+            for (const item of dataToSend) {        
+              try {
+                console.log("itemToSend:", item);
+                const res = await Axios.post(urlAddR, item, config);
+                console.log("réponse item ajouté :", res.data);
+              } catch (error) {
+                console.error('Erreur lors de la requête POST', error);
+              }
+            }
+
           setSave(true)
-        })
-        .catch( err => {
-          console.log(err)   
-          setSave(true)        
-        });
+        } catch (error) {
+          console.error('Erreur lors de la requête POST', error);
+          setSave(true)
+        }
+      }
 
-      });
-    
+              // Pour chaque nouvel objet, envoyez une requête POST avec Axios
+            // dataToSend.forEach((itemToSend) => {
+
+            //   console.log("itemToSend:",itemToSend)
+            //   Axios.post(urlAddR,itemToSend,config)
+            //   .then( res => {
+            //     console.log("réponse item ajouté :", res.data)
+            //     setSave(true)
+            //   })
+            //   .catch( err => {
+            //     console.log(err)   
+            //     setSave(true)        
+            //   });
+
+            // });
+      fetchCreateRoom();      
       setCtrlSoumission("");
-      setdataR({...dataR,room_item_label:"",room_amount:"",  room_label:""})
+      setdataR({...dataR,
+        room_item_label:"",
+        room_amount:"",
+        room_label:""
+      });
 
     } else{
         setSave(true)

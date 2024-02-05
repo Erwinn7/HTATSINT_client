@@ -173,7 +173,7 @@ const Room = () => {
     
     fetchData();
 
-  }, [urlGetR,modal,modalOpen]);
+  }, [urlGetR,modal,modalOpen,isOpen]);
 
 const handleFilter = (e) => {
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
