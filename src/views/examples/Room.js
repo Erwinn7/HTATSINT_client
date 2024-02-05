@@ -294,7 +294,6 @@ const formatDate = (inputDate) => {
             </DataTable>  )
           }
 
-
           </div>
 
         <Modal isOpen={modalOpen} toggle={closeModal} >
@@ -343,7 +342,9 @@ const formatDate = (inputDate) => {
                   <div></div>
                 }
                 {
-                  (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Reserved_and_confirmed")? 
+                  (
+                    //selectedRow.room.room_status === "Reserved" ||
+                   selectedRow.room.room_status === "Reserved_and_confirmed")? 
                   <div>
                     <p><span style={{fontWeight:"bold"}}>Réservé par : </span>{ infoRoom.customer.institute_name ? infoRoom.customer.institute_name : infoRoom.customer.last_name+" "+infoRoom.customer.first_name}</p>
                     <p><span style={{fontWeight:"bold"}}>Du: </span>{formatDate(infoRoom.booking.start_date)} </p>
@@ -352,14 +353,16 @@ const formatDate = (inputDate) => {
                   :
                   <div></div>
                 }               
-                
+                 
               </div>
             )}
           </ModalBody>
           <ModalFooter>
             {
               infoRoom && (
-                (selectedRow.room.room_status === "Reserved" || selectedRow.room.room_status === "Reserved_and_confirmed")? 
+                (
+                  //selectedRow.room.room_status === "Reserved" || 
+                  selectedRow.room.room_status === "Reserved_and_confirmed")? 
               <Button color="danger" className=" mr-9" onClick={(e) => { closeModal(); handleDeleteBooking(e) }} size="sm">
                  ANNULER LA RESERVATION 
               </Button>
