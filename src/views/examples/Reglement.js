@@ -32,17 +32,15 @@ const [pending, setPending] = useState(true);
    const GetClientsInvoice = async () => {
     //const navigate = useNavigate();
     try {
-      //const token = localStorage.getItem('accessToken');
-     const token = 1235478953
+      const token = localStorage.getItem('accessToken');
+    // const token = 1235478953
 
      // console.log('Response from Flask API:', email);
       const response = await fetch(prefix_link+'/invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          //'Authorization': `Bearer ${token}`,
-          
-       
+          'Authorization': `Bearer ${token}`,
         },
       });
   const data = await response.json();
