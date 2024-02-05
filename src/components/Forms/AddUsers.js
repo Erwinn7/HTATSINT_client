@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Col, Alert , Spinner} from 'reactstrap';
 import { prefix_link } from "variables/globalesVar";
 
-const CreateUserForm = () => {
+const CreateUserForm = (toggleModal) => {
   const token = localStorage.getItem('accessToken');
   const id= localStorage.getItem('id');
   const [formData, setFormData] = useState({
@@ -55,10 +55,7 @@ const CreateUserForm = () => {
         setLoading(true);
        // console.log('iytkyyhnjnk:',formData);
         // modifier le formData pour enlever le mot de passe confirme
-setFormData({
-  ...formData,
-  confirmPassword: '',
-})
+
 //console.log('modifi:',formData);
         const response = await fetch( prefix_link+'/user', {
           method: 'POST',
@@ -84,19 +81,22 @@ setFormData({
             document.getElementById('confirmPassword').value = '';
 
           }, 10000);
+          
          
           console.log('Response from Flask API:', users_data);
          //throw new Error('Network response was not ok');
-        } else{
+        }
+        if (response.status===409) {
           setAlert({ message: 'L email est déja utilisé . ', color: 'danger' });
           setTimeout(() => {
             setAlert({ message: '', color: '' });
           }, 10000);
-          const status = response.status;
-          console.error('La requête a échoué avec le statut:', response,status);
+        
+        //  const status = response.status;
+          console.error('La requête a échoué avec le statut:', response.status);
          // console.error('Error sending data to Flask API:', response.message);
         }
-       
+      
        
       }catch (error) {
         
@@ -110,7 +110,7 @@ setFormData({
             document.getElementById('email').value = '';
             document.getElementById('confirmPassword').value = '';
         }, 10000);
-      
+        toggleModal();
         console.error('Error sending data to Flask API:', error.message);
       }finally {
         setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)

@@ -184,7 +184,7 @@ const handleLogout = async () => {
       //throw new Error('Network response was not ok');
      // console.log('Response from Flask API:', /*data*/);
     }
-    const data = response.json();
+    const data = await response.json();
    console.log('Response from Flaskkk API:', data);
    localStorage.clear();
    

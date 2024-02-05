@@ -24,7 +24,13 @@ const MonComposant = () => {
         <ModalBody>
           {/* Contenu du modal */}
           <Container>
-      <CreateUserForm/>
+      <CreateUserForm
+      toggleModal={() => {
+    setModalOpen(!modalOpen);
+  }}
+      >
+
+      </CreateUserForm>
           </Container>
           
         </ModalBody>
