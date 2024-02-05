@@ -56,6 +56,7 @@ function MyFormEnt() {
        
     
       }else{
+        console.log('Response from Flask API:', response);
         setAlert({ message:  `Erreur!Contacter le service technique` , color: 'danger' });
         //
         setTimeout(() => {
@@ -107,7 +108,7 @@ function MyFormEnt() {
 
 
     e.preventDefault();
-    const { name, value } = e.target;
+    const {  value } = e.target;
 
     try {
      

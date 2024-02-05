@@ -31,17 +31,16 @@ const [pending, setPending] = useState(true);
 
    const GetClientsInvoice = async () => {
     //const navigate = useNavigate();
-
     try {
-      const token = localStorage.getItem('accessToken');
-     
+      //const token = localStorage.getItem('accessToken');
+     const token = 1235478953
 
      // console.log('Response from Flask API:', email);
       const response = await fetch(prefix_link+'/invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          //'Authorization': `Bearer ${token}`,
           
        
         },
@@ -51,6 +50,7 @@ const [pending, setPending] = useState(true);
         //throw new Error('Network response was not ok');
         console.log('Response from Flask API:', /*data*/);
       }
+     
  
     console.log('Response from Flask API:', data);
     
@@ -75,10 +75,11 @@ const [pending, setPending] = useState(true);
   }
     
     } catch (error) {
-    console.log('tfkyuh',error);
-     // console.error('Une erreurrrrr s\'est produite : ', error);
+    console.log('tfkyuh',error.status);
+      console.error('Une erreurrrrr s\'est produite : ', error.response.status);
      //navigate('/auth/login');
     }
+     
   };
   const fetchData =  async () => {
     try {
@@ -88,9 +89,9 @@ const [pending, setPending] = useState(true);
       setPending(false);
      // console.log(res.data);
     } catch (error) {
-      navigate('/auth/login');
+     // navigate('/auth/login');
      
-      console.error('Erreur lors de la requête GET', error);
+      console.error('Erreur lors de la requête GETtttt', error);
     }
   };
 
