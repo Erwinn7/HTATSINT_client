@@ -81,7 +81,7 @@ const ApprouveBooking = () => {
       sortable : true
     },
     {
-      name: 'ACTIONS',
+      name: 'SUPPRIMER',
       cell: (row) => (
         <Button color="danger" size="sm"  onClick={() => handleButtonClick(row)}>Supprimer</Button>
       ),
@@ -239,24 +239,21 @@ const handleDeleteBooking = async (e) => {
   // console.log(selectedRow.booking.id)
 
   }
-
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
-    // Ajouter 1 heure pour passer au fuseau horaire GMT+1
-    date.setHours(date.getHours() + 1);
   
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
     const year = date.getUTCFullYear();
   
-    const hours = date.getUTCHours();
-    const minutes = date.getUTCMinutes();
-    const seconds = date.getUTCSeconds();
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
   
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   
     return formattedDate;
-  };
+  };;
 
 
 

@@ -106,7 +106,23 @@ const Room = () => {
         );
       },
       sortable : true
-    }
+    },
+    {
+      name: 'MODIFIER',
+      cell: (row) => (
+        <Button color="danger" size="sm"  onClick={() => handleButtonModRoom(row)}>Mod</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: 'Supprimer',
+      cell: (row) => (
+        <Button color="danger" size="sm"  onClick={() => handleButtonDelRoom(row)}>Sup</Button>
+      ),
+      allowOverflow: true,
+      button: true,
+    },
   ]
 
   const returnStatut = (statut) => {
@@ -153,6 +169,13 @@ const Room = () => {
     },
 };
 
+const handleButtonModRoom = (row) => {
+  
+}
+
+const handleButtonDelRoom = (row) => {
+  
+}
 
   useEffect ( () => {
 
