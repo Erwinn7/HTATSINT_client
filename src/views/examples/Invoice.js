@@ -12,6 +12,7 @@ import { prefix_link } from "variables/globalesVar";
 import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import ModalsNoRecFound from "components/Modals/ModalsnoRecFound";
 
 
 
@@ -223,19 +224,6 @@ const closeModal = () => {
 
 
 
-// const sampleInvoice = {
-//   date_facture: '2023-12-01',
-//   numero_facture: '0021/PERL/23',
-//   nClient: 'Hotel le pelerin',
-//   aClient: 'DASSA',
-//   tClient: '0022961656895',
-//   designation: 'Chambre 305',
-//   nombre_de_jour: 5,
-//   prix_journalier: 25000,
-//   prix_total: 5 * 25000,
-// };
-
-
 
 
   return (
@@ -251,7 +239,12 @@ const closeModal = () => {
         </div>
         <div>
           {
-            invoice && (
+            invoice.length ===0 ? 
+            <div className="mt-2 mb-9">
+              <ModalsNoRecFound text="Aucune facture disponible"   />
+            </div>
+            :
+             (
               <DataTable
               title="Liste des factures"
               columns={cols}

@@ -5,12 +5,13 @@ import {Container, Collapse, Button, Card, CardBody,
   Badge,
   Alert,
   Input,
-  Row
+  Row,
 } from "reactstrap";
 
 //  components
 import AddRoomForm from "components/Forms/AddRoomForm.js";
 import UpdateRoomStatus from "components/Forms/UpdateRoomStatus";
+import UpdateRommForm from "components/Forms/UpdateRoomForm";
 import Header from "components/Headers/Header.js";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import "assets/css/roomDesign.css";
@@ -30,6 +31,8 @@ const Room = () => {
 
 
   const [modal, setModal] = useState(false);
+  const [modalMod, setModalMod] = useState(false);
+
   const [room, setRoom] = useState([]);
   const [pending, setPending] = useState(true);
   const config = {
@@ -46,6 +49,8 @@ const Room = () => {
 
   const toggle = () => setIsOpen(!isOpen);
   const toggleModal = () => setModal(!modal);
+  const toggleModalMod = () => setModalMod(!modalMod);
+
   const toggleSatCol = () => setIsStatColOpen(!isStatColOpen);
   const [selectedRow, setSelectedRow] = useState(null);
   const [infoRoom, setInfoRoom] = useState(null);
@@ -110,7 +115,7 @@ const Room = () => {
     {
       name: 'MODIFIER',
       cell: (row) => (
-        <Button color="danger" size="sm"  onClick={() => handleButtonModRoom(row)}>Mod</Button>
+        <Button color="primary" size="sm"  onClick={() => handleButtonModRoom(row)}>Modifier</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -118,7 +123,7 @@ const Room = () => {
     {
       name: 'Supprimer',
       cell: (row) => (
-        <Button color="danger" size="sm"  onClick={() => handleButtonDelRoom(row)}>Sup</Button>
+        <Button color="danger" size="sm"  onClick={() => handleButtonDelRoom(row)}>Supprimer</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -170,7 +175,9 @@ const Room = () => {
 };
 
 const handleButtonModRoom = (row) => {
-  
+  fetchRoomData(row);
+  setSelectedRow(row);
+    setModalMod(true);
 }
 
 const handleButtonDelRoom = (row) => {
@@ -179,9 +186,22 @@ const handleButtonDelRoom = (row) => {
 
   useEffect ( () => {
 
+
+    const token = localStorage.getItem('accessToken');
+
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      },
+    };
+
+
     const fetchData = async () => {
       try {
-        const res = await axios.get(urlGetR);
+        const res = await axios.get(urlGetR,config);
         setRoom(res.data.data);
         setfilterRoom(res.data.data);
         setPending(false);
@@ -203,28 +223,29 @@ const handleFilter = (e) => {
   setRoom(newRoom);
 }
 
+const fetchRoomData = async (row) => {
+  try {
+    //console.log("id:",row.room.id)
+    const res = await axios.post(urlPostOneRoom, {
+      id: row.room.id,
+      room_status: row.room.room_status
+    }, config);      
+    setInfoRoom(res.data);
+    console.log("inforoom: ",res.data);
+  } catch (error) {
+    console.error('Erreur lors de la requête GET', error);
+    setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
+  }
+};
 
 const handleRowClick = (row) => {
-
-  const fetchRoomData = async () => {
-    try {
-      //console.log("id:",row.room.id)
-      const res = await axios.post(urlPostOneRoom, {
-        id: row.room.id,
-        room_status: row.room.room_status
-      }, config);      
-      setInfoRoom(res.data);
-      console.log("inforoom: ",res.data);
-    } catch (error) {
-      console.error('Erreur lors de la requête GET', error);
-      setAlert({ message: "Impossible de joindre le serveur.Contactez l'administrateur", color: 'danger' });
-    }
-  };
-  
-  fetchRoomData();
-  setSelectedRow(row);
   setModalOpen(true);
+  fetchRoomData(row);
+  setSelectedRow(row);
+ 
 };
+
+
 
 
 const handleDeleteBooking = (e) => {
@@ -247,32 +268,35 @@ const handleDeleteBooking = (e) => {
 
   }
 
-
 const closeModal = () => {
   setModalOpen(false);
 };
 
 
+const closeModalMod = () => {
+  setModalMod(false);
+};
 
 
 const formatDate = (inputDate) => {
   const date = new Date(inputDate);
-  // Ajouter 1 heure pour passer au fuseau horaire GMT+1
-  date.setHours(date.getHours() + 1);
 
-  const day = date.getUTCDate();
-  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
   const year = date.getUTCFullYear();
 
-  const hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const seconds = date.getUTCSeconds();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
 
   const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
   return formattedDate;
-};    
+}; 
 
+const UpdateRoomSubmit = (e) => {
+  
+}
 
 
   return (
@@ -393,10 +417,28 @@ const formatDate = (inputDate) => {
               <div></div>
               )
             }
-            <Button color="dark" onClick={closeModal}>
+            <Button  color="dark" onClick={closeModal}>
               Fermer
             </Button>
           </ModalFooter>
+        </Modal>
+
+        <Modal isOpen={modalMod} toggle={closeModalMod} >
+         <ModalBody >
+          {
+            infoRoom && (
+              <div >
+                <div style={{ textAlign:"center", fontWeight:"bold",fontSize:"23px", position:"center",marginBottom:"20px"}}> {selectedRow.room.room_label.toUpperCase()} </div>
+              </div > 
+            )}          
+          <UpdateRommForm selectedRoom={selectedRow} />
+        </ModalBody>
+        <ModalFooter>
+                    
+          <Button  color="dark" className=" ml-3" onClick={closeModalMod}>
+            Fermer
+          </Button>
+        </ModalFooter>
         </Modal>
         <p className="pb-5" > </p>
       </Container>

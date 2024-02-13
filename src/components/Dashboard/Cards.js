@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 
 import React, { useState, useEffect } from 'react';
 import { prefix_link } from 'variables/globalesVar';
+import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';
 import axios from 'axios';
     
 
@@ -186,17 +187,20 @@ const customStyles = {
 };
 
 
+function formatAmount(amount) {
+  // Convertir le montant en nombre
+  const numericAmount = parseFloat(amount);
 
+  // Vérifier si le montant est un nombre
+  if (isNaN(numericAmount)) {
+    return "Montant invalide";
+  }
 
+  // Utiliser la fonction toLocaleString pour ajouter des séparateurs de milliers
+  const formattedAmount = numericAmount.toLocaleString("fr-FR", { style: "currency", currency: "XOF" });
 
-
-
-  // Simuler des données pour les quatre cartes
-  // const chambreDisponible = 58;
-  //const arriveeAttendue = 4;
-  //const departAttendu = 4;
-  //const recetteDuJour = 9000000000;
-  //const chambreAttribueeAujourdHui = 7;
+  return formattedAmount;
+}
 
 
   return (
@@ -287,8 +291,8 @@ const customStyles = {
           </CardHeader>
             <CardBody>
             <CardTitle className='text-center' style={{ margin: '0',fontSize: '35px',  fontWeight: 'bold', color: '#00a65a' }}>
-            <div>{userEarning ? userEarning : 0 } </div>
-            <div style={{ marginTop: '-10px', fontSize: '12px', fontWeight: 'bold',  }}> fcfa</div>
+            <div>{userEarning ? formatAmount(userEarning) : 0 } </div>
+            <div style={{ marginTop: '-10px', fontSize: '12px', fontWeight: 'bold',  }}> </div>
             </CardTitle>
             </CardBody>
             <CardFooter className='text-left ' text-color='dark'  style={{ width: '313px', height: '15px', fontWeight: 'bold', fontSize: '12px' ,  }}>
@@ -302,33 +306,33 @@ const customStyles = {
       </Row>
       <Modal isOpen={modal1} toggle={toggleModal1} size='lg'>
         <ModalBody>
-          {roomAvaillable &&(roomTable(roomAvaillable))}
+          {roomAvaillable?.length === 0 ? <ModalsNoRecFound text = "Aucune chambre n'est disponible aujourd'hui" /> : (roomTable(roomAvaillable))}
         </ModalBody>
       </Modal>
 
       <Modal isOpen={modal2} toggle={toggleModal2} size='lg'>
         <ModalBody>
-        {roomReserved &&(roomTable(roomReserved))}
+        {roomReserved?.length === 0 ? <ModalsNoRecFound text = "Aucune arrivée n'est attendue aujourd'hui" /> : (roomTable(roomReserved))}
         </ModalBody>
       </Modal>
 
       <Modal isOpen={modal3} toggle={toggleModal3} size='lg'>
         <ModalBody>
-        {endedRoom &&(roomTable(endedRoom))}
+        {endedRoom?.length === 0 ? <ModalsNoRecFound text = "Aucun départ n'est attendu aujourd'hui" /> : (roomTable(endedRoom))}
         </ModalBody>
       </Modal>
 
       <Modal isOpen={modal4} toggle={toggleModal4} size='lg'>
         <ModalBody>
-        {roomOccupied &&(roomTable(roomOccupied))}
+        {roomOccupied?.length === 0 ? <ModalsNoRecFound text = "Aucune chambre n'est occupée aujourd'hui" /> : (roomTable(roomOccupied))}
         </ModalBody>
       </Modal>
 
-      <Modal isOpen={modal5} toggle={toggleModal5}>
-        <ModalBody>
-          <h5>Bientôt disponible</h5>
-        </ModalBody>
-      </Modal>
+       {/* <Modal isOpen={modal5} toggle={toggleModal5}>
+         <ModalBody>
+           <h5>Bientôt disponible</h5>
+         </ModalBody>
+       </Modal> */}
      
     </div>
   );

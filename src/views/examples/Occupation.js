@@ -7,7 +7,7 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { prefix_link } from "variables/globalesVar";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
-
+import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 
 
 const Occupation = () => {
@@ -249,7 +249,12 @@ const Occupation = () => {
         </Form>
 
         {
-          room && (
+          room.length ===0 ?
+            <div className="mt-2 mb-9">
+              <ModalsNoRecFound text="Aucune chambre disponible sur cette période"   />
+            </div>
+            :
+             (
             <DataTable
               title="Liste des chambres disponibles"
               columns={cols}
