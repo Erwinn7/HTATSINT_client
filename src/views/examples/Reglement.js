@@ -32,17 +32,15 @@ const [pending, setPending] = useState(true);
    const GetClientsInvoice = async () => {
     //const navigate = useNavigate();
     try {
-      //const token = localStorage.getItem('accessToken');
-     const token = 1235478953
+      const token = await localStorage.getItem('accessToken');
+   //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwNzIzNDg1OCwianRpIjoiMjY3YjgwYzctMmU1ZS00NGE3LWFlODItZGUyYTA3ZmY1ODkyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImplcnViYWFsYWhvdWFuZ2JlNDJAZ21haWwuY29tIiwibmJmIjoxNzA3MjM0ODU4LCJleHAiOjE3MDczMjEyNTgsInJvbGUiOiJhZG1pbiJ9.7VttLx0RUqS0saLHad8LTYqpdn_k0-3rYNZ3AuqxHAw";
 
      // console.log('Response from Flask API:', email);
       const response = await fetch(prefix_link+'/invoice_with_customer', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          //'Authorization': `Bearer ${token}`,
-          
-       
+          'Authorization': `Bearer ${token}`,
         },
       });
   const data = await response.json();
@@ -213,7 +211,7 @@ const [pending, setPending] = useState(true);
     {
         name: 'PAYER',
         cell: (row) => (
-          <Button disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
+          <Button  disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
         ),
         allowOverflow: true,
         button: true,

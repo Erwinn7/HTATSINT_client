@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardHeader } from 'reactstrap';
 
 import { Container} from "reactstrap";
-import { useEffect } from 'react';
+
 import Header from "components/Headers/Header.js";
 import  "assets/css/mycss.css";
 import Cardss from '../components/Dashboard/Cards';
@@ -15,22 +15,7 @@ import MyCalendar from 'components/Dashboard/Calendar';
 
 const Index = () => {
  
-  useEffect(() => {
-    const handleResize = () => {
-      // Restaurer la taille de la fenêtre si elle est redimensionnée
-      window.resizeTo(800, 600); // Ajustez les valeurs selon vos besoins
-    };
-
-    // Ajouter l'écouteur d'événement de redimensionnement lors du montage du composant
-    window.addEventListener('resize', handleResize);
-
-    // Nettoyer l'écouteur d'événement lors du démontage du composant
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []); // Le tableau vide en tant que deuxième argument signifie que cet effet s'exécute uniquement lors du montage et du démontage du composant
-
-
+  
 
   return (
 

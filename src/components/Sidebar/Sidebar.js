@@ -9,9 +9,9 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 
 
 // Importez la liste des éditions
-import {routesEdition}  from "routes";
+import {routesEdition, routesEditionrecep, routesRecep}  from "routes";
 import { routesReservation } from "routes";
-
+import { routesReservationrecep } from "routes";
 
 // reactstrap components
 import {
@@ -74,9 +74,9 @@ const Sidebar = (props) => {
     setCollapseOpenRe(false);
   };
   // creates the links that appear in the left menu / Sidebar
-  const createLinks = (routes, routesEdition,routesReservation) => {
+  const createLinks = (routes, routesEdition,routesEditionrecep, routesReservation, routesReservationrecep) => {
     return routes.map((prop, key) => {
-      if (prop.path === "/edition") {
+      if (prop.layout === "/admin" && prop.path === "/edition" ) {
         // faire un map sur les elements du tableau 
         return (
           <NavItem key={key}>
@@ -108,7 +108,7 @@ const Sidebar = (props) => {
             </Collapse>
           </NavItem>
         );
-      } else if (prop.path === "/booking") {
+      } else if (prop.layout === "/admin" && prop.path === "/booking") {
         // faire un map sur les elements du tableau 
         return (
           <NavItem key={key}>
@@ -141,7 +141,64 @@ const Sidebar = (props) => {
           </NavItem>
         );
 
-      }  else {
+      } else if (prop.layout === "/recep" && prop.path === "/edition" ) {
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to="#"
+              onClick={toggleCollapse}
+              className="nav-link route-name"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+            <Collapse isOpen={collapseOpen} className="ml-4"> 
+              {routesEditionrecep.map((editionprop, editionkey) => (
+                <NavItem key={editionkey}>
+                  <NavLink
+                    to={editionprop.layout + editionprop.path}
+                    tag={NavLinkRRD}
+                    onClick={closeCollapse}
+                    className="route-name"
+                  >
+                    <i className={editionprop.icon} />
+                    {editionprop.name}
+                  </NavLink>
+                </NavItem>
+              ))}
+            </Collapse>
+          </NavItem>
+        );
+      } else if (prop.layout === "/recep" && prop.path === "/booking") {
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to="#"
+              onClick={toggleCollapseRe}
+              className="nav-link route-name"
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+            <Collapse isOpen={collapseOpenRe} className="ml-4"> 
+              {routesReservationrecep.map((editionprop, editionkey) => (
+                <NavItem key={editionkey}>
+                  <NavLink
+                    to={editionprop.layout + editionprop.path}
+                    tag={NavLinkRRD}
+                    onClick={closeCollapseRe}
+                    className="route-name"
+                  >
+                    <i className={editionprop.icon} />
+                    {editionprop.name}
+                  </NavLink>
+                </NavItem>
+              ))}
+            </Collapse>
+          </NavItem>
+        );
+      }
+       else {
         // Sinon, renvoyez simplement le composant de route existant
         return (
           <NavItem key={key}>
@@ -161,6 +218,7 @@ const Sidebar = (props) => {
   };
 const handleLogout = async () => {
   const token = localStorage.getItem('accessToken');
+ // const token =123545
   const id = localStorage.getItem('id');
   const email = localStorage.getItem('email');
  // console.log(localStorage.getItem("accessToken"));
@@ -197,7 +255,7 @@ const handleLogout = async () => {
 
   } catch (error) {
    console.log('tfkyuh',error);
-   
+   localStorage.clear();
     navigate("/auth/login");
   }
 
@@ -305,7 +363,7 @@ const handleLogout = async () => {
           {/* Form */}
          
           {/* Navigation */}
-          <Nav navbar>{createLinks(routes, routesEdition,routesReservation)}</Nav>
+          <Nav navbar>{createLinks(routes, routesEdition,routesEditionrecep,routesReservation,routesReservationrecep)}</Nav>
          
         </Collapse>
       </Container>

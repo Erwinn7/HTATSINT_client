@@ -185,11 +185,7 @@ const handleButtonDelRoom = (row) => {
 }
 
   useEffect ( () => {
-
-
     const token = localStorage.getItem('accessToken');
-
-
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -197,8 +193,7 @@ const handleButtonDelRoom = (row) => {
         'Authorization': `Bearer ${token}`
       },
     };
-
-
+  
     const fetchData = async () => {
       try {
         const res = await axios.get(urlGetR,config);

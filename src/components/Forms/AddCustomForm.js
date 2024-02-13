@@ -57,7 +57,7 @@ function MyForm() {
           //
           setTimeout(() => {
             setAlert({ message: '', color: '' });
-             document.getElementById('phone_number').value = '';
+             //document.getElementById('phone_number').value = '';
           document.getElementById('first_name').value = '';
           document.getElementById('last_name').value = '';
           document.getElementById('gender').value = '';

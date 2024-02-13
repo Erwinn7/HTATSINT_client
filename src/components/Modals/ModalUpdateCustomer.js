@@ -61,56 +61,92 @@ const ModalForm = ({ ouvert, toggle, selectedClient }) => {
 
   // Gérer la soumission du formulaire
   const handleSubmit = async () => {
-   
-    async function updateClientData   ()  {
-      console.log('formData', formData);
-      const token = localStorage.getItem('accessToken');
+   async function getClientByphoneNumber() {
+     const token = localStorage.getItem('accessToken');
+     const number = formData.phone_number;
      try {
-      setLoading(true);
-       const response = await fetch(prefix_link+'/customer', {
-         method: 'PUT',
+       const response = await fetch(prefix_link+'/customer/'+number, {
+         method: 'GET',
          headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-         body: JSON.stringify(formData),
        });
 
        if (!response.ok) {
-         throw new Error('Failed to update client data');
-         //setLoading(false);
+       //  throw new Error('Failed to fetch client data');
        }
 
        const data = await response.json();
        console.log('Response from API:', data);
-       //afficher une alerte de succes
-       // Afficher une alerte de succès
-       setLoading(false);
-       setAlert({ message: 'Mise a jour réussie !', color: 'success' });
-       setTimeout(() => {
-          setAlert({ message: '', color: '' });
-           toggle();
-       }, 5000);
-      
-     
-       // fermer le modal en mettant les donnees des tablaux
+ if (response.status===401){
 
+        async function updateClientData   ()  {
+          console.log('formData', formData);
+          const token = localStorage.getItem('accessToken');
+         try {
+          setLoading(true);
+           const response = await fetch(prefix_link+'/customer', {
+             method: 'PUT',
+             headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+             body: JSON.stringify(formData),
+           });
+    
+           if (!response.ok) {
+             throw new Error('Failed to update client data');
+             //setLoading(false);
+           }
+    
+           const data = await response.json();
+           console.log('Response from API:', data);
+           //afficher une alerte de succes
+           // Afficher une alerte de succès
+           setLoading(false);
+           setAlert({ message: 'Mise a jour réussie !', color: 'success' });
+           setTimeout(() => {
+              setAlert({ message: '', color: '' });
+               toggle();
+           }, 5000);
+          
+         
+           // fermer le modal en mettant les donnees des tablaux
+    
+           
+         } catch (error) {
+           console.error('Error updating client data:', error);
+           setAlert({ message: 'Mise a jour echouée !', color: 'danger' });
+           setTimeout(() => {
+            setAlert({ message: '', color: '' });
+             toggle();
+         }, 5000);
+           setLoading(false);
+           // Gérer l'erreur
+         }
+       };
+    
        
-     } catch (error) {
-       console.error('Error updating client data:', error);
-       setAlert({ message: 'Mise a jour echouée !', color: 'danger' });
+       updateClientData();
+      };
+
+  if (response.statut === 200){
+        setAlert({ message: 'Numero de telephone est deja utilise par un autre client !Veuillez le changer', color: 'danger' });
+       } else {
+        setAlert({ message: 'Erreur serveur !', color: 'danger' });
+       }
+       } catch (error) {
+       console.error('Error fetching client data:', error);
+       setAlert({ message: 'Erreur serveur !', color: 'danger' });
        setTimeout(() => {
         setAlert({ message: '', color: '' });
-         toggle();
-     }, 5000);
-       setLoading(false);
-       // Gérer l'erreur
-     }
+         toggle()}, 5000);}
+     
    };
-
-   
-   updateClientData();
+   getClientByphoneNumber();
   };
+    
 
   return (
     <Modal isOpen={ouvert} toggle={toggle}>

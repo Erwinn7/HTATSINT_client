@@ -15,7 +15,7 @@ import EditionClient from "views/examples/EditionClient";
 import EditionReglement from "views/examples/EditionReglement";
 import Booking from "views/examples/Booking";
 import ApprouveBooking from "views/examples/ApprouveBooking";
-
+//import Reservation from "views/examples/Reservation";
 
 
 
@@ -35,6 +35,8 @@ export const routes = [
     component: <Icons />,
     layout: "/admin",
   },
+  
+
   {
     path: "/client",
     name: "CLIENT",
@@ -145,7 +147,18 @@ export const routesRecep = [
     icon: "fa fa-bed  text-pink",
     component: <Occupation />,
     layout: "/recep",
-  }
+  },
+
+  {
+    path: "/edition",
+    name: "EDITION",
+    icon: "fas fa-book text-yellow",
+    component: <Edition />,
+    layout: "/recep",
+    
+    
+  },
+  
 ]; 
 
 export const routesAuth = [
@@ -168,6 +181,8 @@ export const routesEdition = [
     
     
   },
+  
+
   {
     path: "/editionOccupant",
     name: "Occupants",
@@ -206,8 +221,27 @@ export const routesEdition = [
     
   },
   
-]
+];
 
+export const routesEditionrecep = [
+  {
+    path: "/editionreglement",
+    name: "Reglements",
+    icon: "fas fa-book text-dark",
+    component: <EditionReglement />,
+    layout: "/recep",
+  },
+  {
+    path: "/editionClient",
+    name: "Clients",
+    icon: "fas fa-book text-dark",
+    component: <EditionClient />,
+    layout: "/recep",
+    
+    
+  },
+  
+];
 
 export const routesReservation = [
   {
@@ -227,8 +261,29 @@ export const routesReservation = [
     
   },
   
-]
+];
 
+
+export const routesReservationrecep = 
+[
+  {
+    path: "/reservation",
+    name: "Reservation",
+    icon: "fas fa-book text-dark",
+    component: <Booking />,
+    layout: "/recep",
+    
+  },
+
+  {
+    path: "/confirmerReservation",
+    name: "Confirmation",
+    icon: "fas fa-book text-dark",
+    component: <ApprouveBooking />,
+    layout: "/recep",
+    
+  },
+];
 
 
 //export {routes , routesRecep} ;  
