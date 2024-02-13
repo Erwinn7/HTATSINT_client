@@ -11,11 +11,10 @@ import {
   InputGroup,
   Row,
   Alert,
-  Spinner
-  
+  Spinner 
 } from "reactstrap";
 import { useState } from "react";
-import { useNavigate, navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { prefix_link } from "variables/globalesVar";
 
 
@@ -64,10 +63,11 @@ const storeSurnameInLocalStorage = (surname) => {
 const storeIdInLocalStorage = (id) => {
   localStorage.setItem('id', id);
 };
+
 const storeRoleInLocalStorage = (role) => {
   localStorage.setItem('role', role);
 }
-    try {
+    try {   
       setLoading(true);
       const response = await fetch( prefix_link+'/login', {
         method: 'POST',
@@ -77,7 +77,7 @@ const storeRoleInLocalStorage = (role) => {
         body: JSON.stringify(formData),
       });
 
-      if (response.status===200) {
+      if (response.status === 200 ) {
         const data_logger = await response.json();
        // console.log('Response from Flask API:', data_logger);
   // Récupérer le role de l'utilisateur
@@ -113,7 +113,6 @@ const storeRoleInLocalStorage = (role) => {
     document.getElementById('hashed_password').value = '';
   }
 
-
       }else{
         //throw new Error('Network response was not ooook');
         const status = response.status;
@@ -133,13 +132,6 @@ const storeRoleInLocalStorage = (role) => {
   
       }
 
-  
-
-
-     
-        //setAlert({ message: 'Les mots de passe ne correspondent pas.', color: 'danger' })
-
-      
     } catch (error) {
       document.getElementById('email').value = '';
       document.getElementById('hashed_password').value = '';
@@ -158,26 +150,6 @@ const storeRoleInLocalStorage = (role) => {
       setLoading(false); // Mettre l'état de chargement à false après la réponse (qu'elle soit réussie ou non)
     }
   };
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

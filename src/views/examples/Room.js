@@ -155,10 +155,18 @@ const Room = () => {
 
 
   useEffect ( () => {
-
+    const token = localStorage.getItem('accessToken');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ${token}`
+      },
+    };
+  
     const fetchData = async () => {
       try {
-        const res = await axios.get(urlGetR);
+        const res = await axios.get(urlGetR,config);
         setRoom(res.data.data);
         setfilterRoom(res.data.data);
         setPending(false);

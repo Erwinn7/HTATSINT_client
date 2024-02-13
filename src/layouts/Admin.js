@@ -10,7 +10,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 //import routes from "routes.js";
 import {routes} from "routes.js";
 import {routesEdition} from "routes.js";
-import {routesReservation} from "routes";
+import {routesReservation} from "routes.js";
 
 
 const Admin = (props) => {
@@ -50,7 +50,7 @@ const Admin = (props) => {
           />
         ));
         
-      }
+      } 
       else {
         return null;
       }

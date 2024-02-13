@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Input } from 'reactstrap';
+import { Container, Input, Button } from 'reactstrap';
 import DataTable from "react-data-table-component";
 import Header from 'components/Headers/Header';
 import AjoutUser from 'components/Buttons/ButtonAddUser';
@@ -7,7 +7,7 @@ import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 //import {Oval} from "react-loader-spinner";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
-import { data } from 'jquery';
+import ModalUpdateUser from 'components/Modals/ModalUpdateUser';
 
 const Users = () => {
 
@@ -15,6 +15,8 @@ const [users, setUsers] = useState([]);
 const [filterUser, setfilterUser] = useState([]);
 
 const [pending, setPending] = useState(true);
+const [updateModalOpen, setUpdateModalOpen] = useState(false);
+const [selectedUser, setSelectedUser] = useState(null);
 
 async function GetUsers  () {
   const token = localStorage.getItem('accessToken');
@@ -25,7 +27,7 @@ async function GetUsers  () {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-'Authorization': `Bearer ${token}`,
+         'Authorization': `Bearer ${token}`,
 
 
       }
@@ -36,10 +38,12 @@ async function GetUsers  () {
     }
 
     const data = await response.json();
-    //console.log('Response from Flask API:', data);
+    console.log('Response from Flask API:', data);
     if (data && data.data.length > 0) {
       const usersData = data.data.map(item => ({
-        id: item.employee.id,
+        id_employee: item.employee.id,
+        id_user: item.user.id,
+        id_role: item.role[0].id,
         first_name: item.employee.first_name,
         last_name: item.employee.last_name,
         role: item.role[0].role_name, // 
@@ -68,7 +72,7 @@ async function fecthUsers  () {
     setfilterUser(data);
     setPending(false);
 
-    console.log('Response from Flask API:', data);
+   // console.log('Response from Flask API:', data);
   }
 
   catch (error) {
@@ -82,6 +86,14 @@ useEffect(() => {
   fecthUsers();
 }, [])
 
+const handleButtonUpdate = (row) => {
+  // Ouvrez le modal de client physique
+  console.log("tyjgvkh:",row);
+  setUpdateModalOpen(true);
+  setSelectedUser(row);
+
+
+};
 
 /*React.useEffect(() => {
   const timeout = setTimeout(() => {
@@ -120,6 +132,26 @@ useEffect(() => {
     {
       name: 'DERNIERE CONNEXION',
       selector: (users) => users.last_connexion,
+      sortable: true,
+    },
+    {
+      name: 'MODIFIER ',
+      cell: (row) => (
+        <Button  color="primary" onClick={() => handleButtonUpdate(row)}>Mod
+        </Button>
+      ),
+      allowOverflow: true,
+      button: true,
+      selector: (row) => row.statut,
+      sortable: true,
+    },
+    {
+      name: 'SUPPRIMER ',
+      cell: (row) => (
+        <Button disabled color="danger" onClick={() => ()=>{}}>sup
+        </Button>
+      ),
+      selector: (users) => users.email,
       sortable: true,
     },
   ];
@@ -196,6 +228,13 @@ useEffect(() => {
           </div>
         </div>
       </Container>
+      <ModalUpdateUser
+      selectedUser={selectedUser}
+        ouvert={updateModalOpen}
+        toggle={() => {
+          GetUsers();
+        setUpdateModalOpen(!updateModalOpen)}}
+      ></ModalUpdateUser>
     </div>
   );
 };
