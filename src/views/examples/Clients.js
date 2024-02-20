@@ -23,6 +23,7 @@ import { prefix_link } from "variables/globalesVar";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import ModalUpdateCustomer from 'components/Modals/ModalUpdateCustomer';
 import ModalUpdateCustomerEnt from 'components/Modals/ModalUpdateCustomerEnt';
+import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';
 
 const Tables = () => {
   const token = localStorage.getItem('accessToken');
@@ -419,7 +420,7 @@ const cols2 = [
     {
       name: 'MODIFIER',
       cell: (row) => (
-        <Button color="primary" onClick={() => handleButtonUpdate1(row)}>Mod</Button>
+        <Button color="primary" size="sm" onClick={() => handleButtonUpdate1(row)}>Modifier</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -429,7 +430,7 @@ const cols2 = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="danger" onClick={() => ()=>{}}>Sup</Button>
+        <Button color="danger" size="sm" onClick={() => ()=>{}}>Supprimer</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -532,19 +533,29 @@ selectedClient={selectedClientMoral}
                 <h3 className="mb-0">PERSONNE PHYSIQUE</h3>
               </CardHeader>
               
-                  <DataTable 
-              columns={cols}
-              data={clientsPhysique}
-              pagination
-              customStyles={customStyles}
-              responsive
-              fixedHeader={true}
-              progressPending={pending}
+              {
+                clientsPhysique.length ===0 ?
+                <div className="mt-2 mb-9">
+                  <ModalsNoRecFound text="Aucune client physique enrégistré"   />
+                </div>
+                :
+                <DataTable 
+                  columns={cols}
+                  data={clientsPhysique}
+                  pagination
+                  customStyles={customStyles}
+                  responsive
+                  fixedHeader={true}
+                  progressPending={pending}
+                  progressComponent={<CustomLoader/>}
+                  >
              
-             progressComponent={<CustomLoader/>}
-               >
-             
-              </DataTable>
+                </DataTable>
+
+              }
+
+
+              
              
             </Card>
           </div> 
@@ -571,22 +582,28 @@ selectedClient={selectedClientMoral}
               <CardHeader className="border-0">
                 <h3 className="mb-0">PERSONNE MORALE</h3>
               </CardHeader>
-              <DataTable 
-              columns={cols2}
-              data={clientsMoral}
-              pagination
-              customStyles={customStyles}
-              responsive
-              progressPending={pending}
-             
-             progressComponent={<CustomLoader/>}>
-               
-              </DataTable>
-             
+
+              {
+                clientsMoral.length ===0 ?
+                <div className="mt-2 mb-9">
+                  <ModalsNoRecFound text="Aucune client moral enrégistré"   />
+                </div>
+                :
+                <DataTable 
+                  columns={cols2}
+                  data={clientsMoral}
+                  pagination
+                  customStyles={customStyles}
+                  responsive
+                  progressPending={pending}
+                
+                  progressComponent={<CustomLoader/>}>
+                  
+                </DataTable>
+
+              }             
             </Card>
           </div>
-        
-         
         </Row>
 
 

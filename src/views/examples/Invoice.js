@@ -12,7 +12,7 @@ import { prefix_link } from "variables/globalesVar";
 import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
-import ModalsNoRecFound from "components/Modals/ModalsnoRecFound";
+import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 
 
 
@@ -62,11 +62,11 @@ const Invoice = () => {
       sortable : true
     },
     {
-      name : "STATUT",
+      name : "TYPE",
       selector : row  => (
         <Badge color="" className="badge-dot mr-4">
           <i className={row.invoiceStatus === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoiceStatus ==="Paid" ? "Payé" : "Impayée"}
+          {row.invoiceStatus ==="Paid" ? "Reçu" : "Facture"}
         </Badge>),
       sortable : true
     },
@@ -228,7 +228,7 @@ const closeModal = () => {
 
   return (
     <div  className="backgroundImgChambre">
-      < Header menuTitle= 'FACTURE' />
+      < Header menuTitle= 'FACTURE/RECU' />
       {/* Page content */}
       <Container fluid className="pt-4 pb-5">
 
@@ -241,7 +241,7 @@ const closeModal = () => {
           {
             invoice.length ===0 ? 
             <div className="mt-2 mb-9">
-              <ModalsNoRecFound text="Aucune facture disponible"   />
+              <ModalsNoRecFound text="Aucune facture enrégistré"   />
             </div>
             :
              (

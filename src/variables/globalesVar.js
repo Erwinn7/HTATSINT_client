@@ -1,3 +1,3 @@
-const prefix_link = "https://59c4-137-255-40-152.ngrok-free.app/api/v1";
+const prefix_link = "https://9f5c-137-255-18-190.ngrok-free.app/api/v1";
 
 export  { prefix_link};  

@@ -21,7 +21,7 @@ import DataTable from 'react-data-table-component';
 import Header from 'components/Headers/Header';
 import { prefix_link } from 'variables/globalesVar';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
-//import CustomLoader from 'components/CustomLoader/CustomLoader';
+import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';
 const EditionReglement = () => {
    const [loading, setLoading] = useState(false);
    const [alert,setAlert]= useState({ message: '', color: '' });
@@ -478,21 +478,31 @@ console.log('Veuillez choisir une date de debut et une date de fin');
 
 
          <div>
-         <DataTable 
-            className="" 
-            title="Liste des reglements"
-            columns={cols}
-             data={paymentsTable} 
-             keyField="id" 
-             customStyles={customStyles}
-             pagination
-            //  progressPending={pending}
-             
-             progressComponent={<CustomLoader/>}
-             >
+          
+          {
+            paymentsTable.length ===0 ?
+            <div className="mt-2 mb-9">
+              <ModalsNoRecFound text="Aucune règlement enrégistré sur cette période"/>
+            </div>
+            :
+             <DataTable 
+              className="" 
+              title="Liste des reglements"
+              columns={cols}
+              data={paymentsTable} 
+              keyField="id" 
+              customStyles={customStyles}
+              pagination
+              //  progressPending={pending}
+              
+              progressComponent={<CustomLoader/>}
+              >
               
 
             </DataTable>
+          }
+
+        
 
          </div>
 
