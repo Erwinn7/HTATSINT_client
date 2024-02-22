@@ -52,8 +52,9 @@ const Room = () => {
 
 
   const toggle = () => setIsOpen(!isOpen);
-  const toggleModal = () => setModal(!modal);
-  const toggleModalMod = () => setModalMod(!modalMod);
+
+  // const toggleMod = () => setModalMod(!modalMod);
+  // const toggleDel = () => setModalDel(!modalDel);
 
   const toggleSatCol = () => setIsStatColOpen(!isStatColOpen);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -196,7 +197,6 @@ const handleButtonDelRoom = (row) => {
 
     const token = localStorage.getItem('accessToken');
 
-
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -283,13 +283,13 @@ const handleDeleteRoom = (e) => {
 
   const deleteRoom= async () => {
     try {
-      const response = await axios.get(urlDeleteRoom, {room_id: infoRoom.room.id},config);
+      const response = await axios.put(urlDeleteRoom, {room_id: infoRoom.room.id},config);
       console.log("la reponse",response);
       setAlert({ message: "", color: '' });
       setPending(false);
     } catch (error) {
       console.error('Erreur lors de la requête put', error);
-      setAlert({ message: "Une erreur est survenue. Contactez l'administrateur", color: 'danger' });
+      setAlert({ message: "Une erreur est survenue.", color: 'danger' });
       setPending(false);
     }
   };
@@ -356,8 +356,8 @@ const formatDate = (inputDate) => {
               <Input type="text" placeholder="Recherchez une chambre..." onChange={(e)=> handleFilter(e)} />
           </div>
           <div>
-          {
-            room?.length ===0 ? 
+           {
+            room?.length === 0 ? 
             <div className="mt-7 mb-9">
               <ModalsNoRecFound text="Aucune réservation en attente de confirmation"   />
             </div>
@@ -375,7 +375,7 @@ const formatDate = (inputDate) => {
               highlightOnHover
               pagination >
             </DataTable>  )
-          }
+          } 
 
           </div>
 
@@ -477,27 +477,25 @@ const formatDate = (inputDate) => {
         </ModalFooter>
         </Modal>
 
-        <Modal isOpen={modalDel} toggle={closeModalDel} >
+         <Modal isOpen={modalDel} toggle={closeModalDel} >
          <ModalBody >
-            <div className="text-center mb-5 " fontWeight="bold" ><strong color="danger" >Voulez vous Supprimer la chambre {selectedRow.room?.room_label} ?</strong></div>
-            <div className="text-center">
-              <Button
-                color="success"
-                className="mr-9"
-                onClick={(e) => {
-                  handleDeleteRoom(e); 
-                  closeModalDel();
-                }}
-                >
-                OUI
-              </Button>
 
-              <Button color="danger" onClick={(e) => { closeModalDel() }}>
-                NON
-              </Button>
-            </div>
-         </ModalBody>
+          <div >
+            <div className="text-center mt-3 mb-5"  style={{ fontWeight:"bold"}}>  Voulez vous supprimer la chambre : <strong> {selectedRow?.room.room_label} ? </strong> </div>
+             
+             <div className="text-center ">
+             <Button  color="success" className=" ml-3 mr-9" onClick={(e) => {handleDeleteRoom(e);closeModalDel()}}>
+              OUI
+             </Button>
+             <Button  color="danger" className=" ml-3" onClick={(e) => { closeModalDel() }}>
+              NON
+             </Button>
+             </div>
+          </div > 
+        
+        </ModalBody>
         </Modal>
+     
 
         <p className="pb-5" > </p>
       </Container>
