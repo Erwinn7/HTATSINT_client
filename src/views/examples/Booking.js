@@ -281,6 +281,8 @@ const Booking = () => {
       setAlert({ message: "Cette chambre est en dépassement. Veuillez la libérer", color: 'danger' });
       return;
     }else{
+      console.log("datesRoom.dateArrivee :", datesRoom.dateArrivee)
+
 
       try {
 

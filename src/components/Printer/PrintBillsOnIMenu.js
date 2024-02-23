@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 // }
 
 
-const PrintInvoice = ({myInvoice}) => {
+const PrintBillsOnIMenu = ({myInvoice}) => {
 return(
   <Document>
     <Page size="A4" style={styles.page}>
@@ -99,7 +99,7 @@ return(
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
-          <Text fontweight="bold" >Facture N°:{myInvoice.invoiceNumber}</Text> 
+          <Text fontweight="bold" >Reçu N°:{myInvoice.invoiceNumber}</Text> 
           <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.invoiceEmitDate}</Text>
           
         </View>
@@ -152,7 +152,8 @@ return(
         <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
         <Text style={{marginBottom: 5}} >TVA: {formatNumber(0)} FCFA</Text>
         <Text style={{marginBottom: 5}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >MONTANT À PAYER: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5}} >MONTANT PAYÉ: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+
       </View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
@@ -162,4 +163,4 @@ return(
 
 }
 
-export default PrintInvoice ;
+export default PrintBillsOnIMenu ;

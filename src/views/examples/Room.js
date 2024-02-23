@@ -78,8 +78,8 @@ const Room = () => {
       sortable : true
     },
     {
-      name : "PRIX JOURNALIER (FCFA)",
-      selector : row  => row.room.room_amount,
+      name : "PRIX JOURNALIER",
+      selector : row  => formatAmount(row.room.room_amount),
       sortable : true
     },
     {
@@ -134,6 +134,21 @@ const Room = () => {
       button: true,
     },
   ]
+
+  function formatAmount(amount) {
+    // Convertir le montant en nombre
+    const numericAmount = parseFloat(amount);
+  
+    // Vérifier si le montant est un nombre
+    if (isNaN(numericAmount)) {
+      return "Montant invalide";
+    }
+  
+    // Utiliser la fonction toLocaleString pour ajouter des séparateurs de milliers
+    const formattedAmount = numericAmount.toLocaleString("fr-FR", { style: "currency", currency: "XOF" });
+  
+    return formattedAmount;
+  }
 
   const returnStatut = (statut) => {
     if (statut=== "Available_and_clean") {
@@ -224,7 +239,7 @@ const handleButtonDelRoom = (row) => {
     
     fetchData();
 
-  }, [urlGetR,modal,modalOpen,isOpen]);
+  }, [urlGetR,modal,modalOpen,isOpen,modalMod,modalDel]);
 
 const handleFilter = (e) => {
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));

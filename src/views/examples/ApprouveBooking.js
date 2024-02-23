@@ -76,8 +76,8 @@ const ApprouveBooking = () => {
       sortable : true
     },
     {
-      name : "PRIX (FCFA)", 
-      selector : row  => row.room.room_amount,
+      name : "PRIX ", 
+      selector : row  => formatAmount(row.room.room_amount),
       sortable : true
     },
     {
@@ -242,18 +242,18 @@ const handleDeleteBooking = async (e) => {
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
   
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
-    const year = date.getUTCFullYear();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
+    const year = date.getFullYear();
   
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
   
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   
     return formattedDate;
-  };;
+  };
 
 
 
@@ -313,7 +313,7 @@ return (
             :
              (
               <DataTable
-              title="Liste des chambres réservés"
+              title="Liste des chambres réservées"
               columns={cols}
               data={room}
               keyField="CHAMBRE"
@@ -333,8 +333,9 @@ return (
             <div className="text-center mb-3 " > <strong>CONFIRMER  LA RESERVATION</strong></div>
             <div className="mb-6">
               <p><strong>CHAMBRE</strong> : {selectedRow?.room.room_label} </p>
-              <p><strong>PRIX JOURNALIER</strong> : { formatAmount(selectedRow?.room.room_amount)}</p>
+              <p><strong>PRIX JOURNALIER</strong> : {formatAmount(selectedRow?.room.room_amount)}</p>
               <p><strong>NOMBRE DE JOUR</strong> : {selectedRow?.number_of_day} jours</p>
+              <p><strong>MONTANT TOTAL</strong> : {formatAmount(selectedRow?.room.room_amount*selectedRow?.number_of_day)}</p>
 
               <Row>
                 <Col sm={2}> <p> <strong>TAUX</strong> : </p></Col>
