@@ -26,8 +26,7 @@ import ModalUpdateCustomerEnt from 'components/Modals/ModalUpdateCustomerEnt';
 import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';
 
 const Tables = () => {
-  const token = localStorage.getItem('accessToken');
- 
+
  // const id= localStorage.getItem('id');
  // const [clients, setClients] = useState([]);
   const [clientsPhysique, setClientsPhysique] = useState([]);
@@ -45,7 +44,15 @@ const Tables = () => {
 async function GetClientPhysique  () {
 
   try {
-    
+     const token = localStorage.getItem('accessToken');
+     console.log('Response tok1 Flask API:', token);
+  //const token = await localStorage.getItem('accessToken');
+/*const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwNzMyMjAwNCwianRpIjoiMzY4YTk1NmEtNDUyYS00YjBhLWI5ZmEtNDRmZGIwOWNlM2QzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImplcnViYWFsYWhvdWFuZ2JlNDJAZ21haWwuY29tIiwibmJmIjoxNzA3MzIyMDA0LCJleHAiOjQ4NjA5MjIwMDQsInJvbGUiOiJhZG1pbiJ9.Cpx2kD6vxnpMJEzfe10hnkNl_Xn_WInHueWAyLZLp1w";//*/
+
+/*const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwNzM3ODY1MCwianRpIjoiYjZiMWJmNjYtNzJjMS00MDA5LWEwNmItZTkzNWJmNDhhMzE1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImplcnViYWFsYWhvdWFuZ2JlNDJAZ21haWwuY29tIiwibmJmIjoxNzA3Mzc4NjUwLCJleHAiOjQ4NjA5Nzg2NTAsInJvbGUiOiJhZG1pbiJ9.nCaeNJLuSETI33f0UbDRpY5J2EVzXcTVM5JTAHwYz3k";//*/
+
+
+
     const response = await fetch( prefix_link+'/clients_physique', {
       method: 'GET',
       headers: {
@@ -114,7 +121,8 @@ console.log('Response from Flask API:', error.type);
 async function GetClientMoral  () {
 
   try {
-    
+    const token = localStorage.getItem('accessToken');
+    console.log('Response token Flask API:', token);
     const response = await fetch( prefix_link+'/clients_morale', {
       method: 'GET',
       headers: {
@@ -338,7 +346,7 @@ const cols = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="danger" onClick={() => ()=>{}}>Sup</Button>
+        <Button disabled color="danger" onClick={() => ()=>{}}>Sup</Button>
       ),
       allowOverflow: true,
       button: true,

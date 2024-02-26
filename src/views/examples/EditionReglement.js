@@ -235,6 +235,11 @@ try {
  
   } else {
     setLoading(false);
+    console.log('Aucun règlement ou client trouvé dans les données.');
+    setTimeout(() => {
+      setAlert({ message: '', color: '' });
+       
+    }, 10000);
     console.error('Erreur lors de la requête POST - Statut HTTP:', response.status, );
     setSave(false);
   }

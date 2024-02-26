@@ -28,7 +28,7 @@ function MyFormEnt() {
 
     try {
       setLoading(true);
-      console.log('formData:',id);
+      console.log('formData:',formData);
       const response = await fetch(prefix_link+'/client', {
         method: 'POST',
         headers: {
