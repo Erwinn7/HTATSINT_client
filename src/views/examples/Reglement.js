@@ -58,7 +58,7 @@ const [pending, setPending] = useState(true);
         const invoices = item.invoice;
         const totalDue = item.amount;
         const numberOfInvoices = invoices.length;
-        console.log('Response from Flask API:', client);
+        console.log('client:', client);
         return {
           ...client,
           totalDue,
@@ -66,7 +66,7 @@ const [pending, setPending] = useState(true);
           invoices,
         };
       });
-
+console.log('clientdata:', clientsData);
       setClients(clientsData);
       return clientsData;
 

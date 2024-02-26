@@ -12,7 +12,7 @@ import { prefix_link } from "variables/globalesVar";
 import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
-import ModalsNoRecFound from "components/Modals/ModalsnoRecFound";
+import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 
 
 
