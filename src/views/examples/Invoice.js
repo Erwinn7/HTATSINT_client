@@ -12,6 +12,7 @@ import { prefix_link } from "variables/globalesVar";
 import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 
 
 
@@ -84,11 +85,11 @@ const Invoice = () => {
     const fetchInvoiceData = async () => {
       try {
         const response = await axios.post(urlGetRoomAndOccup, {invoice_id: row.invoiceId },config);
-        //console.log("Reponse du serveur: ",response.data) ;
+        console.log("Reponse du serveur: ",response.data) ;
         const myDatas = response.data;
 
         const newInvoiceData = {
-          invoiceEmitDate: formatDate(row.invoiceEmitDate) ,
+          invoiceEmitDate: formatDate(row.invoiceEmitDate),
           invoiceNumber: row.invoiceNumber,
           invoiceStatus: row.invoiceStatus,
           customerFullname: row.costumerFullname,
@@ -96,7 +97,7 @@ const Invoice = () => {
           costumerEmail: row.costumerEmail,
           costumerIfu: row.costumerIfu,  
           designation: myDatas.room.room_label,
-          dayly_price: myDatas.room.room_amount,
+          dayly_price: row.invoiceAmount,
           number_of_days: myDatas.number_of_day,
         }
 
@@ -141,18 +142,19 @@ const Invoice = () => {
 const formatDate = (inputDate) => {
   const date = new Date(inputDate);
 
-  const day = date.getUTCDate();
-  const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
   const year = date.getUTCFullYear();
 
-  const hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const seconds = date.getUTCSeconds();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
 
   const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
   return formattedDate;
 };
+
 
 
 
@@ -222,19 +224,6 @@ const closeModal = () => {
 
 
 
-// const sampleInvoice = {
-//   date_facture: '2023-12-01',
-//   numero_facture: '0021/PERL/23',
-//   nClient: 'Hotel le pelerin',
-//   aClient: 'DASSA',
-//   tClient: '0022961656895',
-//   designation: 'Chambre 305',
-//   nombre_de_jour: 5,
-//   prix_journalier: 25000,
-//   prix_total: 5 * 25000,
-// };
-
-
 
 
   return (
@@ -250,7 +239,12 @@ const closeModal = () => {
         </div>
         <div>
           {
-            invoice && (
+            invoice.length ===0 ? 
+            <div className="mt-2 mb-9">
+              <ModalsNoRecFound text="Aucune facture disponible"   />
+            </div>
+            :
+             (
               <DataTable
               title="Liste des factures"
               columns={cols}

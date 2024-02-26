@@ -12,6 +12,7 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 import "assets/css/roomDesign.css";
 import DataTable from "react-data-table-component";
 import { prefix_link } from "variables/globalesVar";
+import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 import axios from "axios";
 
 
@@ -51,7 +52,6 @@ const ApprouveBooking = () => {
       selector : row  => ( 
           <div  className="text-center"  >
             { row.customer.institute_name ? row.customer.institute_name + " - " + row.customer.phone_number  : row.customer.first_name +" "+ row.customer.last_name +" - "+ row.customer.phone_number}
-
           </div>
         )  ,
       sortable : true 
@@ -81,7 +81,7 @@ const ApprouveBooking = () => {
       sortable : true
     },
     {
-      name: 'ACTIONS',
+      name: 'SUPPRIMER',
       cell: (row) => (
         <Button color="danger" size="sm"  onClick={() => handleButtonClick(row)}>Supprimer</Button>
       ),
@@ -239,24 +239,21 @@ const handleDeleteBooking = async (e) => {
   // console.log(selectedRow.booking.id)
 
   }
-
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
-    // Ajouter 1 heure pour passer au fuseau horaire GMT+1
-    date.setHours(date.getHours() + 1);
   
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1; // Les mois commencent à 0, donc ajoutez 1
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
     const year = date.getUTCFullYear();
   
-    const hours = date.getUTCHours();
-    const minutes = date.getUTCMinutes();
-    const seconds = date.getUTCSeconds();
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
   
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   
     return formattedDate;
-  };
+  };;
 
 
 
@@ -279,10 +276,25 @@ const handleChange = (e) => {
 
 
 
+function formatAmount(amount) {
+  // Convertir le montant en nombre
+  const numericAmount = parseFloat(amount);
+
+  // Vérifier si le montant est un nombre
+  if (isNaN(numericAmount)) {
+    return "Montant invalide";
+  }
+
+  // Utiliser la fonction toLocaleString pour ajouter des séparateurs de milliers
+  const formattedAmount = numericAmount.toLocaleString("fr-FR", { style: "currency", currency: "XOF" });
+
+  return formattedAmount;
+}
+
 
 return (
       <div  className="backgroundImgChambre">
-      <Header menuTitle = "CONFIRMER RESERVATION" />
+      <Header menuTitle = "CONFIRMATION" />
       {alert.message && <Alert className="mb-0 m-auto text-center center" color={alert.color}>{alert.message}</Alert>}
 
       {/* Page content */}
@@ -294,7 +306,12 @@ return (
           </div>
           <div>
           {
-            room && (
+            room.length ===0 ? 
+            <div className="mt-7 mb-9">
+              <ModalsNoRecFound text="Aucune réservation en attente de confirmation"   />
+            </div>
+            :
+             (
               <DataTable
               title="Liste des chambres réservés"
               columns={cols}
@@ -316,7 +333,9 @@ return (
             <div className="text-center mb-3 " > <strong>CONFIRMER  LA RESERVATION</strong></div>
             <div className="mb-6">
               <p><strong>CHAMBRE</strong> : {selectedRow?.room.room_label} </p>
-              <p><strong>PRIX</strong> : {selectedRow?.room.room_amount} FCFA</p>
+              <p><strong>PRIX JOURNALIER</strong> : { formatAmount(selectedRow?.room.room_amount)}</p>
+              <p><strong>NOMBRE DE JOUR</strong> : {selectedRow?.number_of_day} jours</p>
+
               <Row>
                 <Col sm={2}> <p> <strong>TAUX</strong> : </p></Col>
                 <Col sm={4} >
@@ -335,7 +354,7 @@ return (
                 </Col>
               </Row>
              
-              <p> <strong>MONTANT A PAYER</strong> : <span className="text-success font-weight-bold" >{(selectedRow?.room.room_amount * bookingObj?.percentage )/100 } FCFA</span></p>
+              <p> <strong>MONTANT A PAYER</strong> : <span className="text-success font-weight-bold" >{formatAmount((selectedRow?.room.room_amount * selectedRow?.number_of_day * bookingObj?.percentage )/100 )}</span></p>
 
             </div>
             <div className="text-center">
