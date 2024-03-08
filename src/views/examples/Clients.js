@@ -328,7 +328,7 @@ const cols = [
     {
       name: 'MODIFIER',
       cell: (row) => (
-        <Button color="primary" onClick={() => handleButtonUpdate1(row)}>Mod</Button>
+        <Button color="primary" size="sm" onClick={() => handleButtonUpdate1(row)}>Modifier</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -338,7 +338,7 @@ const cols = [
     {
       name: 'SUPPRIMER',
       cell: (row) => (
-        <Button color="danger" onClick={() => ()=>{}}>Sup</Button>
+        <Button color="danger" size="sm" onClick={() => ()=>{}}>Supprimer</Button>
       ),
       allowOverflow: true,
       button: true,

@@ -3,8 +3,13 @@ import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/render
 import logo from "assets/img/brand/logo.png";
 
 // Fonction pour formater les nombres avec des virgules pour la lisibilité
-const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
+const formatNumber = (nombre) => {
+  // console.log("nombre:", nombre);
+  if (nombre === undefined) {
+      return "N/A"; // Ou n'importe quelle valeur par défaut que vous préférez
+  }
+  return nombre.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 // Styles pour le document
 const styles = StyleSheet.create({
   page: {
@@ -50,29 +55,17 @@ const styles = StyleSheet.create({
   tableCell: { margin: 'auto', marginTop: 5, fontSize: 10, marginBottom:5},
   tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
   totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
-  slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
+  slogan: {textAlign: 'center', marginTop: 50 , fontStyle: 'italic'},
   separator: {
     borderBottomWidth: 5,
     borderBottomColor: 'black',
     marginVertical: 10, // Ajustez cet espace vertical selon vos besoins
     borderBottomStyle: 'dotted',
-    marginBottom: 5,
+    marginBottom: 15,
     marginTop: 0,
   },
 });
 
-// newInvoiceData = {
-//   invoiceEmitDate: row.invoiceEmitDate ,
-//   invoiceNumber: row.invoiceNumber,
-//   invoiceStatus: row.invoiceStatus,
-//   customerFullname: row.costumerFullname,
-//   customerAddress: row.costumerAddress,
-//   costumerEmail: row.costumerEmail,
-//   costumerIfu: row.costumerIfu,  
-//   designation: myDatas.room.room_label,
-//   dayly_price: myDatas.room.room_amount,
-//   number_of_days: myDatas.number_of_day,
-// }
 
 
 const PrintBillsOnIMenu = ({myInvoice}) => {
@@ -84,15 +77,15 @@ return(
         {/* Logo de l'entreprise */}
         <View style={{flexDirection: 'row',flexWrap: 'wrap'}}>
  
-       <Text style={{textAlign: "center", width: "100%"}}>CENTRE D'HEBERGEMENT LE PELERIN DE DASSA-ZOUME</Text>
+            <Text style={{textAlign: "center", width: "100%"}}>CENTRE D'HEBERGEMENT LE PELERIN DE DASSA-ZOUME</Text>
+            
+          <Text style={{textAlign: "center", width: "100%"}}>IFU: 774158522147852 | RCCM: CZ-774158522147852</Text>
+          <Text style={{textAlign: "center", width: "100%"}}>97009328/95887445</Text>
       
-    <Text style={{textAlign: "center", width: "100%"}}>IFU: 774158522147852 | RCCM: CZ-774158522147852</Text>
-    <Text style={{textAlign: "center", width: "100%"}}>97009328/95887445</Text>
- 
         </View>
        
        
-        
+         
       </View> 
       <View style={styles.separator} />
       <div className="mb-3"></div>
@@ -105,7 +98,7 @@ return(
         </View>
         <View>
           {/* Numéro de facture et informations client */}
-          <Text>DESTINATAIRE</Text>
+          <Text>CLIENT</Text>
           <Text style={{fontSize:10}} >{myInvoice.customerFullname}</Text>
           <Text style={{fontSize:10}} >{myInvoice.customerAddress}</Text>
           <Text style={{fontSize:10}} >{myInvoice.costumerEmail}</Text>
@@ -127,7 +120,7 @@ return(
               <Text style={styles.tableCell}>MONTANT(Journalier)</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>TOTAL</Text>
+              <Text style={styles.tableCell}>MONTANT TOTAL</Text>
             </View>
           </View>
           {/* Ligne pour chaque article */}
@@ -149,10 +142,10 @@ return(
       </View>
       {/* Lignes pour le total, la TVA et le total TTC */}
       <View style={styles.totals}>
-        <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >TVA: {formatNumber(0)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >MONTANT PAYÉ: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >TVA: {formatNumber(0)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Montant payé: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
 
       </View>
       {/* Slogan */}

@@ -4,8 +4,13 @@ import logo from "assets/img/brand/logo.png";
 //const numberToWords = require('number-to-words');
 
 // Fonction pour formater les nombres avec des virgules pour la lisibilité
-const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
+const formatNumber = (nombre) => {
+  console.log("nombre:", nombre);
+  if (nombre === undefined) {
+      return "N/A"; // Ou n'importe quelle valeur par défaut que vous préférez
+  }
+  return nombre.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}; 
 // Styles pour le document
 const styles = StyleSheet.create({
   page: {
