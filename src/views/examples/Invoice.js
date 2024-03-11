@@ -114,12 +114,13 @@ const Invoice = () => {
           costumerEmail: row.costumerEmail,
           costumerIfu: row.costumerIfu,  
           designation: myDatas.room.room_label,
-          dayly_price: row.invoiceAmount,
+          dayly_price: myDatas.room.room_amount,
           number_of_days: myDatas.number_of_day,
+          invoiceAmount: myDatas.invoice.invoice_amount,
         }
 
         setSelectedRow(newInvoiceData);
-        //console.log(newInvoiceData);
+        console.log(newInvoiceData);
 
 
       } catch (error) {
@@ -257,7 +258,7 @@ const closeModal = () => {
         <div>
           {
             invoice.length ===0 ? 
-            <div className="mt-2 mb-9">
+            <div className="mt-5 mb-9">
               <ModalsNoRecFound text="Aucune facture enrégistré"   />
             </div>
             :
@@ -279,11 +280,11 @@ const closeModal = () => {
           <Modal isOpen={modalOpen} toggle={closeModal} size="lg" >
             { selectedRow && (
             selectedRow?.invoiceStatus === 'Paid' ?
-            <PDFViewer width="100%" height="600px" >
+            <PDFViewer width="100%" height="800px" >
               <PrintBillsOnIMenu myInvoice={selectedRow} />
             </PDFViewer>
             :
-            <PDFViewer width="100%" height="600px" >
+            <PDFViewer width="100%" height="800px" >
               <PrintInvoice myInvoice={selectedRow} />
             </PDFViewer>)
             }            

@@ -2,8 +2,13 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import logo from "assets/img/brand/logo.png";
 
-// Fonction pour formater les nombres avec des virgules pour la lisibilité
-const formatNumber = (number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const formatNumber = (nombre) => {
+  // console.log("nombre:", nombre);
+  if (nombre === undefined) {
+      return "N/A"; // Ou n'importe quelle valeur par défaut que vous préférez
+  }
+  return nombre.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 
 // Styles pour le document
 const styles = StyleSheet.create({
@@ -50,32 +55,22 @@ const styles = StyleSheet.create({
   tableCell: { margin: 'auto', marginTop: 5, fontSize: 10, marginBottom:5},
   tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
   totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
-  slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
+  slogan: {textAlign: 'center', marginTop: 50 , fontStyle: 'italic'},
   separator: {
     borderBottomWidth: 5,
     borderBottomColor: 'black',
     marginVertical: 10, // Ajustez cet espace vertical selon vos besoins
     borderBottomStyle: 'dotted',
-    marginBottom: 5,
+    marginBottom: 15,
     marginTop: 0,
   },
 });
 
-// newInvoiceData = {
-//   invoiceEmitDate: row.invoiceEmitDate ,
-//   invoiceNumber: row.invoiceNumber,
-//   invoiceStatus: row.invoiceStatus,
-//   customerFullname: row.costumerFullname,
-//   customerAddress: row.costumerAddress,
-//   costumerEmail: row.costumerEmail,
-//   costumerIfu: row.costumerIfu,  
-//   designation: myDatas.room.room_label,
-//   dayly_price: myDatas.room.room_amount,
-//   number_of_days: myDatas.number_of_day,
-// }
 
 
 const PrintInvoice = ({myInvoice}) => {
+
+
 return(
   <Document>
     <Page size="A4" style={styles.page}>
@@ -99,13 +94,13 @@ return(
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
-          <Text fontweight="bold" >Facture N°:{myInvoice.invoiceNumber}</Text> 
+          <Text style={{fontWeight: "bold" }} >Facture N°:{myInvoice.invoiceNumber}</Text> 
           <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.invoiceEmitDate}</Text>
           
         </View>
         <View>
           {/* Numéro de facture et informations client */}
-          <Text>DESTINATAIRE</Text>
+          <Text>CLIENT</Text>
           <Text style={{fontSize:10}} >{myInvoice.customerFullname}</Text>
           <Text style={{fontSize:10}} >{myInvoice.customerAddress}</Text>
           <Text style={{fontSize:10}} >{myInvoice.costumerEmail}</Text>
@@ -145,14 +140,14 @@ return(
               <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.dayly_price * myInvoice.number_of_days)}</Text>
             </View>
           </View>
-        </View>
+        </View> 
       </View>
       {/* Lignes pour le total, la TVA et le total TTC */}
       <View style={styles.totals}>
-        <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >TVA: {formatNumber(0)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5}} >MONTANT À PAYER: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >TVA: {formatNumber(0)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Montant à payer: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
       </View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
