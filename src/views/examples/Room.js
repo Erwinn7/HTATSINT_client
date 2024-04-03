@@ -17,6 +17,7 @@ import CustomLoader from 'components/CustomLoader/CustomLoader';
 import "assets/css/roomDesign.css";
 import DataTable from "react-data-table-component";
 import { prefix_link } from "variables/globalesVar";
+import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 import axios from "axios";
 
 
@@ -27,11 +28,14 @@ const Room = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isStatColOpen, setIsStatColOpen] = useState(false);
-  const urlDeleteBooking = prefix_link + "/canceled_booking";
+  const urlDeleteBooking = prefix_link + "/canceled_booking"; 
+  const  urlDeleteRoom = prefix_link + "/delete_room";
 
 
   const [modal, setModal] = useState(false);
   const [modalMod, setModalMod] = useState(false);
+  const [modalDel, setModalDel] = useState(false);
+
 
   const [room, setRoom] = useState([]);
   const [pending, setPending] = useState(true);
@@ -48,8 +52,9 @@ const Room = () => {
 
 
   const toggle = () => setIsOpen(!isOpen);
-  const toggleModal = () => setModal(!modal);
-  const toggleModalMod = () => setModalMod(!modalMod);
+
+  // const toggleMod = () => setModalMod(!modalMod);
+  // const toggleDel = () => setModalDel(!modalDel);
 
   const toggleSatCol = () => setIsStatColOpen(!isStatColOpen);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -73,8 +78,8 @@ const Room = () => {
       sortable : true
     },
     {
-      name : "PRIX JOURNALIER (FCFA)",
-      selector : row  => row.room.room_amount,
+      name : "PRIX JOURNALIER",
+      selector : row  => formatAmount(row.room.room_amount),
       sortable : true
     },
     {
@@ -130,6 +135,21 @@ const Room = () => {
     },
   ]
 
+  function formatAmount(amount) {
+    // Convertir le montant en nombre
+    const numericAmount = parseFloat(amount);
+  
+    // Vérifier si le montant est un nombre
+    if (isNaN(numericAmount)) {
+      return "Montant invalide";
+    }
+  
+    // Utiliser la fonction toLocaleString pour ajouter des séparateurs de milliers
+    const formattedAmount = numericAmount.toLocaleString("fr-FR", { style: "currency", currency: "XOF" });
+  
+    return formattedAmount;
+  }
+
   const returnStatut = (statut) => {
     if (statut=== "Available_and_clean") {
       return(<span>Disponible</span>)
@@ -177,18 +197,20 @@ const Room = () => {
 const handleButtonModRoom = (row) => {
   fetchRoomData(row);
   setSelectedRow(row);
-    setModalMod(true);
+  setModalMod(true);
 }
 
 const handleButtonDelRoom = (row) => {
-  
+  fetchRoomData(row);
+  setSelectedRow(row);
+  setModalDel(true);
 }
 
   useEffect ( () => {
 
+    console.log('debut : ')
 
     const token = localStorage.getItem('accessToken');
-
 
     const config = {
       headers: {
@@ -202,10 +224,11 @@ const handleButtonDelRoom = (row) => {
     const fetchData = async () => {
       try {
         const res = await axios.get(urlGetR,config);
-        setRoom(res.data.data);
-        setfilterRoom(res.data.data);
-        setPending(false);
         console.log('rooom : ',res.data.data)
+        setRoom(res.data?.data);
+        setfilterRoom(res.data?.data);
+        setPending(false);
+        console.log('rooom : ',res.data?.data)
         setAlert({ message: "", color: '' });
       } catch (error) {
         console.log('Erreur lors de la requête GET', error);
@@ -216,7 +239,7 @@ const handleButtonDelRoom = (row) => {
     
     fetchData();
 
-  }, [urlGetR,modal,modalOpen,isOpen]);
+  }, [urlGetR,modal,modalOpen,isOpen,modalMod,modalDel]);
 
 const handleFilter = (e) => {
   const newRoom = filterRoom?.filter(row => row.room?.room_label.toLowerCase().includes(e.target.value.toLowerCase()));
@@ -227,8 +250,8 @@ const fetchRoomData = async (row) => {
   try {
     //console.log("id:",row.room.id)
     const res = await axios.post(urlPostOneRoom, {
-      id: row.room.id,
-      room_status: row.room.room_status
+      id: row.room?.id,
+      room_status: row.room?.room_status
     }, config);      
     setInfoRoom(res.data);
     console.log("inforoom: ",res.data);
@@ -266,7 +289,30 @@ const handleDeleteBooking = (e) => {
 
   deleteBooking();
 
-  }
+}
+
+
+const handleDeleteRoom = (e) => {
+  e.preventDefault();
+  console.log("Room ID",infoRoom.room.id)
+
+  const deleteRoom= async () => {
+    try {
+      const response = await axios.put(urlDeleteRoom, {room_id: infoRoom.room.id},config);
+      console.log("la reponse",response);
+      setAlert({ message: "", color: '' });
+      setPending(false);
+    } catch (error) {
+      console.error('Erreur lors de la requête put', error);
+      setAlert({ message: "Une erreur est survenue.", color: 'danger' });
+      setPending(false);
+    }
+  };
+
+  deleteRoom();
+
+}
+
 
 const closeModal = () => {
   setModalOpen(false);
@@ -275,6 +321,10 @@ const closeModal = () => {
 
 const closeModalMod = () => {
   setModalMod(false);
+};
+
+const closeModalDel = () => {
+  setModalDel(false);
 };
 
 
@@ -293,10 +343,6 @@ const formatDate = (inputDate) => {
 
   return formattedDate;
 }; 
-
-const UpdateRoomSubmit = (e) => {
-  
-}
 
 
   return (
@@ -325,8 +371,13 @@ const UpdateRoomSubmit = (e) => {
               <Input type="text" placeholder="Recherchez une chambre..." onChange={(e)=> handleFilter(e)} />
           </div>
           <div>
-          {
-            room && (
+           {
+            room?.length === 0 ? 
+            <div className="mt-7 mb-9">
+              <ModalsNoRecFound text="Aucune réservation en attente de confirmation"   />
+            </div>
+            :
+            (
               <DataTable
               title="Liste des chambres"
               columns={cols}
@@ -339,7 +390,7 @@ const UpdateRoomSubmit = (e) => {
               highlightOnHover
               pagination >
             </DataTable>  )
-          }
+          } 
 
           </div>
 
@@ -428,7 +479,7 @@ const UpdateRoomSubmit = (e) => {
           {
             infoRoom && (
               <div >
-                <div style={{ textAlign:"center", fontWeight:"bold",fontSize:"23px", position:"center",marginBottom:"20px"}}> {selectedRow.room.room_label.toUpperCase()} </div>
+                <div style={{ textAlign:"center", fontWeight:"bold",fontSize:"23px", position:"center",marginBottom:"20px"}}> {selectedRow.room?.room_label.toUpperCase()} </div>
               </div > 
             )}          
           <UpdateRommForm selectedRoom={selectedRow} />
@@ -440,6 +491,27 @@ const UpdateRoomSubmit = (e) => {
           </Button>
         </ModalFooter>
         </Modal>
+
+         <Modal isOpen={modalDel} toggle={closeModalDel} >
+         <ModalBody >
+
+          <div >
+            <div className="text-center mt-3 mb-5"  style={{ fontWeight:"bold"}}>  Voulez vous supprimer la chambre : <strong> {selectedRow?.room.room_label} ? </strong> </div>
+             
+             <div className="text-center ">
+             <Button  color="success" className=" ml-3 mr-9" onClick={(e) => {handleDeleteRoom(e);closeModalDel()}}>
+              OUI
+             </Button>
+             <Button  color="danger" className=" ml-3" onClick={(e) => { closeModalDel() }}>
+              NON
+             </Button>
+             </div>
+          </div > 
+        
+        </ModalBody>
+        </Modal>
+     
+
         <p className="pb-5" > </p>
       </Container>
     </div>

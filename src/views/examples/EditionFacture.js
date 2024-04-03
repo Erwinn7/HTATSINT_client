@@ -7,6 +7,7 @@ import { prefix_link } from 'variables/globalesVar';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import axios from 'axios';
 import PrintInvoicebyCustumer from 'components/Printer/PrintInvoicebyCustomer';
+import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';  
 import { PDFViewer } from '@react-pdf/renderer';
 
 
@@ -24,7 +25,7 @@ const config = {
     'Access-Control-Allow-Origin': '*', 
     'Authorization': `Bearer ${token}`
   },
-};
+};  
  
 
 const [invoice, setInvoice] = useState([]);
@@ -61,11 +62,11 @@ const [modalOpen, setModalOpen] = useState(false);
       sortable: true,
     },
     {
-      name : "STATUT",
+      name : "TYPE",
       selector : row  => (
         <Badge color="" className="badge-dot mr-4">
           <i className={row.invoice_status === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoice_status ==="Paid" ? "Payé" : "Impayé"}
+          {row.invoice_status ==="Paid" ? "Reçu" : "Facture"}
         </Badge>),
       sortable : true
     },
@@ -317,19 +318,28 @@ const closeModal = () => {
           </div>
           
           <div>
-            <DataTable 
-            className="" 
-            title="Liste des factures "
-            columns={cols}
-            data={invoice} 
-            keyField="id" 
-            pagination
-            customStyles={customStyles}
-            progressPending={pending}
-            highlightOnHover
-            progressComponent={<CustomLoader/>}
-             >
-            </DataTable>
+            {
+              invoice.length ===0 ?
+              <div className="mt-2 mb-9">
+                <ModalsNoRecFound text="Aucune facture disponible sur cette période"   />
+              </div>
+              :
+              <DataTable 
+                className="" 
+                title="Liste des factures "
+                columns={cols}
+                data={invoice} 
+                keyField="id" 
+                pagination
+                customStyles={customStyles}
+                progressPending={pending}
+                highlightOnHover
+                progressComponent={<CustomLoader/>}
+                >
+              </DataTable>
+
+            }
+            
           </div>
 
           <div>

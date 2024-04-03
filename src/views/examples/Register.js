@@ -7,6 +7,7 @@ import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 //import {Oval} from "react-loader-spinner";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';
 import ModalUpdateUser from 'components/Modals/ModalUpdateUser';
 
 const Users = () => {
@@ -137,7 +138,7 @@ const handleButtonUpdate = (row) => {
     {
       name: 'MODIFIER ',
       cell: (row) => (
-        <Button  color="primary" onClick={() => handleButtonUpdate(row)}>Mod
+        <Button  color="primary" size="sm" onClick={() => handleButtonUpdate(row)}>Modifier
         </Button>
       ),
       allowOverflow: true,
@@ -148,7 +149,7 @@ const handleButtonUpdate = (row) => {
     {
       name: 'SUPPRIMER ',
       cell: (row) => (
-        <Button disabled color="danger" onClick={() => ()=>{}}>sup
+        <Button disabled color="danger" size='sm' onClick={() => ()=>{}}>Supprimer
         </Button>
       ),
       selector: (users) => users.email,
@@ -210,21 +211,29 @@ const handleButtonUpdate = (row) => {
         <div>
           
           <div>
-            <DataTable 
-            className="" 
-            title="Liste des utilisateurs" 
-            columns={cols}
-             data={users} 
-             keyField="id" 
-             customStyles={customStyles}
-             pagination
-            // progressPending={pending}
-             
-             progressComponent={<CustomLoader/>}
-             >
-              
 
-            </DataTable>
+            {
+              users.length ===0 ?
+              <div className="mt-2 mb-9">
+                <ModalsNoRecFound text="Aucune chambre disponible sur cette période"   />
+              </div>
+              :
+              <DataTable 
+                className="" 
+                title="Liste des utilisateurs" 
+                columns={cols}
+                data={users} 
+                keyField="id" 
+                customStyles={customStyles}
+                pagination
+                // progressPending={pending}
+                
+                progressComponent={<CustomLoader/>}
+                >
+              </DataTable>
+            }
+
+            
           </div>
         </div>
       </Container>

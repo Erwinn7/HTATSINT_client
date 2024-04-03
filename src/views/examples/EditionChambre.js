@@ -7,6 +7,7 @@ import 'assets/css/customerDesign.css';
 import { prefix_link } from 'variables/globalesVar';
 //import {Oval} from "react-loader-spinner";
 import CustomLoader from 'components/CustomLoader/CustomLoader';
+import ModalsNoRecFound from 'components/Modals/ModalsNoRecFound';
 
 const Users = () => {
 
@@ -177,21 +178,29 @@ useEffect(() => {
         <div>
           
           <div>
-            <DataTable 
-            className="" 
-            title="Liste des utilisateurs" 
-            columns={cols}
-             data={users} 
-             keyField="id" 
-             customStyles={customStyles}
-             pagination
-             progressPending={pending}
-             
-             progressComponent={<CustomLoader/>}
-             >
-              
 
-            </DataTable>
+
+            {
+              users.length ===0 ?
+              <div className="mt-2 mb-9">
+                <ModalsNoRecFound text="Aucune chambre disponible sur cette période"   />
+              </div>
+              :
+              <DataTable 
+                className="" 
+                title="Liste des utilisateurs" 
+                columns={cols}
+                data={users} 
+                keyField="id" 
+                customStyles={customStyles}
+                pagination
+                progressPending={pending}
+                progressComponent={<CustomLoader/>}
+                >
+              </DataTable>
+            }
+
+            
           </div>
         </div>
       </Container>

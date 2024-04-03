@@ -13,6 +13,7 @@ import PrintInvoice from "components/Printer/PrintInvoice";
 import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
+import PrintBillsOnIMenu from "components/Printer/PrintBillsOnIMenu";
 
 
 
@@ -57,16 +58,16 @@ const Invoice = () => {
       sortable : true
     },
     {
-      name : "MONTANT (FCFA)",
-      selector : row  => row.invoiceAmount,
+      name : "MONTANT ",
+      selector : row  => formatAmount(row.invoiceAmount),
       sortable : true
     },
     {
-      name : "STATUT",
+      name : "TYPE",
       selector : row  => (
         <Badge color="" className="badge-dot mr-4">
           <i className={row.invoiceStatus === 'Paid' ? "bg-success" : "bg-danger"} />
-          {row.invoiceStatus ==="Paid" ? "Payé" : "Impayée"}
+          {row.invoiceStatus ==="Paid" ? "Reçu" : "Facture"}
         </Badge>),
       sortable : true
     },
@@ -79,6 +80,22 @@ const Invoice = () => {
       button: true,
     },
   ]
+
+  function formatAmount(amount) {
+    // Convertir le montant en nombre
+    const numericAmount = parseFloat(amount);
+  
+    // Vérifier si le montant est un nombre
+    if (isNaN(numericAmount)) {
+      return "Montant invalide";
+    }
+  
+    // Utiliser la fonction toLocaleString pour ajouter des séparateurs de milliers
+    const formattedAmount = numericAmount.toLocaleString("fr-FR", { style: "currency", currency: "XOF" });
+  
+    return formattedAmount;
+  }
+
 
   const handleButtonClick = async (row) => {
    
@@ -97,12 +114,13 @@ const Invoice = () => {
           costumerEmail: row.costumerEmail,
           costumerIfu: row.costumerIfu,  
           designation: myDatas.room.room_label,
-          dayly_price: row.invoiceAmount,
+          dayly_price: myDatas.room.room_amount,
           number_of_days: myDatas.number_of_day,
+          invoiceAmount: myDatas.invoice.invoice_amount,
         }
 
         setSelectedRow(newInvoiceData);
-        //console.log(newInvoiceData);
+        console.log(newInvoiceData);
 
 
       } catch (error) {
@@ -139,21 +157,21 @@ const Invoice = () => {
 
 
 
-const formatDate = (inputDate) => {
-  const date = new Date(inputDate);
-
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
-  const year = date.getUTCFullYear();
-
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-
-  return formattedDate;
-};
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+  
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0, donc ajoutez 1
+    const year = date.getFullYear();
+  
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  
+    return formattedDate;
+  };
 
 
 
@@ -228,7 +246,7 @@ const closeModal = () => {
 
   return (
     <div  className="backgroundImgChambre">
-      < Header menuTitle= 'FACTURE' />
+      < Header menuTitle= 'FACTURE/RECU' />
       {/* Page content */}
       <Container fluid className="pt-4 pb-5">
 
@@ -240,8 +258,8 @@ const closeModal = () => {
         <div>
           {
             invoice.length ===0 ? 
-            <div className="mt-2 mb-9">
-              <ModalsNoRecFound text="Aucune facture disponible"   />
+            <div className="mt-5 mb-9">
+              <ModalsNoRecFound text="Aucune facture enrégistré"   />
             </div>
             :
              (
@@ -260,14 +278,18 @@ const closeModal = () => {
         </div>
         <div>
           <Modal isOpen={modalOpen} toggle={closeModal} size="lg" >
-            {
-            selectedRow &&
-            <PDFViewer width="100%" height="600px" >
-              <PrintInvoice myInvoice={selectedRow} />
+            { selectedRow && (
+            selectedRow?.invoiceStatus === 'Paid' ?
+            <PDFViewer width="100%" height="800px" >
+              <PrintBillsOnIMenu myInvoice={selectedRow} />
             </PDFViewer>
+            :
+            <PDFViewer width="100%" height="800px" >
+              <PrintInvoice myInvoice={selectedRow} />
+            </PDFViewer>)
             }            
           </Modal>
-        </div>
+        </div>in
 
       </Container>
     </div>

@@ -60,7 +60,7 @@ export const routes = [
   },
   {
     path: "/invoice",
-    name: "FACTURE",
+    name: "FACTURE/RECU",
     icon: "fa fa-clipboard text-dark",
     component: <Invoice />,
     layout: "/admin",
@@ -129,7 +129,7 @@ export const routesRecep = [
   },
   {
     path: "/invoice",
-    name: "FACTURE",
+    name: "FACTURE/RECU",
     icon: "fa fa-clipboard text-red",
     component: <Invoice />,
     layout: "/recep",

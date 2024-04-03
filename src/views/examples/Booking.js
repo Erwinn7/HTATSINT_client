@@ -241,6 +241,8 @@ const Booking = () => {
       const response = await axios.post(urlGetFreeRoom, {
         start_date: formattedStartDate,
         end_date: formattedEndDate,
+        real_start_date: datesRoom.dateArrivee,
+        real_end_date: datesRoom.dateDepart,
         user_id : user_id
       }, config);
 
@@ -279,6 +281,8 @@ const Booking = () => {
       setAlert({ message: "Cette chambre est en dépassement. Veuillez la libérer", color: 'danger' });
       return;
     }else{
+      console.log("datesRoom.dateArrivee :", datesRoom.dateArrivee)
+
 
       try {
 

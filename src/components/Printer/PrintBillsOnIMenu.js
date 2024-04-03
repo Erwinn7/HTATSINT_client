@@ -2,6 +2,7 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import logo from "assets/img/brand/logo.png";
 
+// Fonction pour formater les nombres avec des virgules pour la lisibilité
 const formatNumber = (nombre) => {
   // console.log("nombre:", nombre);
   if (nombre === undefined) {
@@ -14,23 +15,21 @@ const formatNumber = (nombre) => {
 const styles = StyleSheet.create({
   page: {
     padding: 40,
-    fontSize: 12
+    fontSize: 12,
   },
   section: {
     marginBottom: 10,
   },
   header: {
     flexDirection: 'row',
-    //flexWrap: 'wrap',
     marginBottom: 5,
-    marginTop:10
+    marginTop: 10,
   },
   logo: {
     width: 60,
     height: 60,
     marginLeft: 0,
-    marginRight:"0",
-   
+    marginRight: 0,
   },
   infoclient: {
     flexDirection: 'row',
@@ -44,7 +43,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderBottomWidth: 0,
   },
-  tableRow: { margin: 'auto', flexDirection: 'row' },
+  tableRow: {
+    flexDirection: 'row',
+  },
   tableCol: {
     width: '25%',
     borderStyle: 'solid',
@@ -52,25 +53,41 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
-  tableCell: { margin: 'auto', marginTop: 5, fontSize: 10, marginBottom:5},
-  tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
-  totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
-  slogan: {textAlign: 'center', marginTop: 50 , fontStyle: 'italic'},
+  // **Bold styles for table headers**
+  tableCell: {
+    margin: 'auto',
+    marginTop: 5,
+    fontSize: 10,
+    marginBottom: 5,
+    fontWeight: 'bold', // **Bold table headers**
+  },
+  tableCellArticle: {
+    margin: 'auto',
+    marginTop: 5,
+    fontSize: 10,
+    marginBottom: 30,
+  },
+  totals: {
+    marginTop: 10,
+    marginLeft: "75%",
+    fontSize: 10,
+  },
+  slogan: {
+    textAlign: 'center',
+    marginTop: 50,
+    fontStyle: 'italic',
+  },
   separator: {
     borderBottomWidth: 5,
     borderBottomColor: 'black',
-    marginVertical: 10, // Ajustez cet espace vertical selon vos besoins
+    marginVertical: 10,
     borderBottomStyle: 'dotted',
     marginBottom: 15,
     marginTop: 0,
   },
 });
 
-
-
-const PrintInvoice = ({myInvoice}) => {
-
-
+const PrintBillsOnIMenu = ({myInvoice}) => {
 return(
   <Document>
     <Page size="A4" style={styles.page}>
@@ -79,22 +96,22 @@ return(
         {/* Logo de l'entreprise */}
         <View style={{flexDirection: 'row',flexWrap: 'wrap'}}>
  
-       <Text style={{textAlign: "center", width: "100%"}}>CENTRE D'HEBERGEMENT LE PELERIN DE DASSA-ZOUME</Text>
+            <Text style={{textAlign: "center", width: "100%"}}>CENTRE D'HEBERGEMENT LE PELERIN DE DASSA-ZOUME</Text>
+            
+          <Text style={{textAlign: "center", width: "100%"}}>IFU: 774158522147852 | RCCM: CZ-774158522147852</Text>
+          <Text style={{textAlign: "center", width: "100%"}}>97009328/95887445</Text>
       
-    <Text style={{textAlign: "center", width: "100%"}}>IFU: 774158522147852 | RCCM: CZ-774158522147852</Text>
-    <Text style={{textAlign: "center", width: "100%"}}>97009328/95887445</Text>
- 
         </View>
        
        
-        
+         
       </View> 
       <View style={styles.separator} />
       <div className="mb-3"></div>
       <View style={styles.infoclient}>
         <View>
           {/* Date de facturation */}
-          <Text style={{fontWeight: "bold" }} >Facture N°:{myInvoice.invoiceNumber}</Text> 
+          <Text fontweight="bold" >Reçu N°:{myInvoice.invoiceNumber}</Text> 
           <Text style={{marginRight:"40%"}}>Date de facturation: {myInvoice.invoiceEmitDate}</Text>
           
         </View>
@@ -114,7 +131,7 @@ return(
           <View style={styles.tableRow}>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>DESIGNATION</Text>
-            </View>
+            </View>   
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>NOMBRE DE JOURS</Text>
             </View>
@@ -122,7 +139,7 @@ return(
               <Text style={styles.tableCell}>MONTANT(Journalier)</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>TOTAL</Text>
+              <Text style={styles.tableCell}>MONTANT TOTAL</Text>
             </View>
           </View>
           {/* Ligne pour chaque article */}
@@ -140,14 +157,15 @@ return(
               <Text style={styles.tableCellArticle}>{formatNumber(myInvoice.dayly_price * myInvoice.number_of_days)}</Text>
             </View>
           </View>
-        </View> 
+        </View>
       </View>
       {/* Lignes pour le total, la TVA et le total TTC */}
       <View style={styles.totals}>
         <Text style={{marginBottom: 5, fontSize:10}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
         <Text style={{marginBottom: 5, fontSize:10}} >TVA: {formatNumber(0)} FCFA</Text>
         <Text style={{marginBottom: 5, fontSize:10}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5, fontSize:10}} >Montant à payer: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Montant payé: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+
       </View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
@@ -157,4 +175,4 @@ return(
 
 }
 
-export default PrintInvoice ;
+export default PrintBillsOnIMenu ;

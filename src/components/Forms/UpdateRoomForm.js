@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Container, Form, Button, Row, Col, FormGroup,Label,Input,Modal, ModalBody,ModalHeader,Spinner } from "reactstrap";
-import AddTypeRoomForm from "./AddTypeRoomForm";
+import {Container, Form, Button, Row, Col, FormGroup,Label,Input,Spinner } from "reactstrap";
 import Axios from "axios";
 import { prefix_link } from "variables/globalesVar";
 
@@ -10,6 +9,8 @@ const UpdateRoomForm = ({selectedRoom}) => {
   const user_id= localStorage.getItem('id');
   const urlUpdateR = prefix_link+"/room";
   const urlGetRT = prefix_link+"/room_categories/?page=1";
+  const urlUpdateI= prefix_link+"/update_item";
+
   
   const config = {
     headers: {
@@ -52,8 +53,7 @@ const UpdateRoomForm = ({selectedRoom}) => {
     Axios.get(urlGetRT,config)
       .then( res => {
         setRoomType(res.data);
-        console.log(res.data);
-        console.log("selectedroom",selectedRoom)
+        console.log('selectedroom', selectedRoom);
       }).catch( err => {
           console.log("erreur attendue",err)           
     });
@@ -183,11 +183,7 @@ const UpdateRoomForm = ({selectedRoom}) => {
               </Col>
               <Col sm={6}>
                 <FormGroup >
-                  {/* <Label
-                    for="room_item_label"
-                  >
-                  Accessoires (Ex: Climatiseur,Télévision, ... )
-                  </Label>
+                  {/* 
                   <Input
                     id="room_item_label"
                     name="room_item_label"
