@@ -179,7 +179,7 @@ console.log('clientdata:', clientsData);
         padding: '10px',
         borderRadius: '5px',
 
-      },
+    },
       
     },
     {

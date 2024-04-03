@@ -155,7 +155,7 @@ const handleButtonUpdate = (row) => {
       sortable: true,
     },
   ];
-  
+
   const customStyles = {
     rows: {
         style: {
