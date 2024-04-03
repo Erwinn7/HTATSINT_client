@@ -2,7 +2,7 @@ import React, { useState} from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { PDFViewer } from '@react-pdf/renderer';
 import PrintBill from 'components/Printer/PrintBill';
-const ModalApercueFacture = ({ ouvert, toggle, client,facture }) => {
+const ModalApercueFacture = ({ ouvert, toggle, client,facture, payement }) => {
 //  const [selectedRow, setSelectedRow] = useState(null);
 console.log('le client:',client);
 console.log('la facture:',facture);
@@ -19,7 +19,8 @@ console.log('la facture:',client.phone_number);
     'total': facture.invoice_amount,
      'paiement_day': new Date().toISOString().slice(0, 10),
      'bill_emit_date':facture.updated_at,
-
+     'reduction':payement.discount_amount,
+     'restepayer':payement.amount_paid
   };
 
   //setSelectedRow(newBillData);

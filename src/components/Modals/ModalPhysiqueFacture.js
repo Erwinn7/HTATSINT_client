@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuccess}) => {
   const MySwal = withReactContent(Swal);
   const [showApercueModal, setShowApercueModal] = useState(false);
+  const [payementSuccess, setPayementSuccess] = useState({});
  
   
 
@@ -22,14 +23,18 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
   const [selectedReductionType, setSelectedReductionType] = useState([]);
   //const [montantReduction, setMontantReduction] = useState('');
   const [montantReductionList, setMontantReductionList] = useState(Array(factures.length).fill(''));
+  const [montantReductionSurpourcentage, setMontantReductionSurpourcentage] = useState(Array(factures.length).fill(''));
 
 
+  const [formData, setFormData] = useState({
+    
+  });
 
 
 
   const handlePourcentageReductionChange = (event, index) => {
 
-    const newPourcentageReductionList = [...montantReductionList];
+    const newPourcentageReductionList = [...pourcentageReductionList];
     let value = parseFloat(event.target.value);
     if (isNaN(value) || value < 0) {
       // Afficher un message d'erreur
@@ -60,10 +65,18 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
       const montantFacture = parseFloat(facture.invoice_amount);
       const tauxReduction = parseFloat(pourcentageReductionList[index]) || 0  ;
       console.log('mont:',tauxReduction);
+     
       return montantFacture - tauxReduction*montantFacture/100;
   
     });
+    const updatedMontantReduireSurpourcentage = factures.map((facture, index) => {
+      const montantFacture = parseFloat(facture.invoice_amount);
+      const tauxReduction = parseFloat(pourcentageReductionList[index]) || 0  ;
+  
+      return tauxReduction*montantFacture/100;
+    })
     // Mettre à jour l'état du montant net
+    setMontantReductionSurpourcentage(updatedMontantReduireSurpourcentage);
     setMontantNetList2(updatedMontantNetList);
     
   };
@@ -138,6 +151,11 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
   const handleSolder = async (facture, index ) => {
     const token = localStorage.getItem('accessToken');
     const id = localStorage.getItem('id');
+    console.log("reduction:",montantReductionList);
+    console.log("resteapayer:",montantNetList);
+    console.log("reductionp:",montantReductionSurpourcentage);
+    console.log("resteapayerp:",montantNetList2);
+
     // use sweetalert2 to Display confirmation dialog
     MySwal.fire({
       title: ' Etes vous sur de vouloir solder cette facture?',
@@ -154,25 +172,68 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
     .then( async (result) => {
       if (result.isConfirmed) {
         setSelectedFacture(facture);
-        const formData = {
-          'payer_phone': client.phone_number,
-          'payer_name': client.first_name,
-          'customer_id': client.id,
-          'payment_type_id': '433e2114-3cfc-4a7e-a865-b5d6af907616',
-  'invoice_id': facture.id,
-  'user_id': id
-        }
-        console.log(formData);
+function Form  (){
+   if(selectedReductionType[index] === 'pourcentage') {
+
+    const Data = {
+      'payer_phone': client.phone_number,
+      'payer_name': client.first_name,
+      'customer_id': client.id,
+      'payment_type_id': '433e2114-3cfc-4a7e-a865-b5d6af907616',
+      'invoice_id': facture.id,
+      'user_id': id,
+      'discount_amount':  montantReductionSurpourcentage[index] ,
+      'amount_paid':  montantNetList2[index] ,
+     
+    }
+    console.log(Data);
+    return Data;
+    // mettre a jour formData
+   // setFormData({...Data});
+    
+   
+    
+  }
+  else {
+
+    const Data =  {
+      'payer_phone': client.phone_number,
+      'payer_name': client.first_name,
+      'customer_id': client.id,
+      'payment_type_id': '433e2114-3cfc-4a7e-a865-b5d6af907616',
+      'invoice_id': facture.id,
+      'user_id': id,
+      'discount_amount':  montantReductionList[index] ,
+      'amount_paid':  montantNetList[index],
+     
+    }
+   // setFormData({...Data});
+    console.log(Data);
+    return Data;
+  }
+}
+ 
+
+
+  
+
+      
+         
+       
     // faire une requette pour ajouter le paiement avec fecth
     
       try {
+        
+        const Data = Form();
+        console.log('here',selectedReductionType[0]);
+        console.log('datasent:',Data);
         const response = await fetch(prefix_link +'/make_payment', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+             'Content-Type': 'application/json',
              'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(Data),
         });
     
         if (!response.ok) {
@@ -180,6 +241,8 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         }
         const data = await response.json();
         console.log(data);
+        const payement= data.settlement;
+        setPayementSuccess(payement);
         setShowApercueModal(true);
 
     
@@ -188,6 +251,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
       } catch (error) {
         console.log('Errorrrrrrra:', error);
       }
+     
   
         //setShowApercueModal(true);
       }
@@ -232,7 +296,18 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
                   onChange={() => {
                     const newArray = [...selectedReductionType];
                     newArray[index] = 'pourcentage';
+                    setPourcentageReductionList([]);
+                    setMontantNetList2([]);
+                    setMontantNetList([]);
+                    setMontantReductionList([]);
+                  //reinitialiser les champs de saisi ,les input
+
+
+
                     setSelectedReductionType(newArray);
+                   
+
+                    
                   }}
                 />
               </Label>
@@ -247,7 +322,15 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
                   onChange={() => {
                     const newArray = [...selectedReductionType];
                     newArray[index] = 'montant';
+                    setMontantNetList([]);
+                    setMontantReductionList([]);
+                    setPourcentageReductionList([]);
+                    setMontantNetList2([]);
                     setSelectedReductionType(newArray);
+                    // Mettre à vide la valeur des input montantreduction et net
+                   
+
+
                   }}
                 />
               </Label>
@@ -259,6 +342,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
               <div className='col-md-4'>
               <Label>Taux(%):
               <Input
+              id='tauxReduction'
                 type="numeric"
                 value={pourcentageReductionList[index]}
                
@@ -274,6 +358,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
               <div className='col-md-5'>
               <Label>Net:
               <Input
+              id='montantApayer1'
                 type="text"
                 value={montantNetList2[index]}
                 //onChange={(e) => handleMontantReductionChange2(index, e.target.value)}
@@ -283,7 +368,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
               </Label>
               </div>
               <div className='col-md-3'>
-               <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture) }}>Payer</Button>
+               <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture,index) }}>Payer</Button>
               </div>
               </div>
             ) : (
@@ -296,8 +381,6 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
                            value={montantReductionList[index]}
                            onChange={(e) => handleMontantReductionChange1(e, index)}
 
-                          //onChange={(e) => fmontantNetList(e)}
-                          // onChange={(e) => handleMontantReductionChange(e.target.value)}
                            placeholder=""
                            style={{ width: '100px' }}
                        />
@@ -306,6 +389,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
               <div className='col-md-5'>
               <Label>Net:
               <Input
+              id='montantApayer2'
                 type="text"
                 value={montantNetList[index]}
                 //disabled
@@ -317,7 +401,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
               </div>
           <div className='col-md-3'>
 
-                <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture) }}>Payer</Button>
+                <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture, index) }}>Payer</Button>
            </div>
 
               </div>
@@ -335,6 +419,7 @@ const ModalPhysiqueFactures = ({ ouvert, toggle, factures , client, onPaymentSuc
         <ModalApercueFacture 
         facture={selectedFacture}
         client={client}
+        payement={payementSuccess}
         ouvert={true} toggle={() => setShowApercueModal(false)} />
       )}
       </Modal>
