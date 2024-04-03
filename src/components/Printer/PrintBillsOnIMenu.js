@@ -10,27 +10,26 @@ const formatNumber = (nombre) => {
   }
   return nombre.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
+
 // Styles pour le document
 const styles = StyleSheet.create({
   page: {
     padding: 40,
-    fontSize: 12
+    fontSize: 12,
   },
   section: {
     marginBottom: 10,
   },
   header: {
     flexDirection: 'row',
-    //flexWrap: 'wrap',
     marginBottom: 5,
-    marginTop:10
+    marginTop: 10,
   },
   logo: {
     width: 60,
     height: 60,
     marginLeft: 0,
-    marginRight:"0",
-   
+    marginRight: 0,
   },
   infoclient: {
     flexDirection: 'row',
@@ -44,7 +43,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderBottomWidth: 0,
   },
-  tableRow: { margin: 'auto', flexDirection: 'row' },
+  tableRow: {
+    flexDirection: 'row',
+  },
   tableCol: {
     width: '25%',
     borderStyle: 'solid',
@@ -52,21 +53,39 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
-  tableCell: { margin: 'auto', marginTop: 5, fontSize: 10, marginBottom:5},
-  tableCellArticle: { margin: 'auto', marginTop: 5, fontSize: 10 ,marginBottom:30},
-  totals: { marginTop: 10 ,marginLeft:"75%",fontSize:10},
-  slogan: {textAlign: 'center', marginTop: 50 , fontStyle: 'italic'},
+  // **Bold styles for table headers**
+  tableCell: {
+    margin: 'auto',
+    marginTop: 5,
+    fontSize: 10,
+    marginBottom: 5,
+    fontWeight: 'bold', // **Bold table headers**
+  },
+  tableCellArticle: {
+    margin: 'auto',
+    marginTop: 5,
+    fontSize: 10,
+    marginBottom: 30,
+  },
+  totals: {
+    marginTop: 10,
+    marginLeft: "75%",
+    fontSize: 10,
+  },
+  slogan: {
+    textAlign: 'center',
+    marginTop: 50,
+    fontStyle: 'italic',
+  },
   separator: {
     borderBottomWidth: 5,
     borderBottomColor: 'black',
-    marginVertical: 10, // Ajustez cet espace vertical selon vos besoins
+    marginVertical: 10,
     borderBottomStyle: 'dotted',
     marginBottom: 15,
     marginTop: 0,
   },
 });
-
-
 
 const PrintBillsOnIMenu = ({myInvoice}) => {
 return(
@@ -112,7 +131,7 @@ return(
           <View style={styles.tableRow}>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>DESIGNATION</Text>
-            </View>
+            </View>   
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>NOMBRE DE JOURS</Text>
             </View>

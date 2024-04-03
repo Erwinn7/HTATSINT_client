@@ -138,7 +138,7 @@ const handleButtonUpdate = (row) => {
     {
       name: 'MODIFIER ',
       cell: (row) => (
-        <Button  color="primary" onClick={() => handleButtonUpdate(row)}>Mod
+        <Button  color="primary" size="sm" onClick={() => handleButtonUpdate(row)}>Modifier
         </Button>
       ),
       allowOverflow: true,
@@ -149,7 +149,7 @@ const handleButtonUpdate = (row) => {
     {
       name: 'SUPPRIMER ',
       cell: (row) => (
-        <Button disabled color="danger" onClick={() => ()=>{}}>sup
+        <Button disabled color="danger" size='sm' onClick={() => ()=>{}}>Supprimer
         </Button>
       ),
       selector: (users) => users.email,

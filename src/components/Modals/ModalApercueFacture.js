@@ -23,24 +23,15 @@ console.log('la facture:',client.phone_number);
   };
 
   //setSelectedRow(newBillData);
-    
-  
-
 
   return (
     <Modal isOpen={ouvert} toggle={toggle}  size="lg">
-      <ModalHeader toggle={toggle}>Aperçu de la facture</ModalHeader>
-      <ModalBody>
-        {/* Contenu de l'aperçu de la facture */}
-        <p>Facture payer avec succes</p>
-
         {
             newBillData &&
             <PDFViewer width="100%" height="600px" >
               <PrintBill myInvoice={newBillData} />
             </PDFViewer>
             }         
-      </ModalBody>
     </Modal>
   );
 };
