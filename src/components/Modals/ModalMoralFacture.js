@@ -131,7 +131,56 @@ useEffect(() => {
 
 //pourcentageReductionList
 
-console.log('net:',montantNetList);
+
+
+
+
+const resetForm1 = () => {
+  setPourcentageReductionList(Array(factures.length).fill('0'));
+  setMontantNetList(Array(factures.length).fill('0'));
+  setMontantNetList2(Array(factures.length).fill('0'));
+  //setSelectedFacture(null);
+//  setSelectedReductionType([]);
+  setMontantReductionList(Array(factures.length).fill(''));
+  setMontantReductionSurpourcentage(Array(factures.length).fill(''));
+  setFormData({});
+};
+
+useEffect(() => {
+  resetForm1();
+},[ selectedReductionType,selectedFacture]);
+
+
+
+const resetForm2 = () => {
+  setPourcentageReductionList(Array(factures.length).fill('0'));
+  setMontantNetList(Array(factures.length).fill('0'));
+  setMontantNetList2(Array(factures.length).fill('0'));
+  setSelectedFacture(null);
+  setSelectedReductionType([]);
+  setMontantReductionList(Array(factures.length).fill(''));
+  setMontantReductionSurpourcentage(Array(factures.length).fill(''));
+  setFormData({});
+};
+
+useEffect(() => {
+  resetForm2();
+},[ouvert]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -189,8 +238,8 @@ console.log('net:',montantNetList);
             'payment_type_id': '433e2114-3cfc-4a7e-a865-b5d6af907616',
             'invoice_id': facture.id,
             'user_id': id,
-            'discount_amount':  montantReductionList[index] ,
-            'amount_paid':  montantNetList[index],
+            'discount_amount':  (  montantReductionList[index]? montantReductionList[index] : 0) ,
+            'amount_paid':  (  montantNetList[index]? montantNetList[index] : facture.invoice_amount),
            
           }
          // setFormData({...Data});
@@ -303,7 +352,7 @@ console.log('net:',montantNetList);
               <Input
                 type="numeric"
                 value={pourcentageReductionList[index]}
-               
+                disabled={selectedReductionType[index] !== 'pourcentage'}
                 onChange={(e) => handlePourcentageReductionChange(e, index)}
                 placeholder=""
                 style={{ width: '80px' }}
@@ -338,7 +387,7 @@ console.log('net:',montantNetList);
                           type="numeric"
                            value={montantReductionList[index]}
                            onChange={(e) => handleMontantReductionChange1(e, index)}
-
+                           disabled={selectedReductionType[index] !== 'montant'}
                            placeholder=""
                            style={{ width: '100px' }}
                        />
