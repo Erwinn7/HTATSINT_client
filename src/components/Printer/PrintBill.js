@@ -235,14 +235,6 @@ return(
         <Text style={{marginBottom: 5}} >Total payé: {formatNumber(myInvoice.restepayer)} FCFA</Text>
       </View>
 
-
-
-
-
-
-
-
-
      
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>

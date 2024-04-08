@@ -303,12 +303,12 @@ useEffect(() => {
               {/* Afficher les autres détails de la facture */}
               <div className='row'>
               <div className='col-md-5'>
-              <h5>Faire  une reduction:</h5>
+              <p>Faire  une reduction:</p>
               </div>
               <div className='col-md-3'>
-              <Label>
+              <Label style={{ marginRight: '10px' }}>
                 Taux
-                
+                </Label>
                 <input
                   type="radio"
                   value="pourcentage"
@@ -322,11 +322,12 @@ useEffect(() => {
                     setSelectedReductionType(newArray);
                   }}
                 />
-              </Label>
+              
               </div>
               <div className='col-md-3'>
-              <Label>
+              <Label style={{ marginRight: '10px' }}>
                 Valeur
+                </Label>
                 <input
                   type="radio"
                   value="montant"
@@ -341,7 +342,7 @@ useEffect(() => {
                     setSelectedReductionType(newArray);
                   }}
                 />
-              </Label>
+             
               </div>
             </div>
 
