@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
   slogan: {textAlign: 'center', marginTop: 30 , fontStyle: 'italic'},
   souTable1: {textAlign: 'right', marginTop: 30 , fontStyle: 'italic'},
   souTable2: {textAlign: 'left', marginTop: 30 , fontStyle: 'italic'},
+  
   separator: {
     borderBottomWidth: 5,
     borderBottomColor: 'black',
@@ -146,7 +147,7 @@ const montantEnLettres = convertirEnLettres(123456789);
 console.log(montantEnLettres);  // Output: "cent vingt-trois millions quatre cent cinquante-six mille sept cent quatre-vingt-neuf"
 
 
-const total = convertirEnLettres(myInvoice.total);
+//const total = convertirEnLettres(myInvoice.total);
 
 
 
@@ -232,13 +233,22 @@ return(
 
 
 
+      <View style={styles.totals}>
+        <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.total)} FCFA</Text>
+        <Text style={{marginBottom: 5}}>Reduction:{formatNumber(myInvoice.reduction) } FCFA</Text>
+        <Text style={{marginBottom: 5}} >TVA: {formatNumber(0)} FCFA</Text>
+        <Text style={{marginBottom: 5}} >Total payé: {formatNumber(myInvoice.restepayer)} FCFA</Text>
+      </View>
 
 
 
 
-      <Text style={styles.souTable2}> Montant de la reducttion:{formatNumber(myInvoice.reduction) }</Text>
 
-      <View> <Text style={styles.souTable2}> Total payé:({formatNumber(myInvoice.restepayer) })</Text></View>
+
+
+
+
+     
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
     </Page>
