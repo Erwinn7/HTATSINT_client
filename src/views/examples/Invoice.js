@@ -14,6 +14,7 @@ import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 import PrintBillsOnIMenu from "components/Printer/PrintBillsOnIMenu";
+import { isNull } from "util";
 
 
 
@@ -117,9 +118,11 @@ const Invoice = () => {
           dayly_price: myDatas.room.room_amount,
           number_of_days: myDatas.number_of_day,
           invoiceAmount: myDatas.invoice.invoice_amount,
+          discount_amount: myDatas.settlement === null ? 0 : myDatas.settlement?.discount_amount,
+
         }
 
-        setSelectedRow(newInvoiceData);
+         setSelectedRow(newInvoiceData);
         console.log(newInvoiceData);
 
 

@@ -162,9 +162,10 @@ return(
       {/* Lignes pour le total, la TVA et le total TTC */}
       <View style={styles.totals}>
         <Text style={{marginBottom: 5, fontSize:10}} >Total: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Réduction: {formatNumber(myInvoice.discount_amount)} FCFA</Text>
         <Text style={{marginBottom: 5, fontSize:10}} >TVA: {formatNumber(0)} FCFA</Text>
         <Text style={{marginBottom: 5, fontSize:10}} >Total TTC: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
-        <Text style={{marginBottom: 5, fontSize:10}} >Montant payé: {formatNumber(myInvoice.invoiceAmount)} FCFA</Text>
+        <Text style={{marginBottom: 5, fontSize:10}} >Montant payé: {formatNumber(myInvoice.invoiceAmount - myInvoice.discount_amount)} FCFA</Text>
 
       </View>
       {/* Slogan */}
