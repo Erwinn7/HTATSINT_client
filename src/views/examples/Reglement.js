@@ -211,7 +211,7 @@ console.log('clientdata:', clientsData);
     {
         name: 'PAYER',
         cell: (row) => (
-          <Button  disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
+          <Button size='md' disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
         ),
         allowOverflow: true,
         button: true,

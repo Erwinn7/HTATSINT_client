@@ -236,9 +236,9 @@ return(
 
 
 
-      <Text style={styles.souTable1}> Montant versé:{formatNumber(myInvoice.total) }</Text>
+      <Text style={styles.souTable2}> Montant de la reducttion:{formatNumber(myInvoice.reduction) }</Text>
 
-      <View> <Text style={styles.souTable2}> Arreter la presente quitance a la somme de:{total}({formatNumber(myInvoice.total) })</Text></View>
+      <View> <Text style={styles.souTable2}> Total payé:({formatNumber(myInvoice.restepayer) })</Text></View>
       {/* Slogan */}
       <Text style={styles.slogan}> "Merci de nous avoir choisi"</Text>
     </Page>
