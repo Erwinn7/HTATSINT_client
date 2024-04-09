@@ -303,12 +303,12 @@ useEffect(() => {
               {/* Afficher les autres détails de la facture */}
               <div className='row'>
               <div className='col-md-5'>
-              <h5>Faire  une reduction:</h5>
+              <p>Faire  une reduction:</p>
               </div>
               <div className='col-md-3'>
-              <Label>
+              <Label style={{ marginRight: '10px' }}>
                 Taux
-                
+                </Label>
                 <input
                   type="radio"
                   value="pourcentage"
@@ -322,11 +322,12 @@ useEffect(() => {
                     setSelectedReductionType(newArray);
                   }}
                 />
-              </Label>
+              
               </div>
               <div className='col-md-3'>
-              <Label>
+              <Label style={{ marginRight: '10px' }}>
                 Valeur
+                </Label>
                 <input
                   type="radio"
                   value="montant"
@@ -341,13 +342,13 @@ useEffect(() => {
                     setSelectedReductionType(newArray);
                   }}
                 />
-              </Label>
+             
               </div>
             </div>
 
             {selectedReductionType[index] === 'pourcentage' ? (
               <div className='row'> 
-              <div className='col-md-4'>
+              <div className='col-md-3'>
               <Label>Taux(%):
               <Input
                 type="numeric"
@@ -362,8 +363,37 @@ useEffect(() => {
               />
               </Label>
               </div>
-              <div className='col-md-5'>
-              <Label>Net:
+
+
+
+
+              <div className='col-md-3'>
+              <Label>Valeur(fcfa):
+              <Input
+              id='reductionenfcfa'
+                type="text"
+                value={montantReductionSurpourcentage[index]}
+               // disabled={selectedReductionType[index] !== 'pourcentage'}
+           
+
+                //onChange={(e) => handlePourcentageReductionChange(e, index)}
+                placeholder=""
+                style={{ width: '80px' }}
+    //Mettre une condition pour que le taux ne puisse pas depasser la valeur maximale de 100
+                  
+                
+              />
+              </Label>
+
+
+
+              
+              </div>
+
+
+
+              <div className='col-md-3'>
+              <Label>Net (fcfa):
               <Input
               id='montantApayer1'
                 type="text"
@@ -374,14 +404,14 @@ useEffect(() => {
               />
               </Label>
               </div>
-              <div className='col-md-3'>
+              <div className='col-md-2'>
                <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture,index) }}>Payer</Button>
               </div>
               </div>
             ) : (
               <div className='row'> 
                    <div className='col-md-4'>
-                   <Label>Valeur:
+                   <Label>Valeur (fcfa):
                      <Input
                      id='montantAdeduire'
                           type="numeric"
@@ -394,7 +424,7 @@ useEffect(() => {
                    </Label>
               </div>
               <div className='col-md-5'>
-              <Label>Net:
+              <Label>Net (fcfa):
               <Input
               id='montantApayer2'
                 type="text"
