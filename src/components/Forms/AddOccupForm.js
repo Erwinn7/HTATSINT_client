@@ -66,10 +66,14 @@ const config = {
     const seconds = String(date.getSeconds()).padStart(2, '0');
   
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    console.log(formattedDate);
   
     return formattedDate;
   };
 
+  const formatDateWithhours = (dateString) => {
+    return dateString + 'T00:00:01';
+  };
 
 useEffect(() => {
   const token = localStorage.getItem('accessToken');
@@ -131,7 +135,7 @@ useEffect(() => {
 
   const handleChange = (e) => {
     const newdata = {...unOccupant}
-    newdata[e.target.id] =  e.target.value;
+    newdata[e.target.id] =  e.target.value;  
     setUnOccupant(newdata)
     console.log(newdata)
 
@@ -162,7 +166,8 @@ useEffect(() => {
     if (Ctrl_Soumission() && num_occupant < number_of_place) {
       setUnOccupant({...unOccupant,
         start_date : roomBookings.booking?.start_date,
-        end_date : roomBookings.booking?.end_date
+        end_date : roomBookings.booking?.end_date,
+        date_of_birth : formatDateWithhours(unOccupant.date_of_birth),
       })
       const newOccupant = [...occupants,unOccupant]
       setOccupants(newOccupant)
@@ -234,10 +239,11 @@ useEffect(() => {
       createInvoiceAndOccupants();
           
      setOccupants([])
+    //  setCtrlSoumission("Les Occupants ont bien été enrégistrés");
      setSave(true)
 
     } else {
-      setCtrlSoumission("Veuiller ajouter au moins un Occupant");
+      setCtrlSoumission("Veuiller ajouter au moins un Occupant.");
       setSave(true)
     }
 
@@ -399,7 +405,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="last_name"
                             name="last_name"
-                            placeholder="Nom "
+                            // placeholder="Nom "
                             type="text"
                             value={unOccupant?.last_name}
                             onChange={(e) => handleChange(e)} 
@@ -414,7 +420,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="first_name"
                             name="first_name"
-                            placeholder="Prénom"
+                            // placeholder="Prénom"
                             type="text"
                             value={unOccupant?.first_name}
                             onChange={(e) => handleChange(e)} 
@@ -431,7 +437,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="phone_number"
                             name="phone_number"
-                            placeholder="+229 00 00 00 00"
+                            //placeholder="+229 00 00 00 00"
                             type="number"
                             value={unOccupant?.phone_number}
                             onChange={(e) => handleChange(e)} 
@@ -446,7 +452,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="address"
                             name="address"
-                            placeholder="Dassa"
+                            //placeholder="Dassa"
                             type="text"
                             value={unOccupant?.address}
                             onChange={(e) => handleChange(e)} 
@@ -463,7 +469,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="date_of_birth"
                             name="date_of_birth"
-                            type="datetime-local"
+                            type="date"
                             value={unOccupant?.date_of_birth}
                             onChange={(e) => handleChange(e)} 
                             max = {thisDay}
@@ -478,7 +484,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="profession"
                             name="profession"
-                            placeholder="Commerçant"
+                            // placeholder="Commerçant"
                             type="text"
                             value={unOccupant?.profession}
                             onChange={(e) => handleChange(e)} 
@@ -495,7 +501,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="type_of_document"
                             name="type_of_document"
-                            placeholder="Select un type"
+                            //placeholder="Select un type"
                             type="select"
                             value={unOccupant?.type_of_document}
                             onChange={(e) => handleChange(e)} 
@@ -517,7 +523,7 @@ useEffect(() => {
                         <Input bsSize="sm" 
                             id="document_number"
                             name="document_number"
-                            placeholder="0123456789"
+                            //placeholder="0123456789"
                             type="number"
                             value={unOccupant?.document_number}
                             onChange={(e) => handleChange(e)} 
@@ -569,7 +575,7 @@ useEffect(() => {
                 pagination > 
             </DataTable>)
         }
-         { (ctrlSoumission !== "" && save === false) ? <p style={{ color: 'red', fontSize: '12px' }}>{ctrlSoumission}</p> : null }
+         { (ctrlSoumission !== "" && save === false) ? <p style={{ color: 'red', fontSize: '12px' }}>{ctrlSoumission}</p> : <p style={{ color: 'green', fontSize: '12px' }}>{ctrlSoumission}</p>  }      
 
         { 
                   

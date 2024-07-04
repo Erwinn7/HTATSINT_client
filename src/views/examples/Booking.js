@@ -216,6 +216,10 @@ const Booking = () => {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   };
 
+  const formatDateWithZeroSeconds = (dateString) => {
+    return dateString.slice(0, -2) + '00';
+  };
+
   
   const fetchData = async () => {
 
@@ -281,14 +285,14 @@ const Booking = () => {
       setAlert({ message: "Cette chambre est en dépassement. Veuillez la libérer", color: 'danger' });
       return;
     }else{
-      console.log("datesRoom.dateArrivee :", datesRoom.dateArrivee)
+      console.log("datesRoom.dateArrivee :", formatDateWithZeroSeconds(datesRoom.dateArrivee))
 
 
       try {
 
         const response = await axios.post(urlMakeBooking, {
-          start_date: datesRoom.dateArrivee,
-          end_date: datesRoom.dateDepart,
+          start_date: formatDateWithZeroSeconds(datesRoom.dateArrivee),
+          end_date: formatDateWithZeroSeconds(datesRoom.dateDepart),
           user_id: user_id,
           room_id: selectedRow.room.id,
           customer_id: currentCustomer.customer_id
