@@ -139,6 +139,7 @@ const Occupation = () => {
 
   const formatNumber = (number) => (number < 10 ? `0${number}` : number);
 
+
   const handleDateChange = (e) => {
     const { name, value } = e.target;
     setDatesRoom((prevDates) => ({
@@ -146,6 +147,11 @@ const Occupation = () => {
       [name]: value,
     }));
   };
+
+  const formatDateWithZeroSeconds = (dateString) => {
+    return dateString.slice(0, -2) + '00';
+  };
+
 
   const handleRowClick = (row) => {
     setSelectedRow(row);
@@ -168,8 +174,8 @@ const Occupation = () => {
       //console.log(datesRoom)
       try {
         const response = await axios.post(urlGetRoombyDate, {
-          start_date: datesRoom.dateArrivee,
-          end_date: datesRoom.dateDepart,
+          start_date: formatDateWithZeroSeconds(datesRoom.dateArrivee),
+          end_date:   formatDateWithZeroSeconds(datesRoom.dateDepart),
           user_id : user_id
         }, config);
 

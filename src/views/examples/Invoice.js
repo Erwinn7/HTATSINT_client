@@ -14,7 +14,6 @@ import { PDFViewer } from '@react-pdf/renderer';
 import CustomLoader from 'components/CustomLoader/CustomLoader';
 import ModalsNoRecFound from "components/Modals/ModalsNoRecFound";
 import PrintBillsOnIMenu from "components/Printer/PrintBillsOnIMenu";
-import { isNull } from "util";
 
 
 
@@ -219,6 +218,11 @@ useEffect ( () => {
         })
 
       });
+
+       // Trier les factures par date d'émission en ordre décroissant
+       myNewElmts.sort((a, b) => new Date(b.invoiceEmitDate) - new Date(a.invoiceEmitDate));
+
+
       setInvoice(myNewElmts);
       setPending(false);
 
@@ -292,7 +296,7 @@ const closeModal = () => {
             </PDFViewer>)
             }            
           </Modal>
-        </div>in
+        </div>
 
       </Container>
     </div>
