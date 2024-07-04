@@ -317,8 +317,8 @@ const cols = [
     },
   },
   {
-    name: 'ADRESSE',
-    selector: (client) => client.customer.address,
+    name: 'SEXE',
+    selector: (client) => client.customer.gender,
     sortable: true,
     style: {
       // Add your desired CSS styles here
