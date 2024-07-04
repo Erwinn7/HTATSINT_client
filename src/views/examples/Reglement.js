@@ -198,9 +198,9 @@ console.log('clientdata:', clientsData);
       },
     },
     {
-      name: 'DETAIL',
+      name: 'PAIEMENT',
       cell: (row) => (
-        <Button color="success" onClick={() => handleButtonClick(row)}>Voir</Button>
+        <Button color="success" onClick={() => handleButtonClick(row)}>PAYER</Button>
       ),
       allowOverflow: true,
       button: true,
@@ -209,9 +209,9 @@ console.log('clientdata:', clientsData);
     },
 
     {
-        name: 'PAYER',
+        name: 'DETAILS',
         cell: (row) => (
-          <Button size='md' disabled color="primary" onClick={() => handleButtonPayer(row)}>PAYER</Button>
+          <Button size='md' disabled color="primary" onClick={() => handleButtonPayer(row)}>VOIR</Button>
         ),
         allowOverflow: true,
         button: true,

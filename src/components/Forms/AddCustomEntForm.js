@@ -22,8 +22,66 @@ function MyFormEnt() {
     user_id : `${id}`
   });
   const [loading, setLoading] = useState(false);
+
+  const validateBeninPhoneNumber = (phoneNumber) => {
+    const beninPhoneRegex = /^(?:(?:\+229|00229)\s?)?(\d{2}\s?\d{2}\s?\d{2}\s?\d{2})$/;
+    return beninPhoneRegex.test(phoneNumber);
+  };
+  
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
+  const removeSpaces = (phoneNumber) => {
+    return phoneNumber.replace(/\s+/g, '');
+  };
+
+
+
+
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateBeninPhoneNumber(formData.phone_number) || formData.phone_number ==='') {
+     
+      setAlert({ message: 'Veuillez entrer un numéro de telephone valide.', color: 'danger' });
+      setTimeout(() => {
+        setAlert({ message: '', color: '' });
+        document.getElementById('institute_name').value = '';
+        //document.getElementById('phone_number').value = '';
+        document.getElementById('ifu').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('address').value = '';
+       }, 2000);  
+    //setVisitedFields({ ...visitedFields, email: true });
+    return;
+  }
+
+  if (!validateEmail(formData.email)&& formData.email!=='') {
+     
+    setAlert({ message: 'Veuillez entrer une adresse email valide.', color: 'danger' });
+    setTimeout(() => {
+      setAlert({ message: '', color: '' });
+     }, 2000);  
+  //setVisitedFields({ ...visitedFields, email: true });
+  return;
+}
+
+
+
+
+
    
 
     try {
@@ -87,9 +145,11 @@ function MyFormEnt() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const cleanedValue = name === 'phone_number' ? removeSpaces(value) : value;
+
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: cleanedValue,
     }));
   };
 
@@ -108,11 +168,29 @@ function MyFormEnt() {
 
 
     e.preventDefault();
-    const {  value } = e.target;
+   // const { name, value } = e.target;
+
+
+
+    const cleanedValue = removeSpaces(formData.phone_number);
+
+
+    if (!validateBeninPhoneNumber(formData.phone_number)|| formData.phone_number==='') {
+     
+      setAlert({ message: 'Veuillez entrer un numéro de telephone valide.', color: 'danger' });
+      setTimeout(() => {
+        setAlert({ message: '', color: '' });
+       }, 2000);  
+    //setVisitedFields({ ...visitedFields, email: true });
+    return;
+  }
+
+
+
 
     try {
      
-      const response = await fetch( prefix_link+'/client_by_phone/'+value, {
+      const response = await fetch( prefix_link+'/client_by_phone/'+cleanedValue, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +203,7 @@ function MyFormEnt() {
         //Aucun client avec ce numero de telephone
       // 
         //console.log(`Response from flask API: `, data);
-        document.getElementById('institute_name').value = '';
+document.getElementById('institute_name').value = '';
 document.getElementById('ifu').value = '';
 document.getElementById('email').value = '';
 document.getElementById('address').value = '';
@@ -204,6 +282,8 @@ document.getElementById('address').value = '';
           placeholder=""
           onChange={handleInputChange} 
           onBlur={handleInputBlur}
+          onKeyDown={handleKeyDown}
+
           required
         
     
@@ -223,6 +303,8 @@ document.getElementById('address').value = '';
           id="institute_name"
           placeholder=""
           onChange={handleInputChange} 
+          onKeyDown={handleKeyDown}
+
           
           required
             />
@@ -241,6 +323,7 @@ document.getElementById('address').value = '';
           id="ifu"
           placeholder=""
           onChange={handleInputChange} 
+          onKeyDown={handleKeyDown}
             />
           </FormGroup>
         </Col>
@@ -260,6 +343,8 @@ document.getElementById('address').value = '';
           id="email"
           placeholder=""
           onChange={handleInputChange} 
+          onKeyDown={handleKeyDown}
+
         />
       </FormGroup>
 
