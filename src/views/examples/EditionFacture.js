@@ -230,8 +230,8 @@ const closeModal = () => {
                       onChange={(e) => handleChange(e)} 
                       type="select"
                     >
-                      <option value="" > Sélectionnez</option>
-                      <option value="1" >PAR CLIENT</option>
+                      {/* <option value="" > Sélectionnez</option> */}
+                      {/* <option value="1" >PAR CLIENT</option> */}
                       <option value="2" >IMPAYEES PAR CLIENT</option>
                       {/* <option value="3" >GLOBALE</option> */}
                       
