@@ -195,6 +195,7 @@ try {
             Prenom: associatedCustomer.customer.first_name,
             Institut: associatedCustomer.customer.institute_name,
             Montant: settlement.settlement_amount,
+            Reduction: settlement.discount_amount,
             Total: totalAmount,
             Date: settlement.created_at,
           });
@@ -349,6 +350,11 @@ console.log('Veuillez choisir une date de debut et une date de fin');
      {
       name: 'MONTANT',
       selector: (paymentsTable)=>paymentsTable.Montant? paymentsTable.Montant:'---',
+      sortable: true,
+    },
+    {
+      name: 'REDUCTION',
+      selector: (paymentsTable)=>paymentsTable.Reduction? paymentsTable.Reduction:'---',
       sortable: true,
     },
 

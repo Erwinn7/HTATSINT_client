@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   tableRow: { margin: 'auto', flexDirection: 'row' },
   tableCol: {
-    width: '20%',
+    width: '17%',
     borderStyle: 'solid',
     borderWidth: 1,
     borderLeftWidth: 0,
@@ -120,7 +120,9 @@ return (
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>MONTANT</Text>
           </View>
-         
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>REDUCTION</Text>
+          </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableCell}>ENREGISTRER LE</Text>
           </View>
@@ -142,6 +144,9 @@ return (
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCellArticle}>{item.Montant}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCellArticle}>{item.Reduction}</Text>
               </View>
               
               <View style={styles.tableCol}>
