@@ -236,6 +236,7 @@ return(
       <View style={styles.totals}>
         <Text style={{marginBottom: 5}} >Total: {formatNumber(myInvoice.total)} FCFA</Text>
         <Text style={{marginBottom: 5}}>Reduction:{formatNumber(myInvoice.reduction) } FCFA</Text>
+        <Text style={{marginBottom: 5}} >Motif: {formatNumber(myInvoice.motif_reduction)} </Text>
         <Text style={{marginBottom: 5}} >TVA: {formatNumber(0)} FCFA</Text>
         <Text style={{marginBottom: 5}} >Total payé: {formatNumber(myInvoice.restepayer)} FCFA</Text>
       </View>

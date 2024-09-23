@@ -20,7 +20,8 @@ console.log('la facture:',client.phone_number);
      'paiement_day': new Date().toISOString().slice(0, 10),
      'bill_emit_date':facture.updated_at,
      'reduction':payement.discount_amount,
-     'restepayer':payement.amount_paid
+     'restepayer':payement.amount_paid,
+     'motif_reduction':payement.discount_raison
   };
 
   //setSelectedRow(newBillData);
