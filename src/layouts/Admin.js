@@ -83,7 +83,7 @@ const userSurname = localStorage.getItem('surname');
          
           }}
           userRole={"Admin"}
-          userName={userSurname+" "+userName}
+          userName={userSurname}
           // Add the following style to make the sidebar transparent
           className="sidebar-transparent"
                

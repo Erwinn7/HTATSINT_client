@@ -79,7 +79,7 @@ const Recep = (props) => {
           imgAlt: "...",
          
           }}
-          userRole={"R"}
+          userRole={"Receptionniste"}
           userName={userSurname}
           // Add the following style to make the sidebar transparent
           className="sidebar-transparent"
