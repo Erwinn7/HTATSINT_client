@@ -16,7 +16,8 @@ import { routesEditionrecep } from "routes.js";
 const Recep = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
-
+  const userName = localStorage.getItem('name');
+  const userSurname = localStorage.getItem('surname');
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -78,7 +79,8 @@ const Recep = (props) => {
           imgAlt: "...",
          
           }}
-          userRole={"Réceptionniste"}
+          userRole={"R"}
+          userName={userSurname}
           // Add the following style to make the sidebar transparent
           className="sidebar-transparent"
                

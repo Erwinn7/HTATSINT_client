@@ -22,7 +22,9 @@ const Admin = (props) => {
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
   }, [location]);
-
+// fonction pour recuperer le nom de l'utilisateur depuis le localstorage
+const userName = localStorage.getItem('name');
+const userSurname = localStorage.getItem('surname');
   const getRoutes = (routes,routesEdition,routesReservation) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin" && prop.path!=="/edition" && prop.path!=="/booking") {
@@ -80,7 +82,8 @@ const Admin = (props) => {
           imgAlt: "...",
          
           }}
-          userRole={"Administrateur"}
+          userRole={"Admin"}
+          userName={userSurname+" "+userName}
           // Add the following style to make the sidebar transparent
           className="sidebar-transparent"
                

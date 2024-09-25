@@ -23,6 +23,7 @@ const ModalMoralFactures = ({ ouvert, toggle, factures, client }) => {
   //const [montantReduction, setMontantReduction] = useState('');
   const [montantReductionList, setMontantReductionList] = useState(Array(factures.length).fill(''));
   const [montantReductionSurpourcentage, setMontantReductionSurpourcentage] = useState(Array(factures.length).fill(''));
+  const [motifReductionList, setMotifReductionList] = useState(Array(factures.length).fill(''));
 
   const [formData, setFormData] = useState({
     
@@ -169,21 +170,6 @@ useEffect(() => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleSolder =  (facture, index ) => {
    const token = localStorage.getItem('accessToken');
    const id = localStorage.getItem('id');
@@ -219,6 +205,8 @@ useEffect(() => {
             'user_id': id,
             'discount_amount':  montantReductionSurpourcentage[index] ,
             'amount_paid':  montantNetList2[index] ,
+            'discount_raison': motifReductionList[index]
+
             
           }
           console.log(Data);
@@ -240,6 +228,8 @@ useEffect(() => {
             'user_id': id,
             'discount_amount':  (  montantReductionList[index]? montantReductionList[index] : 0) ,
             'amount_paid':  (  montantNetList[index]? montantNetList[index] : facture.invoice_amount),
+            'discount_raison': motifReductionList[index]
+
            
           }
          // setFormData({...Data});
@@ -385,9 +375,6 @@ useEffect(() => {
               />
               </Label>
 
-
-
-              
               </div>
 
 
@@ -405,9 +392,27 @@ useEffect(() => {
               </Label>
               </div>
               <div className='col-md-2'>
-               <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture,index) }}>Payer</Button>
+              <Label>Motif:</Label>
+  <textarea
+  style={{ width: '80px', marginTop: '-7px' }}
+    type="text"
+    value={motifReductionList[index]}
+    onChange={(e) => {
+      const newMotifList = [...motifReductionList];
+      newMotifList[index] = e.target.value;
+      setMotifReductionList(newMotifList);
+      
+    }}
+    placeholder="Le motif"
+  />
+
+              </div>
+              <div className='row'>
+              <Button size='md' color="primary" style={{ marginTop: '25px', marginLeft: '30px' }} onClick={( ) => {handleSolder(facture,index) }}>Payer</Button>
+
               </div>
               </div>
+              
             ) : (
               <div className='row'> 
                    <div className='col-md-4'>
@@ -437,8 +442,23 @@ useEffect(() => {
               </Label>
               </div>
           <div className='col-md-3'>
+          <Label>Motif:</Label>
+  <textarea
+  style={{ width: '80px', marginTop: '-7px' }}
+    type="text"
+    value={motifReductionList[index]}
+    onChange={(e) => {
+      const newMotifList = [...motifReductionList];
+      newMotifList[index] = e.target.value;
+      setMotifReductionList(newMotifList);
+      
+    }}
+    placeholder="Le motif"
+  />
+           </div>
+           <div className='row'>
+           <Button size='md' color="primary" style={{ marginTop: '25px', marginLeft: '30px' }} onClick={( ) => {handleSolder(facture, index) }}>Payer</Button>
 
-                <Button size='md' color="primary" style={{ marginTop: '25px' }} onClick={( ) => {handleSolder(facture, index) }}>Payer</Button>
            </div>
 
               </div>

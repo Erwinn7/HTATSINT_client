@@ -301,7 +301,7 @@ const handleLogout = async () => {
                  <UncontrolledDropdown nav inNavbar>
                  <DropdownToggle nav className="nav-link-icon">
               <i className="fa fa-user-shield" />
-              <span className="ml-2">{props.userRole}</span>
+              <span className="ml-2">{props.userName}</span>
             </DropdownToggle>
              
               <DropdownMenu right>  
@@ -390,6 +390,7 @@ Sidebar.propTypes = {
     // the alt for the img
     imgAlt: PropTypes.string.isRequired,
     userRole: PropTypes.string,
+    userName: PropTypes.string
   }),
 };
 
